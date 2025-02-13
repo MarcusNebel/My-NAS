@@ -9,78 +9,78 @@
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
   </head>
 
-  <?php
-    use PHPMailer\PHPMailer\PHPMailer;
-    use PHPMailer\PHPMailer\Exception;
+    <?php
+      use PHPMailer\PHPMailer\PHPMailer;
+      use PHPMailer\PHPMailer\Exception;
 
-    require 'vendor/autoload.php'; // Falls Composer genutzt wird
-    // require 'src/PHPMailer.php'; // Falls du PHPMailer manuell eingebunden hast
+      require '../PHPMailer/src/PHPMailer.php'; // Falls Composer genutzt wird
+      // require 'src/PHPMailer.php'; // Falls du PHPMailer manuell eingebunden hast
 
-    $error = '';
+      $error = '';
 
-    if (isset($_POST['submit'])) {
-        require("mysql.php");
+      if (isset($_POST['submit'])) {
+          require("mysql.php");
 
-        // Überprüfen, ob die E-Mail existiert
-        $stmt = $mysql->prepare("SELECT * FROM accounts WHERE EMAIL = :email");
-        $stmt->bindParam(":email", $_POST['email']);
-        $stmt->execute();
-        $count = $stmt->rowCount();
-        
-        if ($count == 1) {
-            // Benutzerinformationen abrufen
-            $user = $stmt->fetch();
-            $username = $user['USERNAME'];
+          // Überprüfen, ob die E-Mail existiert
+          $stmt = $mysql->prepare("SELECT * FROM accounts WHERE EMAIL = :email");
+          $stmt->bindParam(":email", $_POST['email']);
+          $stmt->execute();
+          $count = $stmt->rowCount();
+          
+          if ($count == 1) {
+              // Benutzerinformationen abrufen
+              $user = $stmt->fetch();
+              $username = $user['USERNAME'];
 
-            // Generiere einen 6-stelligen Code
-            $code = rand(100000, 999999);
+              // Generiere einen 6-stelligen Code
+              $code = rand(100000, 999999);
 
-            // Speichern des Codes in der Datenbank
-            $stmt = $mysql->prepare("UPDATE accounts SET reset_code = :code WHERE EMAIL = :email");
-            $stmt->bindParam(":code", $code);
-            $stmt->bindParam(":email", $_POST['email']);
-            $stmt->execute();
+              // Speichern des Codes in der Datenbank
+              $stmt = $mysql->prepare("UPDATE accounts SET reset_code = :code WHERE EMAIL = :email");
+              $stmt->bindParam(":code", $code);
+              $stmt->bindParam(":email", $_POST['email']);
+              $stmt->execute();
 
-            // E-Mail mit PHPMailer versenden
-            $mail = new PHPMailer(true);
+              // E-Mail mit PHPMailer versenden
+              $mail = new PHPMailer(true);
 
-            try {
-                // Server-Einstellungen
-                $mail->isSMTP();
-                $mail->Host       = 'smtp.gmail.com'; // SMTP-Server (z. B. Gmail, Outlook, GMX)
-                $mail->SMTPAuth   = true;
-                $mail->Username   = 'marcusnebel09@gmail.com'; // Deine E-Mail-Adresse
-                $mail->Password   = 'cvjj bsnl ibjv psxw'; // Dein App-Passwort (kein normales Passwort)
-                $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-                $mail->Port       = 587;
+              try {
+                  // Server-Einstellungen
+                  $mail->isSMTP();
+                  $mail->Host       = 'smtp.gmail.com'; // SMTP-Server (z. B. Gmail, Outlook, GMX)
+                  $mail->SMTPAuth   = true;
+                  $mail->Username   = 'marcusnebel09@gmail.com'; // Deine E-Mail-Adresse
+                  $mail->Password   = 'idto bivx tewa pwwg'; // Dein App-Passwort (kein normales Passwort)
+                  $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+                  $mail->Port       = 587;
 
-                // Absender und Empfänger
-                $mail->setFrom('support@my-nas.com', 'My NAS Support');
-                $mail->addAddress($_POST['email'], $username);
+                  // Absender und Empfänger
+                  $mail->setFrom('support@mynas.de', 'My NAS Support');
+                  $mail->addAddress($_POST['email'], $username);
 
-                // Inhalt der E-Mail
-                $mail->isHTML(true);
-                $mail->Subject = 'Passwort zurücksetzen';
-                $mail->Body    = "
-                    <h3>Hallo $username,</h3>
-                    <p>Um Ihr Passwort zurückzusetzen, verwenden Sie bitte den folgenden Code:</p>
-                    <h2>$code</h2>
-                    <p>Geben Sie diesen Code auf der Website ein, um fortzufahren.</p>
-                    <br>
-                    <p>Falls Sie diese Anfrage nicht gestellt haben, ignorieren Sie bitte diese E-Mail.</p>
-                ";
+                  // Inhalt der E-Mail
+                  $mail->isHTML(true);
+                  $mail->Subject = 'Passwort zurücksetzen';
+                  $mail->Body    = "
+                      <h3>Hallo $username,</h3>
+                      <p>Um Ihr Passwort zurückzusetzen, verwenden Sie bitte den folgenden Code:</p>
+                      <h2>$code</h2>
+                      <p>Geben Sie diesen Code auf der Website ein, um fortzufahren.</p>
+                      <br>
+                      <p>Falls Sie diese Anfrage nicht gestellt haben, ignorieren Sie bitte diese E-Mail.</p>
+                  ";
 
-                $mail->send();
-                header("Location: reset_password.php"); // Weiterleitung zur Seite für den Code
-                exit();
-            } catch (Exception $e) {
-                $error = "Fehler beim Senden der E-Mail: " . $mail->ErrorInfo;
-            }
-        } else {
-            $error = "Diese E-Mail-Adresse ist nicht registriert!";
-        }
-    }
-  ?>
+                  $mail->send();
+                  header("Location: reset_password.php"); // Weiterleitung zur Seite für den Code
+                  exit();
+              } catch (Exception $e) {
+                  $error = "Fehler beim Senden der E-Mail: " . $mail->ErrorInfo;
+              }
+          } else {
+              $error = "Diese E-Mail-Adresse ist nicht registriert!";
+          }
+      }
+    ?>
 
   <body>
     <header>

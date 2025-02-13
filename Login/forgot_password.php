@@ -63,7 +63,7 @@
 
                   // Inhalt der E-Mail
                   $mail->isHTML(true);
-                  $mail->Subject = 'Passwort zurücksetzen';
+                  $mail->Subject = 'Neues Passwort festlegen';
                   $mail->Body    = "
                       <h3>Hallo $username,</h3>
                       <p>Um Ihr Passwort zurückzusetzen, verwenden Sie bitte den folgenden Code:</p>

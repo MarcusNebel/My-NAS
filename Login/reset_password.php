@@ -15,8 +15,7 @@
     if(isset($_POST['submit'])){
         require("mysql.php");
         // Eingegebenen Code und die E-Mail prüfen
-        $stmt = $mysql->prepare("SELECT * FROM accounts WHERE EMAIL = :email AND reset_code = :code");
-        $stmt->bindParam(":email", $_POST['email']);
+        $stmt = $mysql->prepare("SELECT * FROM accounts WHERE reset_code = :code");
         $stmt->bindParam(":code", $_POST['code']);
         $stmt->execute();
         $count = $stmt->rowCount();
@@ -58,11 +57,6 @@
 
     <div class="wrapper">
       <form action="reset_password.php" method="post">
-        <h1>Geben Sie den Code ein</h1>
-        <div class="input-box">
-          <input type="email" name="email" placeholder="E-Mail-Adresse" required>
-          <i class='bx bx-envelope'></i>
-        </div>
         <div class="input-box">
           <input type="text" name="code" placeholder="6-stelliger Code" required>
           <i class='bx bx-key'></i>

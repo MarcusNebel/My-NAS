@@ -6,7 +6,7 @@
     font-family: 'Fira Sans', sans-serif;
   }
   
-  .container {
+.container {
     width: 100%;
     max-width: 100%;
     margin: 0;
@@ -26,7 +26,6 @@
   .link-no-decoration {
     text-decoration: none;
     color: #FFF;
-    scale: 130,66px 44,8px;
   }
 
   .login_button {
@@ -115,7 +114,6 @@
     min-height: 100vh;
     display: block;
     z-index: 98;
-    background-color: #12002F;
     padding-top: 120px;
     -webkit-transition: 0.4s;
     transition: 0.4s;
@@ -308,14 +306,14 @@
     }
   }
   
-  main section.banner .container h3 {
+  main section.banner .container .subtitle {
     font-size: 36px;
     font-weight: 400;
     margin-bottom: 32px;
   }
   
   @media (max-width: 767px) {
-    main section.banner .container h3 {
+    main section.banner .container .subtitle {
       font-size: 20px;
     }
   }
@@ -380,7 +378,6 @@
     min-height: 100vh;
     display: block;
     z-index: 98;
-    background-color: #12002F;
     padding-top: 120px;
     transition: 0.4s;
   }
@@ -396,7 +393,7 @@
     margin: 0 auto 16px;
     text-align: center;
     padding: 12px 16px;
-    background-color: #1f103F;
+    /* background-color: #1f103F; */
   
     color: #FFF;
     text-decoration: none;
@@ -547,8 +544,8 @@
           }
         }
   
-        h3 {
-          font-size: 36px;
+        .subtitle {
+          font-size: 35px;
           font-weight: 400;
           margin-bottom: 32px;
   

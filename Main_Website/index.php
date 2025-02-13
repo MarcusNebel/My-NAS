@@ -10,7 +10,6 @@
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link href="https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,400;0,600;0,700;0,900;1,400;1,600;1,700&display=swap" rel="stylesheet" />
 
-	<link rel="stylesheet" href="../Login/styles.css">
 	<link rel="stylesheet" href="./assets/css/style.css" />
 </head>
 <body>
@@ -43,11 +42,11 @@
 		<section class="banner">
 			<div class="container">
 				<h1>
-					Sicherste Webseite <br class="hide-mob" />
+					Die sicherste Webseite <br class="hide-mob" />
 					für <span>DEINE</span> Daten
+					<br>
+					<a class="subtitle">Die sichere Cloud in deinem Netzwerk</a>
 				</h1>
-
-				<h3>Deine sichere Cloud in deinem Netzwerk</h3>
 			</div>
 		</section>
 	</main>

@@ -35,10 +35,10 @@
           $_SESSION["username"] = $row["USERNAME"];
           header("Location: ../Main_Website/geheim.php");
         } else {
-          echo "Der Login ist fehlgeschlagen";
+          $passwordError = "Falsches Passwort";
         }
       } else {
-        echo "Der Login ist fehlgeschlagen";
+        $userError = "Benutzer oder Email nich vergeben";
       }
     }
     ?>
@@ -72,19 +72,21 @@
     <div class="wrapper">
       <form action="Login.php" method="post">
         <h1>Anmelden</h1>
+      <?php if (!empty($userError)): ?>
+        <p class="error-message"><?php echo $userError; ?></p>
+      <?php endif; ?>
+      <?php if (!empty($passwordError)): ?>
+        <p class="error-message"><?php echo $passwordError; ?></p>
+      <?php endif; ?>
         <div class="input-box">
-          <input type="text" name="username" placeholder="Benutzername" required>
+          <input type="text" name="username" placeholder="Benutzername / Email" required>
           <i class='bx bxs-user'></i>
         </div>
+
         <div class="input-box">
           <input type="password" name="pw" placeholder="Passwort" required>
           <i class='bx bxs-lock-alt' ></i>
         </div>
-
-        <!-- Fehlernachricht unter dem letzten Eingabefeld anzeigen -->
-        <?php if(!empty($error)): ?>
-          <p class="error-message"><?php echo $error; ?></p>
-        <?php endif; ?>
 
         <div class="remember-forgot">
           <label><input type="checkbox">Angemeldet bleiben</label>

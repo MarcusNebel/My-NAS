@@ -133,7 +133,7 @@
       <?php endif; ?>
 
       <div class="register-link">
-        <p>Schon einen Account? <a href="index.php">Anmelden</a></p>
+        <p>Schon einen Account? <a href="Login.php">Anmelden</a></p>
       </div>
     </form>
   </div>

@@ -9,8 +9,13 @@
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
   </head>
 
-    <?php
-    // Fehlerbehandlung
+  <?php
+    use PHPMailer\PHPMailer\PHPMailer;
+    use PHPMailer\PHPMailer\Exception;
+
+    require 'vendor/autoload.php'; // Falls Composer genutzt wird
+    // require 'src/PHPMailer.php'; // Falls du PHPMailer manuell eingebunden hast
+
     $error = '';
 
     if (isset($_POST['submit'])) {
@@ -36,25 +41,46 @@
             $stmt->bindParam(":email", $_POST['email']);
             $stmt->execute();
 
-            // E-Mail an den Benutzer senden
-            $subject = "Passwort zurücksetzen";
-            $message = "Hallo $username,\n\n";
-            $message .= "Um Ihr Passwort zurückzusetzen, verwenden Sie bitte den folgenden Code:\n\n";
-            $message .= "$code\n\n";
-            $message .= "Bitte geben Sie diesen Code auf der Website ein, um fortzufahren.";
+            // E-Mail mit PHPMailer versenden
+            $mail = new PHPMailer(true);
 
-            // E-Mail versenden
-            if (mail($_POST['email'], $subject, $message)) {
+            try {
+                // Server-Einstellungen
+                $mail->isSMTP();
+                $mail->Host       = 'smtp.gmail.com'; // SMTP-Server (z. B. Gmail, Outlook, GMX)
+                $mail->SMTPAuth   = true;
+                $mail->Username   = 'marcusnebel09@gmail.com'; // Deine E-Mail-Adresse
+                $mail->Password   = 'cvjj bsnl ibjv psxw'; // Dein App-Passwort (kein normales Passwort)
+                $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+                $mail->Port       = 587;
+
+                // Absender und Empfänger
+                $mail->setFrom('deine-email@gmail.com', 'My NAS Support');
+                $mail->addAddress($_POST['email'], $username);
+
+                // Inhalt der E-Mail
+                $mail->isHTML(true);
+                $mail->Subject = 'Passwort zurücksetzen';
+                $mail->Body    = "
+                    <h3>Hallo $username,</h3>
+                    <p>Um Ihr Passwort zurückzusetzen, verwenden Sie bitte den folgenden Code:</p>
+                    <h2>$code</h2>
+                    <p>Geben Sie diesen Code auf der Website ein, um fortzufahren.</p>
+                    <br>
+                    <p>Falls Sie diese Anfrage nicht gestellt haben, ignorieren Sie bitte diese E-Mail.</p>
+                ";
+
+                $mail->send();
                 header("Location: reset_password.php"); // Weiterleitung zur Seite für den Code
                 exit();
-            } else {
-                $error = "Es gab ein Problem beim Senden der E-Mail.";
+            } catch (Exception $e) {
+                $error = "Fehler beim Senden der E-Mail: " . $mail->ErrorInfo;
             }
         } else {
             $error = "Diese E-Mail-Adresse ist nicht registriert!";
         }
     }
-    ?>
+  ?>
 
   <body>
     <header>

@@ -55,7 +55,7 @@
                 $mail->Port       = 587;
 
                 // Absender und Empfänger
-                $mail->setFrom('deine-email@gmail.com', 'My NAS Support');
+                $mail->setFrom('support@my-nas.com', 'My NAS Support');
                 $mail->addAddress($_POST['email'], $username);
 
                 // Inhalt der E-Mail

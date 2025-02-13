@@ -54,7 +54,7 @@
                     // Erfolgreiche Registrierung → Weiterleitung zur Anmeldeseite
                     $successMessage = "Erfolgreich registriert! Weiterleitung zur Anmeldung...";
                     // Verspätete Weiterleitung mit 3 Sekunden Verzögerung
-                    header("refresh:3; url=index.php");
+                    header("refresh:3; url=Login.php");
                     exit();
                 } else {
                     $passwordError = "Das Passwort muss mindestens 6 Zeichen lang sein.";

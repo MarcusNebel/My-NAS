@@ -70,7 +70,7 @@
 	</nav>
 
     <div class="wrapper">
-      <form action="index.php" method="post">
+      <form action="Login.php" method="post">
         <h1>Anmelden</h1>
         <div class="input-box">
           <input type="text" name="username" placeholder="Benutzername" required>

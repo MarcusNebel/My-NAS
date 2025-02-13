@@ -9,13 +9,16 @@
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
   </head>
 
-    <?php
-      use PHPMailer\PHPMailer\PHPMailer;
-      use PHPMailer\PHPMailer\Exception;
+    <?php    
+    
+    use PHPMailer\PHPMailer\PHPMailer;
+    use PHPMailer\PHPMailer\Exception;
 
-      require '../PHPMailer/src/PHPMailer.php'; // Falls Composer genutzt wird
-      // require 'src/PHPMailer.php'; // Falls du PHPMailer manuell eingebunden hast
-
+    // Anpassen des Pfads zu PHPMailer
+    require '../PHPMailer/src/PHPMailer.php'; // Pfad zu PHPMailer anpassen
+    require '../PHPMailer/src/SMTP.php';      // SMTP-Klasse einbinden
+    require '../PHPMailer/src/Exception.php'; // Fehlerbehandlung
+      
       $error = '';
 
       if (isset($_POST['submit'])) {
@@ -49,13 +52,13 @@
                   $mail->isSMTP();
                   $mail->Host       = 'smtp.gmail.com'; // SMTP-Server (z. B. Gmail, Outlook, GMX)
                   $mail->SMTPAuth   = true;
-                  $mail->Username   = 'marcusnebel09@gmail.com'; // Deine E-Mail-Adresse
-                  $mail->Password   = 'idto bivx tewa pwwg'; // Dein App-Passwort (kein normales Passwort)
+                  $mail->Username   = 'creativevideos2408@gmail.com'; // Deine E-Mail-Adresse
+                  $mail->Password   = 'zijtixxdfairckps'; // Dein App-Passwort (kein normales Passwort)
                   $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
                   $mail->Port       = 587;
 
                   // Absender und Empfänger
-                  $mail->setFrom('support@mynas.de', 'My NAS Support');
+                  $mail->setFrom('marcusnebel09@gmail.com', 'My NAS Support');
                   $mail->addAddress($_POST['email'], $username);
 
                   // Inhalt der E-Mail
@@ -85,7 +88,7 @@
   <body>
     <header>
       <div class="container transparancy">
-        <h2><span>MY </span>NAS</h2>
+        <h2><a class="link-no-decoration" href="../Main_Website/index.php"><span>MY </span>NAS</a></h2>
         <nav>
           <a href="../Main_Website/index.php">Startseite</a>
           <a href="#">Dateien</a>
@@ -93,7 +96,7 @@
           <a href="#">Kontakt</a>
         </nav>
         <button class="login_button">
-          <a href="../Login/index.php">Anmelden</a>
+          <a href="../Login/Login.php">Anmelden</a>
         </button>
         <button class="hamburger">
           <div class="bar"></div>

@@ -18,7 +18,7 @@
             $stmt->bindParam(":pw", password_hash($_POST['pw'], PASSWORD_BCRYPT));
             $stmt->bindParam(":email", $_GET['email']);
             $stmt->execute();
-            header("Location: index.php"); // Weiterleitung zur Anmeldeseite
+            header("Location: Login.php"); // Weiterleitung zur Anmeldeseite
         } else {
             $error = "Die Passwörter stimmen nicht überein!";
         }
@@ -28,7 +28,7 @@
   <body>
     <header>
         <div class="container transparancy">
-            <h2><span>MY </span>NAS</h2>
+          <h2><a class="link-no-decoration" href="../Main_Website/index.php"><span>MY </span>NAS</a></h2>
             <nav>
                 <a href="../Main_Website/index.php">Startseite</a>
                 <a href="#">Dateien</a>
@@ -36,7 +36,7 @@
                 <a href="#">Kontakt</a>
             </nav>
             <button class="login_button">
-                <a href="../Login/index.php">Anmelden</a>
+                <a href="../Login/Login.php">Anmelden</a>
             </button>
             <button class="hamburger">
                 <div class="bar"></div>

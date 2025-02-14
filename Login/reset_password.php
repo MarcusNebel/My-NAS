@@ -1,37 +1,67 @@
+<?php
+if(isset($_POST['submit'])){
+    require("mysql.php");
+
+    $mysql->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+    // Überprüfen, ob der Reset-Code gesetzt ist
+    if (!isset($_POST['reset_code']) || empty($_POST['reset_code'])) {
+        die("Fehler: Kein Reset-Code angegeben!");
+    }
+
+    // Den Reset-Code aus dem Formular holen
+    $reset_code = $_POST['reset_code'];
+
+    // Prüfen, ob der Reset-Code in der Datenbank existiert
+    $stmt = $mysql->prepare("SELECT * FROM accounts WHERE reset_code = :reset_code");
+    $stmt->bindParam(":reset_code", $reset_code);
+    $stmt->execute();
+
+    if ($stmt->rowCount() == 0) {
+        die("Fehler: Ungültiger Reset-Code.");
+    }
+
+    // Überprüfen, ob die Passwörter übereinstimmen
+    if($_POST['pw'] == $_POST['pw2']){
+        $hashed_pw = password_hash($_POST['pw'], PASSWORD_BCRYPT);
+
+        // Passwort mit dem Reset-Code in der Datenbank ändern
+        $stmt = $mysql->prepare("UPDATE accounts SET PASSWORD = :pw, reset_code = NULL WHERE reset_code = :reset_code");
+        $stmt->bindParam(":pw", $hashed_pw);
+        $stmt->bindParam(":reset_code", $reset_code);
+
+        // Überprüfen, ob die Passwortänderung erfolgreich war
+        if ($stmt->execute()) {
+            if ($stmt->rowCount() === 0) {
+                die("Fehler: Das Passwort wurde nicht geändert. Der Reset-Code ist möglicherweise ungültig oder wurde bereits verwendet.");
+            }
+            echo "Passwort erfolgreich geändert!";
+            header("Location: Login.php");
+            exit;
+        } else {
+            print_r($stmt->errorInfo());
+            die("Fehler beim Ändern des Passworts.");
+        }
+    } else {
+        echo "Die Passwörter stimmen nicht überein!";
+    }
+}
+?>
+
 <!DOCTYPE html>
 <html lang="de" dir="ltr">
-  <head>
+<head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Passwort zurücksetzen | My NAS</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="../Main_Website/assets/css/style.css">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-  </head>
-
-    <?php
-    // Fehlerbehandlung
-    $error = '';
-    if(isset($_POST['submit'])){
-        require("mysql.php");
-        // Eingegebenen Code und die E-Mail prüfen
-        $stmt = $mysql->prepare("SELECT * FROM accounts WHERE reset_code = :code");
-        $stmt->bindParam(":code", $_POST['code']);
-        $stmt->execute();
-        $count = $stmt->rowCount();
-        if($count == 1){
-            // Code korrekt, Passwort zurücksetzen
-            header("Location: new_password.php?email=" . $_POST['email']);
-        } else {
-            $error = "Der Code ist ungültig!";
-        }
-    }
-    ?>
-
-  <body>
+</head>
+<body>
     <header>
         <div class="container transparancy">
-          <h2><a class="link-no-decoration" href="../Main_Website/index.php"><span>MY </span>NAS</a></h2>
+            <h2><a class="link-no-decoration" href="../Main_Website/index.php"><span>MY </span>NAS</a></h2>
             <nav>
                 <a href="../Main_Website/index.php">Startseite</a>
                 <a href="#">Dateien</a>
@@ -46,34 +76,27 @@
             </button>
         </div>
     </header>
-    <nav class="mobile-nav">
-        <a href="../Main_Website/index.php">Startseite</a>
-        <a href="../Login/index.php">Anmelden</a>
-        <a href="../Login/register.php">Registrieren</a>
-        <a href="#">Dateien</a>
-        <a href="#">Bilder</a>
-        <a href="#">Kontakt</a>
-    </nav>
 
     <div class="wrapper">
-      <form action="reset_password.php" method="post">
-        <div class="input-box">
-          <input type="text" name="code" placeholder="6-stelliger Code" required>
-          <i class='bx bx-key'></i>
-        </div>
-        <?php if($error): ?>
-        <div class="error-message">
-          <p><?php echo $error; ?></p>
-        </div>
-        <?php endif; ?>
-        <button type="submit" name="submit" class="btn">Code überprüfen</button>
-        <div class="register-link">
-          <p>Kein Code erhalten? <a href="forgot_password.php">Code anfordern</a></p>
-        </div>
-      </form>
+        <form action="" method="post">
+            <div class="input-box">
+                <input type="text" name="reset_code" placeholder="Reset-Code" required> <!-- Reset-Code hier als normales Eingabefeld -->
+                <i class='bx bx-key'></i>
+            </div>
+            <div class="input-box">
+                <input type="password" name="pw" placeholder="Neues Passwort" required>
+                <i class='bx bx-lock'></i>
+            </div>
+            <div class="input-box">
+                <input type="password" name="pw2" placeholder="Passwort bestätigen" required>
+                <i class='bx bx-lock'></i>
+            </div>
+
+            <button type="submit" name="submit" class="btn">Passwort ändern</button>
+        </form>
     </div>
 
     <script src="script.js"></script>
     <script src="../Main_Website/assets/js/main.js"></script>
-  </body>
+</body>
 </html>

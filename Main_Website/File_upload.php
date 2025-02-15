@@ -68,7 +68,7 @@ if (!isset($_SESSION["username"])) {
                     </div>
 
                     <!-- Anzeige der Upload-Geschwindigkeit -->
-                    <p id="upload-speed" class="upload-speed">Upload-Geschwindigkeit: 0 KB/s</p>
+                    <p id="upload-speed" class="upload-speed">Upload-Geschwindigkeit: 0 MB/s</p>
                 </div>
             </div>
         </section>

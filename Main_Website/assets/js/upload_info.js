@@ -21,10 +21,10 @@ document.getElementById('uploadForm').addEventListener('submit', function (event
             progressBar.style.width = percent + '%';
             progressBar.innerHTML = Math.round(percent) + '%';
 
-            // Berechnung der Upload-Geschwindigkeit in KB/s
+            // Berechnung der Upload-Geschwindigkeit in MB/s (statt KB/s)
             let elapsedTime = (Date.now() - startTime) / 1000;  // Zeit in Sekunden
-            let speed = (event.loaded / 1024) / elapsedTime;  // Geschwindigkeit in KB/s
-            uploadSpeed.innerText = 'Upload-Geschwindigkeit: ' + speed.toFixed(2) + ' KB/s';
+            let speed = (event.loaded / (1024 * 1024)) / elapsedTime;  // Geschwindigkeit in MB/s
+            uploadSpeed.innerText = 'Upload-Geschwindigkeit: ' + speed.toFixed(1) + ' MB/s';
         }
     });
 

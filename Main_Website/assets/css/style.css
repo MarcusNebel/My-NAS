@@ -660,3 +660,25 @@ main section.upload-section {
     color: #fff;
     font-size: 18px;
 }
+
+.progress-container {
+  width: 100%; 
+  background-color: #1d004b; 
+  border-radius: 5px; 
+  margin-top: 20px;
+  border: 2px solid #8e44ad
+}
+
+.progress-bar {
+  height: 20px; 
+  width: 0; 
+  background-color: #8e44ad; 
+  text-align: center; 
+  color: white; 
+  line-height: 20px;
+}
+
+.upload-speed {
+  margin-top: 10px;
+  color: #FFF;
+}

@@ -10,8 +10,26 @@
   </head>
   <body>
     <?php
+
+    require("mysql.php");
+
+    if(isset($_COOKIE["login_cookie"])){
+      $stmt = $mysql->prepare("SELECT * FROM accounts WHERE rememberTOKEN = ?");
+      $stmt->execute([$_COOKIE["login_cookie"]]);
+
+      if($stmt->rowCount() == 1){
+        $row = $stmt->fetch();
+
+        session_start();
+        $_SESSION["username"] = $row["USERNAME"];
+        header("Location: ../Main_Website/geheim.php");
+        exit();
+      } else {
+        setcookie("login_cookie", "", time() -1);
+      }
+    }
+
     if(isset($_POST["submit"])){
-      require("mysql.php");
 
       // Eingabe holen und prüfen, ob es eine E-Mail oder ein Benutzername ist
       $input = $_POST["username"];
@@ -31,9 +49,25 @@
         // Benutzer gefunden
         $row = $stmt->fetch();
         if(password_verify($_POST["pw"], $row["PASSWORD"])){
+
+          if(isset($_POST["rememberme"])){
+            $token = bin2hex(random_bytes(64));
+
+            $stmt = $mysql->prepare("UPDATE accounts SET rememberTOKEN = ? WHERE USERNAME = ?");
+            $stmt->execute([$token, $_POST["username"]]);
+
+            setcookie("login_cookie", $token, time() + (3600*24*30));
+          }
+
           session_start();
           $_SESSION["username"] = $row["USERNAME"];
-          header("Location: ../Main_Website/geheim.php");
+          
+          // Prüfen, ob eine Zielseite gespeichert ist
+          $redirect_to = isset($_SESSION["redirect_to"]) ? $_SESSION["redirect_to"] : "../Main_Website/index.php";
+          unset($_SESSION["redirect_to"]); // Nach dem Login löschen
+          
+          header("Location: " . $redirect_to);
+          exit();
         } else {
           $passwordError = "Falsches Passwort";
         }
@@ -89,7 +123,7 @@
         </div>
 
         <div class="remember-forgot">
-          <label><input type="checkbox">Angemeldet bleiben</label>
+          <label><input type="checkbox" name="rememberme">Angemeldet bleiben</label>
           <a href="forgot_password.php">Passwort vergessen?</a>
         </div>
         <button type="submit" name="submit" class="btn">Anmelden</button>

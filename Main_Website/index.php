@@ -1,3 +1,7 @@
+<?php
+session_start();
+?>
+
 <!DOCTYPE html>
 <html lang="de">
 <head>
@@ -22,9 +26,15 @@
 				<a href="#">Bilder</a>
 				<a href="#">Kontakt</a>
 			</nav>
-			<button type="submit" class="login_button">
-				<a href="../Login/Login.php">Anmelden</a>
-			</button>
+			<?php if (isset($_SESSION["username"])): ?>
+                <button class="login_button">
+                    <a href="../Login/logout.php">Abmelden</a>
+                </button>
+            <?php else: ?>
+                <button class="login_button">
+                    <a href="../Login/Login.php">Anmelden</a>
+                </button>
+            <?php endif; ?>
 			<button class="hamburger">
 				<div class="bar"></div>
 			</button>
@@ -32,8 +42,6 @@
 	</header>
 	<nav class="mobile-nav">
 		<a href="../Main_Website/index.php">Startseite</a>
-		<a href="../Login/Login.php">Anmelden</a>
-		<a href="../Login/register.php">Registrieren</a>
 		<a href="../Main_Website/File_upload.php">Dateien</a>
 		<a href="#">Bilder</a>
 		<a href="#">Kontakt</a>
@@ -42,10 +50,10 @@
 		<section class="banner">
 			<div class="container">
 				<h1>
-					Die sicherste Webseite <br class="hide-mob" />
+					Die unsicherste Webseite <br class="hide-mob" />
 					für <span>DEINE</span> Daten
 					<br>
-					<a class="subtitle">Die sichere Cloud in deinem Netzwerk</a>
+					<a class="subtitle">Die unsichere Cloud in deinem Netzwerk</a>
 				</h1>
 			</div>
 		</section>

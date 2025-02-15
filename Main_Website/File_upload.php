@@ -1,3 +1,12 @@
+<?php
+session_start();
+if (!isset($_SESSION["username"])) {
+    $_SESSION["redirect_to"] = $_SERVER["REQUEST_URI"]; // Speichert die aktuelle Seite
+    header("Location: ../Login/Login.php"); // Weiterleitung zur Login-Seite
+    exit();
+}
+?>
+
 <!DOCTYPE html>
 <html lang="de">
 <head>
@@ -22,9 +31,15 @@
                 <a href="#">Bilder</a>
                 <a href="#">Kontakt</a>
             </nav>
-            <button class="login_button">
-                <a href="../Login/Login.php">Anmelden</a>
-            </button>
+            <?php if (isset($_SESSION["username"])): ?>
+                <button class="login_button">
+                    <a href="../Login/logout.php">Abmelden</a>
+                </button>
+            <?php else: ?>
+                <button class="login_button">
+                    <a href="../Login/Login.php">Anmelden</a>
+                </button>
+            <?php endif; ?>
             <button class="hamburger">
                 <div class="bar"></div>
             </button>
@@ -32,8 +47,6 @@
     </header>
     <nav class="mobile-nav">
         <a href="../Main_Website/index.php">Startseite</a>
-        <a href="../Login/Login.php">Anmelden</a>
-        <a href="../Login/register.php">Registrieren</a>
         <a href="../Main_Website/File_upload.php">Dateien</a>
         <a href="#">Bilder</a>
         <a href="#">Kontakt</a>
@@ -48,10 +61,18 @@
                         <button type="submit">Hochladen</button>
                     </form>
                     <p id="uploadStatus"></p>
+
+                    <!-- Fortschrittsbalken -->
+                    <div id="progress-container" class="progress-container">
+                        <div id="progress-bar" class="progress-bar">0%</div>
+                    </div>
+
+                    <!-- Anzeige der Upload-Geschwindigkeit -->
+                    <p id="upload-speed" class="upload-speed">Upload-Geschwindigkeit: 0 KB/s</p>
                 </div>
             </div>
         </section>
     </main>
-    <script src="./assets/js/upload.js"></script>
+    <script src="./assets/js/upload_info.js"></script>
 </body>
 </html>

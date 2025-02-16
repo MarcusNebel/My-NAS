@@ -114,7 +114,18 @@ EXIT;
 Copy your HTML, CSS, JS, and PHP files into the web server folder `/var/www/html/nas-website`.
 If you need to upload files from a local machine, use SCP or FTP:
 ```bash
-scp -r /local/path/to/website user@server-ip:/var/www/html/nas-website
+cd ~
+mkdir nas-website
+```
+
+Upload files to server via SCP(make sure that you copy the individual Folder like ".vscode, Login, Main_Website,PHPMailer, LICANSE, Logo.png and README.md):
+```bash
+scp -r "/local/path/to/github/download/*" user@server-ip:~/nas-website
+```
+
+Move the nas-website folder to `var/www/html/`:
+```bash
+sudo mv ~/nas-website /var/www/html/
 ```
 
 ### 7. **Configure Apache for the Website**

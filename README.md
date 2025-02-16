@@ -64,7 +64,7 @@ Restart Apache to ensure PHP works correctly:
 sudo systemctl restart apache2
 ```
 
-### 5. **Set up the Database**
+### 4. **Set up the Database**
 
 Log in to MySQL:
 ```bash
@@ -91,7 +91,7 @@ COMMIT;
 EXIT;
 ```
 
-### 6. **Upload Website Files**
+### 5. **Upload Website Files**
 
 Copy your HTML, CSS, JS, and PHP files into the web server folder `/var/www/html/nas-website`.
 If you need to upload files from a local machine, use SCP or FTP:
@@ -111,7 +111,7 @@ Move the nas-website folder to `var/www/html/`:
 sudo mv ~/nas-website /var/www/html/
 ```
 
-### 7. **Configure Apache for the Website**
+### 6. **Configure Apache for the Website**
 
 Create a new Apache configuration file:
 ```bash
@@ -182,7 +182,7 @@ sudo a2ensite nas-website.conf
 sudo systemctl restart apache2
 ```
 
-### 8. **Set Permissions**
+### 7. **Set Permissions**
 
 Ensure that Apache has access to the website files:
 ```bash
@@ -190,7 +190,7 @@ sudo chown -R www-data:www-data /var/www/html/nas-website
 sudo chmod -R 755 /var/www/html/nas-website
 ```
 
-### 10. **Adjust Upload Limits**
+### 8. **Adjust Upload Limits**
 
 If you need to upload large files, you must adjust the upload limits in the Apache configuration or via `.htaccess`.
 
@@ -232,7 +232,7 @@ LimitRequestBody 0
 sudo systemctl restart apache2
 ```
 
-### 11. **Test the Website**
+### 9. **Test the Website**
 
 Open the website in your browser:
 ```bash

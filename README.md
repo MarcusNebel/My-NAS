@@ -132,8 +132,8 @@ Add the following content:
 ```bash
 ServerName nas-website.local
 DocumentRoot /var/www/html/nas-website
-ErrorLog ${APACHE_LOG_DIR}/error. log
-CustomLog ${APACHE_LOG_DIR}/access. log combined
+ErrorLog ${APACHE_LOG_DIR}/error.log
+CustomLog ${APACHE_LOG_DIR}/access.log combined
 ```
 
 Enable the site and restart Apache:

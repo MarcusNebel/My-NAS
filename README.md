@@ -114,16 +114,6 @@ Move the nas-website folder to `var/www/html/`:
 sudo mv ~/nas-website /var/www/html/
 ```
 
-Configure 'mysql.php'
-```bash
-sudo nano /var/www/html/nas-website/Login/mysql.php
-```
-
-You've to set you server's IP-Adress under:
-```php
-$host = "server_ip";        // Hostname oder IP-Adresse des MySQL-Servers
-```
-
 ### 6. **Configure Apache for the Website**
 
 Create a new Apache configuration file:

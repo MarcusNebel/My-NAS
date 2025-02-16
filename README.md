@@ -138,9 +138,9 @@ sudo nano /etc/apache2/sites-available/nas-website.conf
 Add the following content:
 ```bash
 <VirtualHost *:80>
-    ServerAdmin admin@mywebsite.com
-    ServerName mywebsite.com
-    DocumentRoot /var/www/html/nas-website
+    ServerAdmin root@server_ip
+    ServerName server_ip
+    DocumentRoot /var/www/html/nas-website/Main_Website
     <Directory /var/www/html/nas-website>
         AllowOverride All
     </Directory>

@@ -2,7 +2,7 @@
 session_start();
 if (!isset($_SESSION["username"])) {
     $_SESSION["redirect_to"] = $_SERVER["REQUEST_URI"]; // Speichert die aktuelle Seite
-    header("Location: ../Login/Login.php"); // Weiterleitung zur Login-Seite
+    header("Location: Login/Login.php"); // Weiterleitung zur Login-Seite
     exit();
 }
 ?>

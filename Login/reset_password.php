@@ -55,7 +55,7 @@ if(isset($_POST['submit'])){
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Passwort zurücksetzen | My NAS</title>
     <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="/assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/style.css">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 </head>
 <body>
@@ -69,7 +69,7 @@ if(isset($_POST['submit'])){
                 <a href="#">Kontakt</a>
             </nav>
             <button class="login_button">
-                <a href="/Login/Login.php">Anmelden</a>
+                <a href="Login/Login.php">Anmelden</a>
             </button>
             <button class="hamburger">
                 <div class="bar"></div>
@@ -79,8 +79,8 @@ if(isset($_POST['submit'])){
 
     <nav class="mobile-nav">
         <a href="index.php">Startseite</a>
-        <a href="/Login/Login.php">Anmelden</a>
-        <a href="/Login/register.php">Registrieren</a>
+        <a href="Login/Login.php">Anmelden</a>
+        <a href="Login/register.php">Registrieren</a>
         <a href="File_upload.php">Dateien</a>
         <a href="#">Bilder</a>
         <a href="#">Kontakt</a>
@@ -106,6 +106,6 @@ if(isset($_POST['submit'])){
     </div>
 
     <script src="script.js"></script>
-    <script src="/assets/js/main.js"></script>
+    <script src="assets/js/main.js"></script>
 </body>
 </html>

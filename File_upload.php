@@ -19,7 +19,7 @@ if (!isset($_SESSION["username"])) {
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;600;700;900&display=swap" rel="stylesheet" />
     
-    <link rel="stylesheet" href="/assets/css/style.css" />
+    <link rel="stylesheet" href="assets/css/style.css" />
 </head>
 <body>
     <header>
@@ -33,11 +33,11 @@ if (!isset($_SESSION["username"])) {
             </nav>
             <?php if (isset($_SESSION["username"])): ?>
                 <button class="login_button">
-                    <a href="../Login/logout.php">Abmelden</a>
+                    <a href="Login/logout.php">Abmelden</a>
                 </button>
             <?php else: ?>
                 <button class="login_button">
-                    <a href="../Login/Login.php">Anmelden</a>
+                    <a href="Login/Login.php">Anmelden</a>
                 </button>
             <?php endif; ?>
             <button class="hamburger">
@@ -46,8 +46,8 @@ if (!isset($_SESSION["username"])) {
         </div>
     </header>
     <nav class="mobile-nav">
-        <a href="/index.php">Startseite</a>
-        <a href="/File_upload.php">Dateien</a>
+        <a href="index.php">Startseite</a>
+        <a href="File_upload.php">Dateien</a>
         <a href="#">Bilder</a>
         <a href="#">Kontakt</a>
     </nav>
@@ -56,7 +56,7 @@ if (!isset($_SESSION["username"])) {
             <div class="container">
                 <div class="upload-form">
                     <h1>Datei-Upload</h1>
-                    <form id="uploadForm" action="./assets/php/upload.php" method="post" enctype="multipart/form-data">
+                    <form id="uploadForm" action="assets/php/upload.php" method="post" enctype="multipart/form-data">
                         <input type="file" id="fileInput" name="file" required>
                         <button type="submit">Hochladen</button>
                     </form>
@@ -73,6 +73,6 @@ if (!isset($_SESSION["username"])) {
             </div>
         </section>
     </main>
-    <script src="./assets/js/upload_info.js"></script>
+    <script src="assets/js/upload_info.js"></script>
 </body>
 </html>

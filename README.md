@@ -111,6 +111,16 @@ Move the nas-website folder to `var/www/html/`:
 sudo mv ~/nas-website /var/www/html/
 ```
 
+Configure 'mysql.php'
+```bash
+sudo nano /var/www/html/nas-website/Login/mysql.php
+```
+
+You've to set you server's IP-Adress under:
+```php
+$host = "server_ip";        // Hostname oder IP-Adresse des MySQL-Servers
+```
+
 ### 6. **Configure Apache for the Website**
 
 Create a new Apache configuration file:
@@ -120,60 +130,10 @@ sudo nano /etc/apache2/sites-available/nas-website.conf
 
 Add the following content:
 ```bash
-<VirtualHost *:80>
-    # Servername für die Website
-    ServerName nas-website.local
-
-    # Root-Verzeichnis der Website
-    DocumentRoot /var/www/html/nas-website
-
-    # Zugriff auf alle Unterverzeichnisse im Projekt
-    <Directory /var/www/html/nas-website>
-        AllowOverride All
-        Require all granted
-    </Directory>
-
-    # Zugriff auf das Verzeichnis für PHP-Dateien
-    <Directory /var/www/html/nas-website/assets/php>
-        AllowOverride None
-        Require all granted
-    </Directory>
-
-    # Konfiguration für das Verzeichnis "Login/images"
-    <Directory /var/www/html/nas-website/Login/images>
-        AllowOverride None
-        Require all granted
-    </Directory>
-
-    # PHP-Konfiguration
-    PHPIniDir /etc/php/7.4/apache2
-
-    # Verzeichnisse, die für statische Inhalte zuständig sind
-    <Directory /var/www/html/nas-website/assets/css>
-        AllowOverride None
-        Require all granted
-    </Directory>
-
-    <Directory /var/www/html/nas-website/assets/js>
-        AllowOverride None
-        Require all granted
-    </Directory>
-
-    <Directory /var/www/html/nas-website/assets/images>
-        AllowOverride None
-        Require all granted
-    </Directory>
-
-    # PHPMailer-Verzeichnis
-    <Directory /var/www/html/nas-website/PHPMailer>
-        AllowOverride None
-        Require all granted
-    </Directory>
-
-    # Logging (Optional)
-    ErrorLog ${APACHE_LOG_DIR}/error.log
-    CustomLog ${APACHE_LOG_DIR}/access.log combined
-</VirtualHost>
+ServerName nas-website. local
+DocumentRoot /var/www/html/nas-website
+ErrorLog ${APACHE_LOG_DIR}/error. log
+CustomLog ${APACHE_LOG_DIR}/access. log combined
 ```
 
 Enable the site and restart Apache:

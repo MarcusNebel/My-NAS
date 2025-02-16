@@ -14,7 +14,7 @@ session_start();
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link href="https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,400;0,600;0,700;0,900;1,400;1,600;1,700&display=swap" rel="stylesheet" />
 
-	<link rel="stylesheet" href="/assets/css/style.css" />
+	<link rel="stylesheet" href="assets/css/style.css" />
 </head>
 <body>
 	<header>
@@ -28,11 +28,11 @@ session_start();
 			</nav>
 			<?php if (isset($_SESSION["username"])): ?>
                 <button class="login_button">
-                    <a href="/Login/logout.php">Abmelden</a>
+                    <a href="Login/logout.php">Abmelden</a>
                 </button>
             <?php else: ?>
                 <button class="login_button">
-                    <a href="/Login/Login.php">Anmelden</a>
+                    <a href="Login/Login.php">Anmelden</a>
                 </button>
             <?php endif; ?>
 			<button class="hamburger">
@@ -58,6 +58,6 @@ session_start();
 			</div>
 		</section>
 	</main>
-	<script src="/assets/js/main.js"></script>
+	<script src="assets/js/main.js"></script>
 </body>
 </html>

@@ -14,6 +14,6 @@ if(!isset($_SESSION["username"])){
   </head>
   <body>
     <h1>Top Secret</h1>
-    <a href="/Login/logout.php">Abmelden</a>
+    <a href="Login/logout.php">Abmelden</a>
   </body>
 </html>

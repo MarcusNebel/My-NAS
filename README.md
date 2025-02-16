@@ -64,24 +64,6 @@ Restart Apache to ensure PHP works correctly:
 sudo systemctl restart apache2
 ```
 
-### 4. **Install phpMyAdmin**
-
-Install phpMyAdmin:
-```bash
-sudo apt install phpmyadmin -y
-```
-
-Select Apache2 during installation and confirm to configure a database for phpMyAdmin.
-If you need to manually configure phpMyAdmin:
-```bash
-sudo ln -s /usr/share/phpmyadmin /var/www/html/phpmyadmin
-```
-
-Restart Apache:
-```bash
-sudo systemctl restart apache2
-```
-
 ### 5. **Set up the Database**
 
 Log in to MySQL:
@@ -162,15 +144,6 @@ Ensure that Apache has access to the website files:
 sudo chown -R www-data:www-data /var/www/html/nas-website
 sudo chmod -R 755 /var/www/html/nas-website
 ```
-
-### 9. **Access phpMyAdmin**
-
-Open phpMyAdmin in your browser:
-```bash
-http://YOUR_SERVER_IP/phpmyadmin
-```
-
-Log in with MySQL credentials and check if the `nas-website` database and `accounts` table were correctly created.
 
 ### 10. **Adjust Upload Limits**
 

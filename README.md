@@ -1,6 +1,6 @@
 # NAS-Website
 
-This is the repository for the **NAS-Website** project, a simple web application for managing user accounts with MySQL, PHP, HTML, CSS, and JavaScript. The website runs on an Apache2 web server and uses phpMyAdmin for database management.
+This is the repository for the **NAS-Website** project, a simple web application for managing user accounts with MySQL, PHP, HTML, CSS, and JavaScript. The website runs on an Apache2 web server.
 
 ## Features
 

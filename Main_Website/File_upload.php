@@ -56,7 +56,7 @@ if (!isset($_SESSION["username"])) {
             <div class="container">
                 <div class="upload-form">
                     <h1>Datei-Upload</h1>
-                    <form id="uploadForm" action="./assets/php/upload.php" method="post" enctype="multipart/form-data">
+                    <form id="uploadForm" action="nas-website/Main_Website/assets/php/upload.php" method="post" enctype="multipart/form-data">
                         <input type="file" id="fileInput" name="file" required>
                         <button type="submit">Hochladen</button>
                     </form>
@@ -73,6 +73,6 @@ if (!isset($_SESSION["username"])) {
             </div>
         </section>
     </main>
-    <script src="./assets/js/upload_info.js"></script>
+    <script src="nas-website/Main_Website/assets/js/upload_info.js"></script>
 </body>
 </html>

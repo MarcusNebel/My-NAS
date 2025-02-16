@@ -14,25 +14,25 @@ session_start();
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link href="https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,400;0,600;0,700;0,900;1,400;1,600;1,700&display=swap" rel="stylesheet" />
 
-	<link rel="stylesheet" href="./assets/css/style.css" />
+	<link rel="stylesheet" href="nas-website/Main_Website/assets/css/style.css" />
 </head>
 <body>
 	<header>
 		<div class="container transparancy">
-      		<h2><a class="link-no-decoration" href="../Main_Website/index.php"><span>MY </span>NAS</a></h2>
+      		<h2><a class="link-no-decoration" href="nas-website/Main_Website/index.php"><span>MY </span>NAS</a></h2>
 			<nav>
-				<a href="../Main_Website/index.php">Startseite</a>
-				<a href="../Main_Website/File_upload.php">Dateien</a>
+				<a href="nas-website/Main_Website/index.php">Startseite</a>
+				<a href="nas-website/Main_Website/File_upload.php">Dateien</a>
 				<a href="#">Bilder</a>
 				<a href="#">Kontakt</a>
 			</nav>
 			<?php if (isset($_SESSION["username"])): ?>
                 <button class="login_button">
-                    <a href="../Login/logout.php">Abmelden</a>
+                    <a href="nas-website/Login/logout.php">Abmelden</a>
                 </button>
             <?php else: ?>
                 <button class="login_button">
-                    <a href="../Login/Login.php">Anmelden</a>
+                    <a href="nas-website/Login/Login.php">Anmelden</a>
                 </button>
             <?php endif; ?>
 			<button class="hamburger">
@@ -41,8 +41,8 @@ session_start();
 		</div>
 	</header>
 	<nav class="mobile-nav">
-		<a href="../Main_Website/index.php">Startseite</a>
-		<a href="../Main_Website/File_upload.php">Dateien</a>
+		<a href="nas-website/Main_Website/index.php">Startseite</a>
+		<a href="nas-website/Main_Website/File_upload.php">Dateien</a>
 		<a href="#">Bilder</a>
 		<a href="#">Kontakt</a>
 	</nav>
@@ -58,6 +58,6 @@ session_start();
 			</div>
 		</section>
 	</main>
-	<script src="./assets/js/main.js"></script>
+	<script src="nas-website/Main_Website/assets/js/main.js"></script>
 </body>
 </html>

@@ -98,6 +98,7 @@ If you need to upload files from a local machine, use SCP or FTP:
 ```bash
 cd ~
 mkdir nas-website
+ls
 ```
 
 Upload files to server via SCP(make sure that you copy the individual Folder like ".vscode, Login, Main_Website,PHPMailer, LICANSE, Logo.png and README.md):

@@ -6,13 +6,14 @@ if(!isset($_SESSION["username"])){
 }
  ?>
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html lang="de" dir="ltr">
   <head>
     <meta charset="utf-8">
     <title></title>
+    <link rel="website icon" href="Logo.png">
   </head>
   <body>
     <h1>Top Secret</h1>
-    <a href="nas-website/Login/logout.php">Abmelden</a>
+    <a href="/Login/logout.php">Abmelden</a>
   </body>
 </html>

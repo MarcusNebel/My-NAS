@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Anmelden | My NAS</title>
     <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="nas-website/Main_Website/assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/style.css">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
   </head>
   <body>
@@ -22,7 +22,7 @@
 
         session_start();
         $_SESSION["username"] = $row["USERNAME"];
-        header("Location: nas-website/Main_Website/geheim.php");
+        header("Location: ../geheim.php");
         exit();
       } else {
         setcookie("login_cookie", "", time() -1);
@@ -63,7 +63,7 @@
           $_SESSION["username"] = $row["USERNAME"];
           
           // Prüfen, ob eine Zielseite gespeichert ist
-          $redirect_to = isset($_SESSION["redirect_to"]) ? $_SESSION["redirect_to"] : "nas-website/Main_Website/index.php";
+          $redirect_to = isset($_SESSION["redirect_to"]) ? $_SESSION["redirect_to"] : "../index.php";
           unset($_SESSION["redirect_to"]); // Nach dem Login löschen
           
           header("Location: " . $redirect_to);
@@ -79,15 +79,15 @@
     
   <header>
 		<div class="container transparancy">
-      <h2><a class="link-no-decoration" href="nas-website/Main_Website/index.php"><span>MY </span>NAS</a></h2>
+      <h2><a class="link-no-decoration" href="../index.php"><span>MY </span>NAS</a></h2>
 			<nav>
-				<a href="nas-website/Main_Website/index.php">Startseite</a>
-				<a href="nas-website/Main_Website/File_upload.php">Dateien</a>
+				<a href="../index.php">Startseite</a>
+				<a href="../File_upload.php">Dateien</a>
 				<a href="#">Bilder</a>
 				<a href="#">Kontakt</a>
 			</nav>
 			<button class="login_button">
-				<a href="nas-website/Login/register.php">Registrieren</a>
+				<a href="register.php">Registrieren</a>
 			</button>
 			<button class="hamburger">
 				<div class="bar"></div>
@@ -95,8 +95,10 @@
 		</div>
 	</header>
 	<nav class="mobile-nav">
-		<a href="nas-website/Main_Website/index.php">Startseite</a>
-		<a href="nas-website/Main_Website/File_upload.php">Dateien</a>
+		<a href="../index.php">Startseite</a>
+    <a href="Login.php">Anmelden</a>
+		<a href="register.php">Registrieren</a>
+		<a href="../File_upload.php">Dateien</a>
 		<a href="#">Bilder</a>
 		<a href="#">Kontakt</a>
 	</nav>
@@ -132,6 +134,6 @@
     </div>
 
     <script src="script.js"></script>
-    <script src="nas-website/Main_Website/assets/js/main.js"></script>
+    <script src="../assets/js/main.js"></script>
   </body>
 </html>

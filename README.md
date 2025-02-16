@@ -71,7 +71,7 @@ Log in to MySQL:
 sudo mysql -u root -p
 ```
 
-Create the database and table:
+Create the database, table and the 'root@localhost' password:
 ```sql
 CREATE DATABASE `nas-website`;
 USE `nas-website`;
@@ -87,6 +87,9 @@ CREATE TABLE `accounts` (
 ALTER TABLE `accounts`
   ADD UNIQUE KEY `USERNAME` (`USERNAME`);
 COMMIT;
+
+ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '59LWrt!mDo6GC4';
+FLUSH PRIVILEGES;
 
 EXIT;
 ```

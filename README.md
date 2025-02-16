@@ -130,7 +130,7 @@ sudo nano /etc/apache2/sites-available/nas-website.conf
 
 Add the following content:
 ```bash
-ServerName nas-website. local
+ServerName nas-website.local
 DocumentRoot /var/www/html/nas-website
 ErrorLog ${APACHE_LOG_DIR}/error. log
 CustomLog ${APACHE_LOG_DIR}/access. log combined

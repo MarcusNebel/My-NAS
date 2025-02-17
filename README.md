@@ -120,7 +120,7 @@ Open the forgot_password.php with the following command:
 sudo nano /var/www/html/nas-website/Login/forgot_password.php
 ```
 
-Paste your email wich you want to use for your SMTP Server (make sure that your email is a gmail email or you have to configure the SMTP server url and port for an other SMTP server). Next you must create a App Password in your google account settings and paste it to App_Password in the forgot_password.php. 
+Paste your email wich you want to use for your SMTP Server (make sure that your email is a gmail email or you have to configure the SMTP server url and port for an other SMTP server). Next you must create a App Password in your google account settings and paste it to "your_App_Password" in the forgot_password.php. 
 
 ### 6. **Configure Apache for the Website**
 

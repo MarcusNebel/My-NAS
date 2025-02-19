@@ -71,6 +71,11 @@ Log in to MySQL:
 sudo mysql -u root -p
 ```
 
+Use the following password: 
+```string
+59LWrt!mDo6GC4
+```
+
 Create the database, table and the 'root@localhost' password:
 ```sql
 CREATE DATABASE `nas-website`;
@@ -112,6 +117,16 @@ scp -r "/local/path/to/github/download/*" user@server-ip:~/nas-website
 Move the nas-website folder to `var/www/html/`:
 ```bash
 sudo mv ~/nas-website /var/www/html/
+```
+
+Configure upload.php:
+```bash
+sudo nano /var/www/html/nas-website/assets/php/upload.php
+```
+
+Paste your server's username in the Following line under "youruser":
+```php
+$uploadDir = "/home/youruser/nas-website-files/user_files/";
 ```
 
 Configure forgot_password.php:

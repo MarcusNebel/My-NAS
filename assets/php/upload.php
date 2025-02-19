@@ -3,13 +3,13 @@ session_start();
 
 // Überprüfe, ob der Benutzer eingeloggt ist
 if (!isset($_SESSION["username"])) {
-    $_SESSION["redirect_to"] = $_SERVER["REQUEST_URI"]; // Speichert die aktuelle Seite
+    $_SESSION["redirect_to"] = $_SERVER["REQUEST_URI"]; // Aktuelle Seite speichern
     header("Location: ../../Login/Login.php"); // Weiterleitung zur Login-Seite
     exit();
 }
 
-// Basisverzeichnis für Uploads
-$uploadDir = __DIR__ . "../../user_files/";
+// Absoluter Pfad (anstelle von ~ verwenden)
+$uploadDir = "/home/youruser/nas-website-files/user_files/";
 
 // Erstelle das Verzeichnis, falls es nicht existiert
 if (!file_exists($uploadDir)) {
@@ -17,25 +17,25 @@ if (!file_exists($uploadDir)) {
 }
 
 // Hole den Benutzernamen aus der Session
-$username = $_SESSION["username"]; // Benutzername aus der Session
+$username = $_SESSION["username"];
 
 // Benutzer-spezifischer Ordner
-$userDir = $uploadDir . $username . '\\';
+$userDir = $uploadDir . $username . '/';
 
 // Erstelle den Benutzer-Ordner, falls er nicht existiert
 if (!file_exists($userDir)) {
     mkdir($userDir, 0777, true);
 }
 
-// Überprüfen, ob eine Datei hochgeladen wurde
+// Überprüfe, ob eine Datei hochgeladen wurde
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file'])) {
     // Datei-Name und Ziel-Dateipfad
     $fileName = basename($_FILES['file']['name']);
     $targetFile = $userDir . $fileName;
 
-    // Datei verschieben und bestätigen
+    // Datei verschieben und Erfolg/Niederlage ausgeben
     if (move_uploaded_file($_FILES['file']['tmp_name'], $targetFile)) {
-        echo "Datei erfolgreich hochgeladen: " . $fileName;
+        echo "Datei erfolgreich hochgeladen: " . htmlspecialchars($fileName);
     } else {
         echo "Fehler beim Hochladen der Datei.";
     }

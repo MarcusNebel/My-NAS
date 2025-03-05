@@ -17,10 +17,9 @@ This is the repository for the **NAS-Website** project, a simple web application
 
 ## Prerequisites
 
-- **Ubuntu Server** (or desktop with server components)
+- **Linux Server** (or desktop with server components)
 - **SSH access** to the server (if remote)
 - **Domain** (optional, for public websites)
-- **Apache2**, **MySQL**, **PHP**, and **phpMyAdmin** must be installed on the server.
 
 ---
 
@@ -119,11 +118,6 @@ Move the nas-website folder to `var/www/html/`:
 sudo mv ~/nas-website /var/www/html/
 ```
 
-Configure upload.php:
-```bash
-sudo nano /var/www/html/nas-website/assets/php/upload.php
-```
-
 Configure upload path:
 ```bash
 sudo mkdir -p /home/nas-website-files/user_files/
@@ -141,7 +135,23 @@ sudo nano /var/www/html/nas-website/Login/forgot_password.php
 
 Paste your email wich you want to use for your SMTP Server under "youremail@gmail.com" (make sure that your email is a gmail email or you have to configure the SMTP server url and port for an other SMTP server). Next you must create a App Password in your google account settings and paste it to "your_App_Password" in the forgot_password.php. 
 
-### 6. **Configure Apache for the Website**
+### 6. **Adjust Upload Limits**
+
+Edit the following things (you can search the lines with 'CTRL + W'):
+```ini
+upload_max_filesize = 0
+post_max_size = 0
+memory_limit = -1
+max_execution_time = 0
+```
+
+### 7. **Configure Apache and PHP for the Website**
+
+Configure php.ini file: 
+Open the php.ini file: 
+```bash
+sudo nano /etc/php/8.x/apache2/php.ini
+```
 
 Create a new Apache configuration file:
 ```bash
@@ -162,54 +172,12 @@ sudo a2ensite nas-website.conf
 sudo systemctl restart apache2
 ```
 
-### 7. **Set Permissions**
+### 8. **Set Permissions**
 
 Ensure that Apache has access to the website files:
 ```bash
 sudo chown -R www-data:www-data /var/www/html/nas-website
 sudo chmod -R 755 /var/www/html/nas-website
-```
-
-### 8. **Adjust Upload Limits**
-
-If you need to upload large files, you must adjust the upload limits in the Apache configuration or via `.htaccess`.
-
-#### Option 1: **Adjust `.htaccess`**
-
-If you want to change the upload size for a specific directory in your website, you can create or edit a `.htaccess` file in the web folder (e.g., `/var/www/html/nas-website`):
-
-Create or open the `.htaccess` file:
-```bash
-sudo nano /var/www/html/nas-website/.htaccess
-```
-
-Add the following:
-```bash
-<IfModule mod_php8.c>
-    php_value upload_max_filesize 10000G
-    php_value post_max_size 10000G
-    php_value max_execution_time 86400
-    php_value memory_limit 10000G
-</IfModule>
-```
-
-#### Option 2: **Adjust Apache Configuration**
-
-If you have access to the Apache configuration file, open the file:
-
-For Ubuntu/Debian:
-```bash
-sudo nano /etc/apache2/apache2.conf
-```
-
-Add the following at the end of the file:
-```nginx
-LimitRequestBody 0
-```
-
-`LimitRequestBody 0` means there is no limit for uploads. Save the file and restart Apache:
-```bash
-sudo systemctl restart apache2
 ```
 
 ### 9. **Test the Website**

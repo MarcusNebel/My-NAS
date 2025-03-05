@@ -53,12 +53,12 @@
                   $mail->Host       = 'smtp.gmail.com'; // SMTP-Server (z. B. Gmail, Outlook, GMX)
                   $mail->SMTPAuth   = true;
                   $mail->Username   = 'youremail@gmail.com'; // Deine E-Mail-Adresse
-                  $mail->Password   = 'your_App_Password'; // Dein App-Passwort (kein normales Passwort)
+                  $mail->Password   = 'your_App_Password'; // Dein App-Passwort (nicht das account passwort)
                   $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
                   $mail->Port       = 587;
 
                   // Absender und Empfänger
-                  $mail->setFrom('marcusnebel09@gmail.com', 'My NAS Support');
+                  $mail->setFrom('mynas-support@gmail.com', 'My NAS Support');
                   $mail->addAddress($_POST['email'], $username);
 
                   // Inhalt der E-Mail

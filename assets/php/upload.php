@@ -3,43 +3,42 @@ session_start();
 
 // Überprüfe, ob der Benutzer eingeloggt ist
 if (!isset($_SESSION["username"])) {
-    $_SESSION["redirect_to"] = $_SERVER["REQUEST_URI"]; // Aktuelle Seite speichern
-    header("Location: ../../Login/Login.php"); // Weiterleitung zur Login-Seite
+    $_SESSION["redirect_to"] = $_SERVER["REQUEST_URI"];
+    header("Location: ../../Login/Login.php");
     exit();
 }
 
-// Absoluter Pfad (anstelle von ~ verwenden)
-$uploadDir = "/home/youruser/nas-website-files/user_files/";
+// Basisverzeichnis für Uploads
+$uploadDir = "/home/nas-website-files/user_files/";
 
-// Erstelle das Verzeichnis, falls es nicht existiert
+// Falls Verzeichnis nicht existiert, erstelle es
 if (!file_exists($uploadDir)) {
-    mkdir($uploadDir, 0777, true);
+    mkdir($uploadDir, 0775, true);
+    chown($uploadDir, "www-data");
+    chgrp($uploadDir, "www-data");
 }
 
-// Hole den Benutzernamen aus der Session
-$username = $_SESSION["username"];
+// Benutzerverzeichnis innerhalb von user_files
+$username = $_SESSION["username"] ?? "guest";  // Falls kein Benutzername gesetzt ist, als "guest" speichern
+$userDir = $uploadDir . $username . "/";
 
-// Benutzer-spezifischer Ordner
-$userDir = $uploadDir . $username . '/';
-
-// Erstelle den Benutzer-Ordner, falls er nicht existiert
+// Falls Benutzerverzeichnis nicht existiert, erstelle es
 if (!file_exists($userDir)) {
-    mkdir($userDir, 0777, true);
+    mkdir($userDir, 0775, true);
+    chown($userDir, "www-data");
+    chgrp($userDir, "www-data");
 }
 
-// Überprüfe, ob eine Datei hochgeladen wurde
+// Datei-Upload
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file'])) {
-    // Datei-Name und Ziel-Dateipfad
     $fileName = basename($_FILES['file']['name']);
     $targetFile = $userDir . $fileName;
 
-    // Datei verschieben und Erfolg/Niederlage ausgeben
     if (move_uploaded_file($_FILES['file']['tmp_name'], $targetFile)) {
-        echo "Datei erfolgreich hochgeladen: " . htmlspecialchars($fileName);
+        echo "Datei erfolgreich hochgeladen: " . $fileName;
     } else {
         echo "Fehler beim Hochladen der Datei.";
     }
 } else {
     echo "Keine Datei hochgeladen.";
 }
-?>

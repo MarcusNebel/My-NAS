@@ -124,9 +124,13 @@ Configure upload.php:
 sudo nano /var/www/html/nas-website/assets/php/upload.php
 ```
 
-Paste your server's username in the Following line under "youruser":
-```php
-$uploadDir = "/home/youruser/nas-website-files/user_files/";
+Configure upload path:
+```bash
+sudo mkdir -p /home/nas-website-files/user_files/
+```
+```bash
+sudo chown -R www-data:www-data /home/nas-website-files/user_files/
+sudo chmod -R 775 /home/nas-website-files/user_files/
 ```
 
 Configure forgot_password.php:

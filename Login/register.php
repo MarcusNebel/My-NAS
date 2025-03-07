@@ -1,3 +1,55 @@
+<?php
+   $usernameError = "";
+   $emailError = "";
+   $passwordError = "";
+   $successMessage = "";
+    if (isset($_POST["submit"])) {
+       require("mysql.php");
+        $username = trim($_POST["username"]);
+       $email = trim($_POST["email"]);
+       $password = $_POST["pw"];
+       $passwordRepeat = $_POST["pw2"];
+        // Überprüfen, ob Benutzername oder E-Mail bereits existiert
+       $stmt = $mysql->prepare("SELECT * FROM accounts WHERE USERNAME = :user OR EMAIL = :email");
+       $stmt->bindParam(":user", $username);
+       $stmt->bindParam(":email", $email);
+       $stmt->execute();
+       $count = $stmt->rowCount();
+        // Fehlerbehandlung: Überprüfen ob Benutzername oder E-Mail bereits existieren
+       if ($count > 0) {
+           $row = $stmt->fetch();
+           if ($row["USERNAME"] == $username) {
+               $usernameError = "Dieser Benutzername ist bereits vergeben.";
+           }
+           if ($row["EMAIL"] == $email) {
+               $emailError = "Diese E-Mail-Adresse ist bereits registriert.";
+           }
+       } else {
+           // Passwortprüfung
+           if ($password === $passwordRepeat) {
+               if (strlen($password) >= 6) { // Mindestlänge setzen
+                   // Benutzer registrieren
+                   $stmt = $mysql->prepare("INSERT INTO accounts (USERNAME, EMAIL, PASSWORD) VALUES (:user, :email, :pw)");
+                   $stmt->bindParam(":user", $username);
+                   $stmt->bindParam(":email", $email);
+                   $hash = password_hash($password, PASSWORD_BCRYPT);
+                   $stmt->bindParam(":pw", $hash);
+                   $stmt->execute();
+                    // Erfolgreiche Registrierung → Weiterleitung zur Anmeldeseite
+                   $successMessage = "Erfolgreich registriert! Weiterleitung zur Anmeldung...";
+                   // Verspätete Weiterleitung mit 3 Sekunden Verzögerung
+                   header("Location: Login.php");
+                   exit();
+               } else {
+                   $passwordError = "Das Passwort muss mindestens 6 Zeichen lang sein.";
+               }
+           } else {
+               $passwordError = "Die Passwörter stimmen nicht überein.";
+           }
+       }
+   }
+  ?>
+
 <!DOCTYPE html>
 <html lang="de" dir="ltr">
   <head>
@@ -9,69 +61,13 @@
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
   </head>
   <body>
-    <?php
-    $usernameError = "";
-    $emailError = "";
-    $passwordError = "";
-    $successMessage = "";
-
-    if (isset($_POST["submit"])) {
-        require("mysql.php");
-
-        $username = trim($_POST["username"]);
-        $email = trim($_POST["email"]);
-        $password = $_POST["pw"];
-        $passwordRepeat = $_POST["pw2"];
-
-        // Überprüfen, ob Benutzername oder E-Mail bereits existiert
-        $stmt = $mysql->prepare("SELECT * FROM accounts WHERE USERNAME = :user OR EMAIL = :email");
-        $stmt->bindParam(":user", $username);
-        $stmt->bindParam(":email", $email);
-        $stmt->execute();
-        $count = $stmt->rowCount();
-
-        // Fehlerbehandlung: Überprüfen ob Benutzername oder E-Mail bereits existieren
-        if ($count > 0) {
-            $row = $stmt->fetch();
-            if ($row["USERNAME"] == $username) {
-                $usernameError = "Dieser Benutzername ist bereits vergeben.";
-            }
-            if ($row["EMAIL"] == $email) {
-                $emailError = "Diese E-Mail-Adresse ist bereits registriert.";
-            }
-        } else {
-            // Passwortprüfung
-            if ($password === $passwordRepeat) {
-                if (strlen($password) >= 6) { // Mindestlänge setzen
-                    // Benutzer registrieren
-                    $stmt = $mysql->prepare("INSERT INTO accounts (USERNAME, EMAIL, PASSWORD) VALUES (:user, :email, :pw)");
-                    $stmt->bindParam(":user", $username);
-                    $stmt->bindParam(":email", $email);
-                    $hash = password_hash($password, PASSWORD_BCRYPT);
-                    $stmt->bindParam(":pw", $hash);
-                    $stmt->execute();
-
-                    // Erfolgreiche Registrierung → Weiterleitung zur Anmeldeseite
-                    $successMessage = "Erfolgreich registriert! Weiterleitung zur Anmeldung...";
-                    // Verspätete Weiterleitung mit 3 Sekunden Verzögerung
-                    header("refresh:3; url=Login.php");
-                    exit();
-                } else {
-                    $passwordError = "Das Passwort muss mindestens 6 Zeichen lang sein.";
-                }
-            } else {
-                $passwordError = "Die Passwörter stimmen nicht überein.";
-            }
-        }
-    }
-    ?>
-
   <header>
 		<div class="container transparancy">
       <h2><a class="link-no-decoration" href="../index.php"><span>MY </span>NAS</a></h2>
 			<nav>
-				<a href="../index.php">Startseite</a>
-				<a href="../File_upload.php">Dateien</a>
+        <a href="../index.php">Startseite</a>
+				<a href="../User_Files.php">Meine Dateien</a>
+				<a href="../File_upload.php">Dateien hochladen</a>
 				<a href="#">Bilder</a>
 				<a href="#">Kontakt</a>
 			</nav>
@@ -86,11 +82,10 @@
 
   <nav class="mobile-nav">
     <a href="../index.php">Startseite</a>
-    <a href="Login.php">Anmelden</a>
-    <a href="register.php">Registrieren</a>
-    <a href="../File_upload.php">Dateien</a>
-    <a href="#">Bilder</a>
-    <a href="#">Kontakt</a>
+		<a href="../User_Files.php">Meine Dateien</a>
+		<a href="../File_upload.php">Dateien hochladen</a>
+		<a href="#">Bilder</a>
+		<a href="#">Kontakt</a>
   </nav>
 
   <div class="wrapper">

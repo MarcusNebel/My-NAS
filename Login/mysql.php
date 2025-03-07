@@ -1,6 +1,6 @@
 <?php
 // Datenbank-Verbindungsdetails
-$host = "localhost";        // Hostname oder IP-Adresse des MySQL-Servers
+$host = "db";        // Hostname oder IP-Adresse des MySQL-Servers
 $dbname = "nas-website";    // Der Name deiner Datenbank
 $user = "root";             // Dein MySQL-Benutzername
 $password = "59LWrt!mDo6GC4";             // Dein MySQL-Passwort (leerlassen, wenn du kein Passwort verwendest)

@@ -63,13 +63,14 @@ if(isset($_POST['submit'])){
         <div class="container transparancy">
             <h2><a class="link-no-decoration" href="index.php"><span>MY </span>NAS</a></h2>
             <nav>
-                <a href="index.php">Startseite</a>
-                <a href="File_upload.php">Dateien</a>
-                <a href="#">Bilder</a>
-                <a href="#">Kontakt</a>
+                <a href="../index.php">Startseite</a>
+				<a href="../User_Files.php">Meine Dateien</a>
+				<a href="../File_upload.php">Dateien hochladen</a>
+				<a href="#">Bilder</a>
+				<a href="#">Kontakt</a>
             </nav>
             <button class="login_button">
-                <a href="Login/Login.php">Anmelden</a>
+                <a href="Login.php">Anmelden</a>
             </button>
             <button class="hamburger">
                 <div class="bar"></div>
@@ -78,12 +79,11 @@ if(isset($_POST['submit'])){
     </header>
 
     <nav class="mobile-nav">
-        <a href="index.php">Startseite</a>
-        <a href="Login/Login.php">Anmelden</a>
-        <a href="Login/register.php">Registrieren</a>
-        <a href="File_upload.php">Dateien</a>
-        <a href="#">Bilder</a>
-        <a href="#">Kontakt</a>
+        <a href="../index.php">Startseite</a>
+		<a href="../User_Files.php">Meine Dateien</a>
+		<a href="../File_upload.php">Dateien hochladen</a>
+		<a href="#">Bilder</a>
+		<a href="#">Kontakt</a>
     </nav>
 
     <div class="wrapper">

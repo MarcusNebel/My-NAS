@@ -22,7 +22,8 @@ session_start();
       		<h2><a class="link-no-decoration" href="index.php"><span>MY </span>NAS</a></h2>
 			<nav>
 				<a href="index.php">Startseite</a>
-				<a href="File_upload.php">Dateien</a>
+				<a href="User_Files.php">Meine Dateien</a>
+				<a href="File_upload.php">Dateien hochladen</a>
 				<a href="#">Bilder</a>
 				<a href="#">Kontakt</a>
 			</nav>
@@ -42,7 +43,8 @@ session_start();
 	</header>
 	<nav class="mobile-nav">
 		<a href="index.php">Startseite</a>
-		<a href="File_upload.php">Dateien</a>
+		<a href="User_Files.php">Meine Dateien</a>
+		<a href="File_upload.php">Dateien hochladen</a>
 		<a href="#">Bilder</a>
 		<a href="#">Kontakt</a>
 	</nav>

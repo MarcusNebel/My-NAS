@@ -1,0 +1,33 @@
+---
+name: nas-website
+services: 
+  nas-website:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes: 
+      - ./:/var/www/html/
+      - ./nas-website-files/user_files/:/home/nas-website-files # This is the path to your data from the website
+    ports:
+      - 8443:80
+    restart: unless-stopped
+    environment:
+      MYSQL_HOST: db
+      MYSQL_USER: root
+      MYSQL_PASSWORD: 59LWrt!mDo6GC4
+      MYSQL_DATABASE: nas-website
+  db:
+    image: mysql:latest
+    container_name: nas-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: 59LWrt!mDo6GC4
+      MYSQL_DATABASE: nas-website
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+
+volumes:
+  mysql_data:

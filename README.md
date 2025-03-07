@@ -1,6 +1,6 @@
 # NAS-Website
 
-This is the repository for the **NAS-Website** project, a simple web application for managing user accounts with MySQL, PHP, HTML, CSS, and JavaScript. The website runs on an Apache2 web server.
+This is the repository for the **NAS-Website** project, a simple web application for managing user accounts with MySQL, PHP, HTML, CSS, and JavaScript. The website runs inside a Docker container for easy deployment.
 
 ## Features
 
@@ -12,202 +12,113 @@ This is the repository for the **NAS-Website** project, a simple web application
     - `EMAIL`: The user's email address.
     - `reset_code`: A code used for password reset.
     - `rememberTOKEN`: A token used for the "Remember me" functionality.
+- **Docker-based Deployment**: Easily deploy using Docker and Docker Compose.
+- **Automatic Setup**: The entire setup process, including database creation and configurations, is handled automatically when the container starts.
+- **Modern UI**: Built with a clean, modern, and responsive design.
 
 ---
 
 ## Prerequisites
 
-- **Linux Server** (or desktop with server components)
-- **SSH access** to the server (if remote)
-- **Domain** (optional, for public websites)
+- **Docker** and **Docker Compose** installed on your system.
+- **Linux Server** (or local machine with Docker support).
+- **Domain** (optional, for public websites).
 
 ---
 
 ## Installation
 
-### 1. **Install Apache2**
+### 1. **Clone the Repository**
 
-Install Apache2:
-```bash
-sudo apt update
-sudo apt install apache2 -y
-```
-
-Start the Apache2 service:
-```bash
-sudo systemctl enable apache2
-sudo systemctl start apache2
-```
-
-### 2. **Install MySQL**
-
-Install MySQL:
-```bash
-sudo apt install mysql-server -y
-```
-
-Run the security setup:
-```bash
-sudo mysql_secure_installation
-```
-
-### 3. **Install PHP**
-
-Install PHP and required modules:
-```bash
-sudo apt install php libapache2-mod-php php-mysql php-cli php-curl php-zip php-mbstring php-xml -y
-```
-
-Restart Apache to ensure PHP works correctly:
-```bash
-sudo systemctl restart apache2
-```
-
-### 4. **Set up the Database**
-
-Log in to MySQL:
-```bash
-sudo mysql -u root -p
-```
-
-Use the following password: 
-```string
-59LWrt!mDo6GC4
-```
-
-Create the database, table and the 'root@localhost' password:
-```sql
-CREATE DATABASE `nas-website`;
-USE `nas-website`;
-
-CREATE TABLE `accounts` (
-  `USERNAME` varchar(255) DEFAULT NULL,
-  `PASSWORD` varchar(255) DEFAULT NULL,
-  `EMAIL` varchar(255) DEFAULT NULL,
-  `reset_code` varchar(6) DEFAULT NULL,
-  `rememberTOKEN` varchar(64) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
-
-ALTER TABLE `accounts`
-  ADD UNIQUE KEY `USERNAME` (`USERNAME`);
-COMMIT;
-
-ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '59LWrt!mDo6GC4';
-FLUSH PRIVILEGES;
-
-EXIT;
-```
-
-### 5. **Upload Website Files**
-
-Copy your HTML, CSS, JS, and PHP files into the web server folder `/var/www/html/nas-website`.
-If you need to upload files from a local machine, use SCP or FTP:
 ```bash
 cd ~
-mkdir nas-website
-ls
+git clone https://github.com/MarcusNebel/NAS-Website.git nas-website
+cd nas-website
 ```
 
-Upload files to server via SCP(make sure that you copy the individual Folder like ".vscode, Login, Main_Website,PHPMailer, LICANSE, Logo.png and README.md):
+### 2. **Start the Containers**
+
+Simply run the following command to start the NAS-Website using Docker Compose:
+
 ```bash
-scp -r "/local/path/to/github/download/*" user@server-ip:~/nas-website
+docker-compose up -d
 ```
 
-Move the nas-website folder to `var/www/html/`:
+This will start the necessary containers and automatically set up everything, including:
+- **Apache + PHP**
+- **MySQL Database**
+- **Database Initialization** (automatic creation of tables and configurations)
+
+### 3. **Access the Website**
+
+Once the containers are running, open your browser and visit:
+
 ```bash
-sudo mv ~/nas-website /var/www/html/
+http://your-server-ip:8443
 ```
 
-Configure upload path:
-```bash
-sudo mkdir -p /home/nas-website-files/user_files/
-```
-```bash
-sudo chown -R www-data:www-data /home/nas-website-files/user_files/
-sudo chmod -R 775 /home/nas-website-files/user_files/
-```
-
-Configure forgot_password.php:
-Open the forgot_password.php with the following command: 
-```bash
-sudo nano /var/www/html/nas-website/Login/forgot_password.php
-```
-
-Paste your email wich you want to use for your SMTP Server under "youremail@gmail.com" (make sure that your email is a gmail email or you have to configure the SMTP server url and port for an other SMTP server). Next you must create a App Password in your google account settings and paste it to "your_App_Password" in the forgot_password.php. 
-
-### 6. **Adjust Upload Limits**
-
-Edit the following things (you can search the lines with 'CTRL + W'):
-```ini
-upload_max_filesize = 0
-post_max_size = 0
-memory_limit = -1
-max_execution_time = 0
-```
-
-### 7. **Configure Apache and PHP for the Website**
-
-Configure php.ini file: 
-Open the php.ini file: 
-```bash
-sudo nano /etc/php/8.x/apache2/php.ini
-```
-
-Create a new Apache configuration file:
-```bash
-sudo nano /etc/apache2/sites-available/nas-website.conf
-```
-
-Add the following content:
-```bash
-ServerName nas-website.local
-DocumentRoot /var/www/html/nas-website
-ErrorLog ${APACHE_LOG_DIR}/error.log
-CustomLog ${APACHE_LOG_DIR}/access.log combined
-```
-
-Enable the site and restart Apache:
-```bash
-sudo a2ensite nas-website.conf
-sudo systemctl restart apache2
-```
-
-### 8. **Set Permissions**
-
-Ensure that Apache has access to the website files:
-```bash
-sudo chown -R www-data:www-data /var/www/html/nas-website
-sudo chmod -R 755 /var/www/html/nas-website
-```
-
-### 9. **Test the Website**
-
-Open the website in your browser:
-```bash
-http://YOUR_SERVER_IP/nas-website
-```
-
-If you have configured a domain:
-```bash
-http://yourdomain.com/nas-website
-```
-
-Test if registration, login, and password reset functionalities are working.
+That's it! No manual setup required. The website is ready to use.
 
 ---
 
-### **Optional: SSL with Let's Encrypt**
+## Configuration
 
-For secure connections, you can set up a free SSL certificate with Let's Encrypt.
+### **Configure SMTP for Password Reset**
+
+Edit `Login/forgot_password.php` and update your SMTP settings:
+
+Open the `forgot_password.php` file with an text-editor to edit the following lines:
+
+```php
+$mail->Host = 'smtp.gmail.com';
+$mail->Username = 'your-email@gmail.com';
+$mail->Password = 'your-app-password';
+$mail->SMTPSecure = 'tls';
+$mail->Port = 587;
+```
+
+Make sure you use an app password for Gmail.
+
+If you want to use another SMTP Server you have to edit the settings by yourself.
+
+---
+
+## Stopping and Restarting
+
+To stop the containers:
+```bash
+docker-compose down
+```
+
+To restart the containers:
+```bash
+docker-compose up -d
+```
+
+---
+
+## SSL with Let's Encrypt (Optional)
+
+For secure connections, you can set up SSL with Let's Encrypt using a reverse proxy like Traefik or Nginx Proxy Manager.
 
 Install Certbot:
 ```bash
-sudo apt install certbot python3-certbot-apache -y
+sudo apt install certbot -y
 ```
 
-Request the SSL certificate:
+Request an SSL certificate:
 ```bash
-sudo certbot --apache
+sudo certbot certonly --standalone -d yourdomain.com
 ```
 
-Follow the instructions to enable SSL for your domain.
+---
+
+## Contributing
+
+If you would like to contribute, feel free to fork the repository and submit a pull request!
+
+---
+
+## License
+
+This project is licensed under the MIT License.

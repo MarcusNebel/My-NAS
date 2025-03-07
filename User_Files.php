@@ -12,13 +12,13 @@ if (!isset($_SESSION["username"])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My NAS | Datei-Upload</title>
+    <title>My NAS | Meine Dateien</title>
     <link rel="website icon" href="Logo.png">
-    
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;600;700;900&display=swap" rel="stylesheet" />
-    
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,400;0,600;0,700;0,900;1,400;1,600;1,700&display=swap" rel="stylesheet" />
+
     <link rel="stylesheet" href="assets/css/style.css" />
 </head>
 <body>
@@ -27,10 +27,10 @@ if (!isset($_SESSION["username"])) {
             <h2><a class="link-no-decoration" href="index.php"><span>MY </span>NAS</a></h2>
             <nav>
                 <a href="index.php">Startseite</a>
-				<a href="User_Files.php">Meine Dateien</a>
-				<a href="File_upload.php">Dateien hochladen</a>
-				<a href="#">Bilder</a>
-				<a href="#">Kontakt</a>
+                <a href="User_Files.php">Meine Dateien</a>
+                <a href="File_upload.php">Dateien hochladen</a>
+                <a href="#">Bilder</a>
+                <a href="#">Kontakt</a>
             </nav>
             <?php if (isset($_SESSION["username"])): ?>
                 <button class="login_button">
@@ -48,33 +48,21 @@ if (!isset($_SESSION["username"])) {
     </header>
     <nav class="mobile-nav">
         <a href="index.php">Startseite</a>
-		<a href="User_Files.php">Meine Dateien</a>
-		<a href="File_upload.php">Dateien hochladen</a>
-		<a href="#">Bilder</a>
-		<a href="#">Kontakt</a>
+        <a href="User_Files.php">Meine Dateien</a>
+        <a href="File_upload.php">Dateien hochladen</a>
+        <a href="#">Bilder</a>
+        <a href="#">Kontakt</a>
     </nav>
     <main>
-        <section class="upload-section">
+        <section class="file-list-section">
             <div class="container">
-                <div class="upload-form">
-                    <h1>Datei-Upload</h1>
-                    <form id="uploadForm" action="assets/php/upload.php" method="post" enctype="multipart/form-data">
-                        <input type="file" id="fileInput" name="file" required>
-                        <button type="submit">Hochladen</button>
-                    </form>
-                    <p id="uploadStatus"></p>
-
-                    <!-- Fortschrittsbalken -->
-                    <div id="progress-container" class="progress-container">
-                        <div id="progress-bar" class="progress-bar">0%</div>
-                    </div>
-
-                    <!-- Anzeige der Upload-Geschwindigkeit -->
-                    <p id="upload-speed" class="upload-speed">Upload-Geschwindigkeit: 0 MB/s</p>
-                </div>
+                <h1>Hochgeladene Dateien:</h1>
+                <ul class="file-list">
+                    <?php include 'assets/php/list_files.php'; ?>
+                </ul>
             </div>
         </section>
     </main>
-    <script src="assets/js/upload_info.js"></script>
+    <script src="assets/js/main.js"></script>
 </body>
 </html>

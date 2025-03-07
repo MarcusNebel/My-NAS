@@ -64,7 +64,7 @@ $mail->SMTPSecure = 'tls';
 $mail->Port = 587;
 ```
 
-Make sure you use an app password for Gmail.
+Make sure you use an app password for Gmail (without space).
 
 If you want to use another SMTP Server you have to edit the settings by yourself.
 

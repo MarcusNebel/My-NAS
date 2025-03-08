@@ -115,6 +115,27 @@ sudo certbot certonly --standalone -d yourdomain.com
 
 ---
 
+## Create an App for Android (optional)
+
+If you want to create an App you've to download the Android Studio Project and open it in Android Studio. 
+
+In the `MainActivity.java` file you have to edit the following line: 
+
+```java
+webView.loadUrl("your_server_ip_or_domain:port");
+```
+
+If you're done you must build the app to an APK with the following steps: 
+
+- Go to Build -> Generate signed App Bundle or APK
+- Choose APK and click "Next"
+- You must create or choose a `.jks` file and click "Next"
+- in the last window select release and click "Finish"
+- At the bottom-right off your screen will appear a massage that your App was built and in this message click "Locate" and you will be in the directory were your APK file is in
+- bring the APK file to your Phone or any other android device and run it
+
+---
+
 ## Contributing
 
 If you would like to contribute, feel free to fork the repository and submit a pull request!

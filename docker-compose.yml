@@ -7,7 +7,7 @@ services:
       dockerfile: Dockerfile
     volumes: 
       - ./:/var/www/html/
-      - ./nas-website-files/user_files/:/home/nas-website-files # This is the path to your data from the website
+      - ./nas-website-files/user_files/:/home/nas-website-files/user_files # This is the path to your data from the website
     ports:
       - 8443:80
     restart: unless-stopped

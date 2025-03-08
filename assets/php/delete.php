@@ -13,7 +13,6 @@ if ($username && isset($_GET['file'])) {
     if (file_exists($file_path)) {
         // Datei löschen
         if (unlink($file_path)) {
-            echo "Die Datei wurde erfolgreich gelöscht.";
             header('Location: ../../User_Files.php');
             exit;
         } else {

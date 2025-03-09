@@ -55,7 +55,8 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registrieren | My NAS</title>
+    <title>My NAS | Registrieren</title>
+    <link rel="website icon" href="../Logo.png">
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="../assets/css/style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">

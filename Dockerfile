@@ -24,7 +24,7 @@ RUN a2enmod rewrite
 WORKDIR /var/www/html
 
 # Kopiert den Website-Code ins Container-Verzeichnis
-COPY . /var/www/html/nas-website/
+COPY ./app/ /var/www/html/nas-website/
 
 # Setzt die korrekten Dateiberechtigungen
 RUN chown -R www-data:www-data /var/www/html/nas-website

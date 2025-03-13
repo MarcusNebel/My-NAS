@@ -130,6 +130,12 @@ If you want to edit the server's Domain or IP-Adress you have to clear the `App 
 
 ---
 
+## Knowen issues
+
+- Android App file up- and downloadfunction isn't working
+
+---
+
 ## Contributing
 
 If you would like to contribute, feel free to fork the repository and submit a pull request!

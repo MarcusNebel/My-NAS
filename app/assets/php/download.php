@@ -2,18 +2,27 @@
 session_start();
 
 // Prüfen, ob Benutzer eingeloggt ist
-if (!isset($_SESSION['username'])) {
+if (!isset($_SESSION['id'])) {
     die("Fehler: Nicht eingeloggt.");
 }
 
-$username = $_SESSION['username'];
+require("mysql.php");
+$stmt = $mysql->prepare("SELECT USERNAME FROM accounts WHERE ID = :id");
+$stmt->execute(array(":id" => $_SESSION["id"]));
+$username = $stmt->fetchColumn(); // Korrigiert, um den reinen String zu erhalten
+
+if (!$username) {
+    die("Fehler: Benutzer nicht gefunden.");
+}
 
 // Prüfen, ob Dateiname übergeben wurde
 if (!isset($_GET['file']) || empty($_GET['file'])) {
     die("Fehler: Keine Datei angegeben.");
 }
 
-$filePath = '/home/nas-website-files/user_files/' . $username . '/' . $_GET['file'];
+// Sicherheitsmaßnahmen: Dateiname bereinigen
+$fileName = basename($_GET['file']);
+$filePath = "/home/nas-website-files/user_files/$username/$fileName";
 
 // Prüfen, ob Datei existiert
 if (!file_exists($filePath)) {
@@ -34,6 +43,9 @@ header('Pragma: public');
 
 // Datei sicher ausgeben
 flush();
-readfile($filePath);
+if (!readfile($filePath)) {
+    die("Fehler: Datei konnte nicht gelesen werden.");
+}
+
 exit;
 ?>

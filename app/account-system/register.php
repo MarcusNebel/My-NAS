@@ -56,8 +56,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My NAS | Registrieren</title>
-    <link rel="website icon" href="../Logo.png">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="website icon" href="../Logo/Logo.png">
+    <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="../assets/css/style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
 	  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -72,7 +72,11 @@
         <a href="../index.php">Startseite</a>
 				<a href="../User_Files.php">Meine Dateien</a>
 				<a href="../File_upload.php">Dateien hochladen</a>
-				<a href="#">Bilder</a>
+				<?php if(isset($_SESSION["id"])): ?>
+    	    <a href="account.php">Mein Konto</a>
+        <?php else: ?>
+    	    <a href="Login.php">Mein Konto</a>
+        <?php endif; ?>
 				<a href="#">Kontakt</a>
 			</nav>
 			<button class="login_button">
@@ -88,7 +92,11 @@
     <a href="../index.php">Startseite</a>
 		<a href="../User_Files.php">Meine Dateien</a>
 		<a href="../File_upload.php">Dateien hochladen</a>
-		<a href="#">Bilder</a>
+		<?php if(isset($_SESSION["id"])): ?>
+	    <a href="account.php">Mein Konto</a>
+    <?php else: ?>
+    	<a href="Login.php">Mein Konto</a>
+    <?php endif; ?>
 		<a href="#">Kontakt</a>
   </nav>
 

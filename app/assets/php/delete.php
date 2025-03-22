@@ -1,27 +1,40 @@
 <?php
 session_start();
 
-// Angenommen, der Benutzername wird in der Session gespeichert
-$username = isset($_SESSION['username']) ? $_SESSION['username'] : '';
+// Prüfen, ob der Benutzer eingeloggt ist
+if (!isset($_SESSION['id'])) {
+    die("Fehler: Nicht eingeloggt.");
+}
 
-// Überprüfen, ob der Benutzername gesetzt wurde
-if ($username && isset($_GET['file'])) {
-    $file = $_GET['file'];
-    $file_path = "/home/nas-website-files/user_files/$username/$file"; // Dynamischer Pfad basierend auf dem Benutzernamen
+// Datenbankverbindung
+require("mysql.php");
+$stmt = $mysql->prepare("SELECT USERNAME FROM accounts WHERE ID = :id");
+$stmt->execute(array(":id" => $_SESSION["id"]));
+$username = $stmt->fetchColumn(); // Richtiger Benutzername
 
-    // Überprüfen, ob die Datei existiert
-    if (file_exists($file_path)) {
-        // Datei löschen
-        if (unlink($file_path)) {
-            header('Location: ../../User_Files.php');
-            exit;
-        } else {
-            echo "Es gab ein Problem beim Löschen der Datei.";
-        }
-    } else {
-        echo "Die angeforderte Datei existiert nicht.";
-    }
+if (!$username) {
+    die("Fehler: Benutzer nicht gefunden.");
+}
+
+// Prüfen, ob Dateiname übergeben wurde
+if (!isset($_GET['file']) || empty($_GET['file'])) {
+    die("Fehler: Keine Datei angegeben.");
+}
+
+// Sicherheitsfix: Nur den Dateinamen verwenden (keine Verzeichnistricks möglich)
+$file = basename($_GET['file']);
+$file_path = "/home/nas-website-files/user_files/$username/$file"; // Sicherer Pfad
+
+// Überprüfen, ob die Datei existiert
+if (!file_exists($file_path)) {
+    header("Location: ../../User_Files.php");
+}
+
+// Datei löschen
+if (unlink($file_path)) {
+    header("Location: ../../User_Files.php");
+    exit();
 } else {
-    echo "Kein Benutzer angemeldet oder keine Datei angegeben.";
+    echo "Fehler: Datei konnte nicht gelöscht werden.";
 }
 ?>

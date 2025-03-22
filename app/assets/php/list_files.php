@@ -1,5 +1,10 @@
 <?php
-$username = isset($_SESSION['username']) ? $_SESSION['username'] : '';
+if(isset($_SESSION["id"])){
+    require("mysql.php");
+    $stmt = $mysql->prepare("SELECT USERNAME FROM accounts WHERE ID = :id");
+    $stmt->execute(array(":id" => $_SESSION["id"]));
+    $username = $stmt->fetchColumn(); // Holt nur den USERNAME als String
+}
 
 // Überprüfen, ob der Benutzername gesetzt wurde
 if ($username) {
@@ -21,7 +26,7 @@ if ($username) {
             echo "</li>";
         }
     } else {
-        echo "Der Benutzerordner existiert nicht.";
+        echo "Der Benutzerordner $username existiert nicht.";
     }
 } else {
     echo "Kein Benutzer angemeldet.";

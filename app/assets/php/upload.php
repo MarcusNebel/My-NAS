@@ -2,43 +2,52 @@
 session_start();
 
 // Überprüfe, ob der Benutzer eingeloggt ist
-if (!isset($_SESSION["username"])) {
+if (!isset($_SESSION["id"])) {
     $_SESSION["redirect_to"] = $_SERVER["REQUEST_URI"];
-    header("Location: ../../Login/Login.php");
+    header("Location: ../../account-system/Login.php");
     exit();
+}
+
+// Datenbankverbindung
+require("mysql.php");
+$stmt = $mysql->prepare("SELECT USERNAME FROM accounts WHERE ID = :id");
+$stmt->execute(array(":id" => $_SESSION["id"]));
+$username = $stmt->fetchColumn(); // ✅ Fix: Nur den String holen
+
+if (!$username) {
+    die("Fehler: Benutzer nicht gefunden.");
 }
 
 // Basisverzeichnis für Uploads
 $uploadDir = "/home/nas-website-files/user_files/";
-
-// Falls Verzeichnis nicht existiert, erstelle es
-if (!file_exists($uploadDir)) {
-    mkdir($uploadDir, 0775, true);
-    chown($uploadDir, "www-data");
-    chgrp($uploadDir, "www-data");
-}
-
-// Benutzerverzeichnis innerhalb von user_files
-$username = $_SESSION["username"] ?? "guest";  // Falls kein Benutzername gesetzt ist, als "guest" speichern
 $userDir = $uploadDir . $username . "/";
 
 // Falls Benutzerverzeichnis nicht existiert, erstelle es
-if (!file_exists($userDir)) {
+if (!is_dir($userDir)) {
     mkdir($userDir, 0775, true);
-    chown($userDir, "www-data");
-    chgrp($userDir, "www-data");
+    chmod($userDir, 0775); // ✅ Fix: Keine chown()/chgrp(), sondern chmod()
 }
 
 // Datei-Upload
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file'])) {
-    $fileName = basename($_FILES['file']['name']);
+    $fileName = basename($_FILES['file']['name']); // ✅ Sicherheitsfix gegen Pfadangriffe
     $targetFile = $userDir . $fileName;
 
+    // Dateityp validieren
+    $allowedTypes = ['image/png', 'image/jpeg', 'application/pdf', 'text/plain'];
+    $fileType = mime_content_type($_FILES['file']['tmp_name']);
+
+    if (!in_array($fileType, $allowedTypes)) {
+        die("Fehler: Ungültiger Dateityp.");
+    }
+
+    // Datei verschieben
     if (move_uploaded_file($_FILES['file']['tmp_name'], $targetFile)) {
-        echo "Datei erfolgreich hochgeladen: " . $fileName;
+        echo "Datei erfolgreich hochgeladen: " . htmlspecialchars($fileName);
     } else {
         echo "Fehler beim Hochladen der Datei.";
     }
 } else {
     echo "Keine Datei hochgeladen.";
 }
+?>

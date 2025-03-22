@@ -16,13 +16,16 @@ if ($conn->connect_error) {
 
 $response = [];
 
-// 📌 1. Benutzer abrufen
-$sql = "SELECT USERNAME FROM accounts"; 
+// 📌 1. Benutzer und E-Mail abrufen
+$sql = "SELECT USERNAME, EMAIL FROM accounts"; 
 $result = $conn->query($sql);
 
 $users = [];
 while($row = $result->fetch_assoc()) {
-    $users[] = $row['USERNAME']; // Nur Benutzernamen speichern
+    $users[] = [
+        'username' => $row['USERNAME'], // Benutzernamen speichern
+        'email' => $row['EMAIL'] // E-Mail speichern
+    ];
 }
 $response["users"] = $users;
 
@@ -33,7 +36,8 @@ $baseUrl = 'http://localhost:8443/nas-website-files/user_files/';
 $filesByUser = [];
 
 if ($uploadBaseDir && is_dir($uploadBaseDir)) {
-    foreach ($users as $username) {
+    foreach ($users as $user) {
+        $username = $user['username'];
         $userDir = $uploadBaseDir . '/' . $username;
 
         if (is_dir($userDir)) {

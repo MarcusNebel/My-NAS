@@ -19,10 +19,10 @@ if ($username) {
         foreach ($files as $file) {
             echo "<li class='file-item'>";
             // Download-Link zu download.php mit dem Dateinamen als GET-Parameter
+            echo "$file - ";
             echo "<a href='assets/php/download.php?file=$file' download>Herunterladen</a>";
             // Löschen-Link
             echo " | <a href='assets/php/delete.php?file=$file' onclick='return confirm(\"Möchten Sie diese Datei wirklich löschen?\")'>Löschen</a>";
-            echo " - $file";
             echo "</li>";
         }
     } else {

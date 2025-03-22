@@ -18,6 +18,7 @@ if (!isset($_SESSION["id"])) {
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link href="https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,400;0,600;0,700;0,900;1,400;1,600;1,700&display=swap" rel="stylesheet" />
+	<link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 
 	<link rel="stylesheet" href="style.css">
 	<link rel="stylesheet" href="../assets/css/style.css" />
@@ -65,17 +66,15 @@ if (!isset($_SESSION["id"])) {
 	<main>
 		<section class="account-section">
 			<div class="container_account">
+				<h4>Persönliche Daten:</h4>
 				<?php 
 				if(isset($_SESSION["id"])){
 					if(!empty($_SESSION["id"])){
 						require("mysql.php");
-						if(isset($_POST["submit"])){
+						if(isset($_POST["pd-submit"])){
 							$stmt = $mysql->prepare("UPDATE accounts SET USERNAME = :username, EMAIL = :email WHERE ID = :id");
 							$stmt->execute(array(":username" => $_POST["username"], ":email" => $_POST["email"], ":id" => $_GET["id"]));
 						}
-						?>
-
-						<?php
 						$stmt = $mysql->prepare("SELECT * FROM accounts WHERE ID = :id");
 						$stmt->execute(array(":id" => $_SESSION["id"]));
 						$row = $stmt->fetch();
@@ -87,7 +86,7 @@ if (!isset($_SESSION["id"])) {
 							<div class="input-box-account">
 								<input type="email" name="email" value="<?php echo $row["EMAIL"] ?>" placeholder="Email" require><br>
 							</div>
-							<button class="btn-submit" name="submit" type="submit">Speichern</button>
+							<button class="btn-submit" name="pd-submit" type="submit">Speichern</button>
 						</form>
 						<?php
 					} else {
@@ -101,6 +100,42 @@ if (!isset($_SESSION["id"])) {
 					?>
 					<p>Es ist kein Benutzer angemeldet</p>
 					<?php
+				}
+				?>
+
+				<h4>API Einstellungen:</h4>
+				<?php 
+				if (isset($_SESSION["id"]) && !empty($_SESSION["id"])) {
+					require("mysql.php");
+
+					if ($_SERVER["REQUEST_METHOD"] === "GET" && isset($_GET["api-submit"]) && empty($row["api_key"])) {
+						$api_key = bin2hex(random_bytes(32));
+						$stmt = $mysql->prepare("UPDATE accounts SET api_key = :api_key WHERE ID = :id");
+						$stmt->execute(array(":api_key" => $api_key, ":id" => $_SESSION["id"]));
+					}					
+
+					$stmt = $mysql->prepare("SELECT api_key FROM accounts WHERE ID = :id");
+					$stmt->execute(array(":id" => $_SESSION["id"]));
+					$row = $stmt->fetch();
+					$api_key = $row["api_key"] ?? "Kein API-Schlüssel vorhanden";
+					?>
+
+					<form class="api-form" method="get">
+						<button class="api-btn-submit" name="api-submit" type="submit">Neuen API-Schlüssel generieren</button>
+						<a href="../api/delete.php?api_key=<?php echo urlencode($api_key); ?>" 
+							class="api-btn-delete" 
+							onclick="return confirm('Möchten Sie den API Key wirklich löschen?')">
+							<i class="bx bxs-trash"></i>
+						</a>
+					</form>
+
+					<ul class="api-list">
+						<p>Dein API-Schlüssel: <strong><?php echo htmlspecialchars($api_key); ?></strong></p>
+					</ul>
+
+					<?php
+				} else {
+					echo "<p>Es ist kein Benutzer angemeldet</p>";
 				}
 				?>
 			</div>

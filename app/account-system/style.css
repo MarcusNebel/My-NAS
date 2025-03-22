@@ -117,12 +117,13 @@ body{
 
 /* account.php */
 
-main section.account-section {
+main .account-section {
   background-color: #12002F;
   min-height: 100vh;
   display: block;
   background-position: center;
   background-size: cover;
+  text-align: left;
 }
 
 .container_account {
@@ -132,6 +133,8 @@ main section.account-section {
   padding-top: 130px;
   padding-left: 100px;
   padding-right: 100px;
+  display: block;
+
 }
 
 .input-box-account {
@@ -181,4 +184,54 @@ main section.account-section {
 .account-form {
   display: flex;
   justify-content: left;
+}
+
+.account-section h4 {
+  font-size: 30px;
+  margin-bottom: 32px;
+  color: #fff;
+  font-weight: bold;
+  text-align: left;
+}
+
+.api-form {
+  display: flex;
+  align-items: center;
+}
+
+.api-list {
+  color: #fff;
+  margin-top: 30px;
+  text-decoration: none;
+}
+
+.api-btn-submit {
+  width: 50%;
+  height: 100%;
+  cursor: pointer;
+  background: #8e44ad;
+  outline: none;
+  border: 2px solid #8e44ad;
+  border-radius: 40px;
+  font-size: 16px;
+  color: #fff;
+  padding: 13px 20px 13px 20px;
+  transition: all 0.3s ease;
+}
+
+.api-btn-submit:hover {
+  transform: translateY(-2px);
+  background: #9b59b6;
+}
+
+i.bx.bxs-trash {
+  font-size: 35px;
+  text-decoration: none;
+  color: #fff;
+  margin-left: 15px;
+  transition: all 0.3s ease;
+}
+
+i.bx.bxs-trash:hover {
+  color: #f00;
 }

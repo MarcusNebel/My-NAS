@@ -54,7 +54,7 @@ if(isset($_POST['submit'])){
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My NAS | Passwort zurücksetzen</title>
-    <link rel="website icon" href="../Logo/Logo.png">
+    <link rel="website icon" href="../Logo/Logo_512px.png">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="../assets/css/style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -71,9 +71,9 @@ if(isset($_POST['submit'])){
 				<a href="../User_Files.php">Meine Dateien</a>
 				<a href="../File_upload.php">Dateien hochladen</a>
                 <?php if(isset($_SESSION["id"])): ?>
-		        	<a href="account.php">Mein Konto</a>
+		        	<a href="account.php">Mein Account</a>
 	        	<?php else: ?>
-	        		<a href="Login.php">Mein Konto</a>
+	        		<a href="Login.php">Mein Account</a>
 	        	<?php endif; ?>
 				<a href="#">Kontakt</a>
             </nav>
@@ -91,9 +91,9 @@ if(isset($_POST['submit'])){
 		<a href="../User_Files.php">Meine Dateien</a>
 		<a href="../File_upload.php">Dateien hochladen</a>
         <?php if(isset($_SESSION["id"])): ?>
-			<a href="account.php">Mein Konto</a>
+			<a href="account.php">Mein Account</a>
 		<?php else: ?>
-			<a href="Login.php">Mein Konto</a>
+			<a href="Login.php">Mein Account</a>
 		<?php endif; ?>
 		<a href="#">Kontakt</a>
     </nav>

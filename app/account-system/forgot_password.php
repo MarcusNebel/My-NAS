@@ -87,9 +87,9 @@
           <a href="../User_Files.php">Meine Dateien</a>
           <a href="../File_upload.php">Dateien hochladen</a>
           <?php if(isset($_SESSION["id"])): ?>
-	    	  	<a href="account.php">Mein Konto</a>
+	    	  	<a href="account.php">Mein Account</a>
 	      	<?php else: ?>
-	    	  	<a href="Login.php">Mein Konto</a>
+	    	  	<a href="Login.php">Mein Account</a>
 	      	<?php endif; ?>
           <a href="#">Kontakt</a>
         </nav>
@@ -107,9 +107,9 @@
 			<a href="../User_Files.php">Meine Dateien</a>
 			<a href="../File_upload.php">Dateien hochladen</a>
 					<?php if(isset($_SESSION["id"])): ?>
-			<a href="account.php">Mein Konto</a>
+			<a href="account.php">Mein Account</a>
 		<?php else: ?>
-			<a href="Login.php">Mein Konto</a>
+			<a href="Login.php">Mein Account</a>
 		<?php endif; ?>
 			<a href="#">Kontakt</a>
     </nav>

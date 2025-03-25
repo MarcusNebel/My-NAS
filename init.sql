@@ -9,7 +9,8 @@ CREATE TABLE IF NOT EXISTS `accounts` (
   `EMAIL` VARCHAR(255) DEFAULT NULL,
   `reset_code` VARCHAR(6) DEFAULT NULL,
   `rememberTOKEN` VARCHAR(64) DEFAULT NULL,
-  `api_key` VARCHAR(64) DEFAULT NULL
+  `api_key` VARCHAR(64) DEFAULT NULL,
+  `server_rank` ENUM('Admin', 'User', 'Moderator') NOT NULL DEFAULT 'User'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 -- Setze das Root-Passwort auf mysql_native_password, falls erforderlich

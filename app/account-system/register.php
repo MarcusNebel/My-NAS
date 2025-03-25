@@ -1,54 +1,65 @@
 <?php
-   $usernameError = "";
-   $emailError = "";
-   $passwordError = "";
-   $successMessage = "";
-    if (isset($_POST["submit"])) {
-       require("mysql.php");
-        $username = trim($_POST["username"]);
-       $email = trim($_POST["email"]);
-       $password = $_POST["pw"];
-       $passwordRepeat = $_POST["pw2"];
-        // Überprüfen, ob Benutzername oder E-Mail bereits existiert
-       $stmt = $mysql->prepare("SELECT * FROM accounts WHERE USERNAME = :user OR EMAIL = :email");
-       $stmt->bindParam(":user", $username);
-       $stmt->bindParam(":email", $email);
-       $stmt->execute();
-       $count = $stmt->rowCount();
-        // Fehlerbehandlung: Überprüfen ob Benutzername oder E-Mail bereits existieren
-       if ($count > 0) {
-           $row = $stmt->fetch();
-           if ($row["USERNAME"] == $username) {
-               $usernameError = "Dieser Benutzername ist bereits vergeben.";
-           }
-           if ($row["EMAIL"] == $email) {
-               $emailError = "Diese E-Mail-Adresse ist bereits registriert.";
-           }
-       } else {
-           // Passwortprüfung
-           if ($password === $passwordRepeat) {
-               if (strlen($password) >= 6) { // Mindestlänge setzen
-                   // Benutzer registrieren
-                   $stmt = $mysql->prepare("INSERT INTO accounts (USERNAME, EMAIL, PASSWORD) VALUES (:user, :email, :pw)");
-                   $stmt->bindParam(":user", $username);
-                   $stmt->bindParam(":email", $email);
-                   $hash = password_hash($password, PASSWORD_BCRYPT);
-                   $stmt->bindParam(":pw", $hash);
-                   $stmt->execute();
-                    // Erfolgreiche Registrierung → Weiterleitung zur Anmeldeseite
-                   $successMessage = "Erfolgreich registriert! Weiterleitung zur Anmeldung...";
-                   // Verspätete Weiterleitung mit 3 Sekunden Verzögerung
-                   header("Location: Login.php");
-                   exit();
-               } else {
-                   $passwordError = "Das Passwort muss mindestens 6 Zeichen lang sein.";
-               }
-           } else {
-               $passwordError = "Die Passwörter stimmen nicht überein.";
-           }
-       }
-   }
-  ?>
+$usernameError = "";
+$emailError = "";
+$passwordError = "";
+$successMessage = "";
+
+if (isset($_POST["submit"])) {
+    require("mysql.php");
+    
+    $username = trim($_POST["username"]);
+    $email = trim($_POST["email"]);
+    $password = $_POST["pw"];
+    $passwordRepeat = $_POST["pw2"];
+
+    // Überprüfen, ob Benutzername oder E-Mail bereits existiert
+    $stmt = $mysql->prepare("SELECT * FROM accounts WHERE USERNAME = :user OR EMAIL = :email");
+    $stmt->bindParam(":user", $username);
+    $stmt->bindParam(":email", $email);
+    $stmt->execute();
+    $count = $stmt->rowCount();
+
+    if ($count > 0) {
+        // Fehler: Benutzername oder E-Mail existiert bereits
+        $row = $stmt->fetch();
+        if ($row["USERNAME"] == $username) {
+            $usernameError = "Dieser Benutzername ist bereits vergeben.";
+        }
+        if ($row["EMAIL"] == $email) {
+            $emailError = "Diese E-Mail-Adresse ist bereits registriert.";
+        }
+    } else {
+        // Prüfen, ob dies der erste Benutzer ist
+        $stmt = $mysql->prepare("SELECT COUNT(*) AS total FROM accounts");
+        $stmt->execute();
+        $row = $stmt->fetch();
+        $server_rank = ($row["total"] == 0) ? 'Admin' : 'User'; // Erster Nutzer = Admin, sonst User
+
+        // Passwortprüfung
+        if ($password === $passwordRepeat) {
+            if (strlen($password) >= 6) { // Mindestlänge setzen
+                // Benutzer registrieren
+                $stmt = $mysql->prepare("INSERT INTO accounts (USERNAME, EMAIL, PASSWORD, server_rank) VALUES (:user, :email, :pw, :rank)");
+                $stmt->bindParam(":user", $username);
+                $stmt->bindParam(":email", $email);
+                $hash = password_hash($password, PASSWORD_BCRYPT);
+                $stmt->bindParam(":pw", $hash);
+                $stmt->bindParam(":rank", $server_rank);
+                $stmt->execute();
+
+                // Erfolgreiche Registrierung → Weiterleitung zur Anmeldeseite
+                $successMessage = "Erfolgreich registriert! Weiterleitung zur Anmeldung...";
+                header("Location: Login.php");
+                exit();
+            } else {
+                $passwordError = "Das Passwort muss mindestens 6 Zeichen lang sein.";
+            }
+        } else {
+            $passwordError = "Die Passwörter stimmen nicht überein.";
+        }
+    }
+}
+?>
 
 <!DOCTYPE html>
 <html lang="de" dir="ltr">
@@ -56,7 +67,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My NAS | Registrieren</title>
-    <link rel="website icon" href="../Logo/Logo.png">
+    <link rel="website icon" href="../Logo/Logo_512px.png">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="../assets/css/style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -73,9 +84,9 @@
 				<a href="../User_Files.php">Meine Dateien</a>
 				<a href="../File_upload.php">Dateien hochladen</a>
 				<?php if(isset($_SESSION["id"])): ?>
-    	    <a href="account.php">Mein Konto</a>
+    	    <a href="account.php">Mein Account</a>
         <?php else: ?>
-    	    <a href="Login.php">Mein Konto</a>
+    	    <a href="Login.php">Mein Account</a>
         <?php endif; ?>
 				<a href="#">Kontakt</a>
 			</nav>
@@ -93,9 +104,9 @@
 		<a href="../User_Files.php">Meine Dateien</a>
 		<a href="../File_upload.php">Dateien hochladen</a>
 		<?php if(isset($_SESSION["id"])): ?>
-	    <a href="account.php">Mein Konto</a>
+	    <a href="account.php">Mein Account</a>
     <?php else: ?>
-    	<a href="Login.php">Mein Konto</a>
+    	<a href="Login.php">Mein Account</a>
     <?php endif; ?>
 		<a href="#">Kontakt</a>
   </nav>
@@ -103,6 +114,18 @@
   <div class="wrapper">
     <form action="register.php" method="post">
       <h1>Registrieren</h1>
+      <?php
+      require("mysql.php");
+
+      // Überprüfen, ob die Tabelle leer ist
+      $stmt = $mysql->prepare("SELECT COUNT(*) FROM accounts");
+      $stmt->execute();
+      $count = $stmt->fetchColumn();
+
+      if ($count == 0) {
+          echo "<p>Dieser Account wird der Admin-Account sein!</p>";
+      }
+      ?>
 
       <div class="input-box">
         <input type="text" name="username" placeholder="Benutzername" required>

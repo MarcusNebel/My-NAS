@@ -12,8 +12,8 @@ if (!isset($_SESSION["id"])) {
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>My NAS | Benutzerverwaltung</title>
-	<link rel="website icon" href="../Logo/Logo.png">
+	<title>My NAS | Mein Account</title>
+	<link rel="website icon" href="../Logo/Logo_512px.png">
 
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -23,7 +23,7 @@ if (!isset($_SESSION["id"])) {
 	<link rel="stylesheet" href="style.css">
 	<link rel="stylesheet" href="../assets/css/style.css" />
 </head>
-<body>
+<body class="account-body">
 	<header>
 		<div class="container transparancy">
       		<h2><a class="link-no-decoration" href="../index.php"><span>MY </span>NAS</a></h2>
@@ -32,9 +32,9 @@ if (!isset($_SESSION["id"])) {
 				<a href="../User_Files.php">Meine Dateien</a>
 				<a href="../File_upload.php">Dateien hochladen</a>
 				<?php if(isset($_SESSION["id"])): ?>
-					<a href="account.php">Mein Konto</a>
+					<a href="account.php">Mein Account</a>
 				<?php else: ?>
-					<a href="Login.php">Mein Konto</a>
+					<a href="Login.php">Mein Account</a>
 				<?php endif; ?>
 				<a href="#">Kontakt</a>
 			</nav>
@@ -53,13 +53,13 @@ if (!isset($_SESSION["id"])) {
 		</div>
 	</header>
 	<nav class="mobile-nav">
-		<a href="index.php">Startseite</a>
-		<a href="User_Files.php">Meine Dateien</a>
-		<a href="File_upload.php">Dateien hochladen</a>
+		<a href="../index.php">Startseite</a>
+		<a href="../User_Files.php">Meine Dateien</a>
+		<a href="../File_upload.php">Dateien hochladen</a>
 				<?php if(isset($_SESSION["id"])): ?>
-			<a href="account.php">Mein Konto</a>
+			<a href="account.php">Mein Account</a>
 		<?php else: ?>
-			<a href="Login.php">Mein Konto</a>
+			<a href="Login.php">Mein Account</a>
 		<?php endif; ?>
 		<a href="#">Kontakt</a>
 	</nav>
@@ -103,6 +103,8 @@ if (!isset($_SESSION["id"])) {
 				}
 				?>
 
+				<hr style="border: 1px solid #ccc; margin: 20px 0;">
+
 				<h4>API Einstellungen:</h4>
 				<?php 
 				if (isset($_SESSION["id"]) && !empty($_SESSION["id"])) {
@@ -138,6 +140,51 @@ if (!isset($_SESSION["id"])) {
 					echo "<p>Es ist kein Benutzer angemeldet</p>";
 				}
 				?>
+
+				<hr style="border: 1px solid #ccc; margin: 20px 0;">
+
+				<h4>Erweiterte Einstellungen:</h4>
+				<?php
+				if(isset($_SESSION["id"]) && !empty($_SESSION["id"])) {
+					require("mysql.php");
+
+					$stmt = $mysql->prepare("SELECT server_rank FROM accounts WHERE ID = :id");
+					$stmt->execute(array(":id" => $_SESSION["id"]));
+					$row = $stmt->fetch();
+					$server_rank = $row["server_rank"] ?? "Error: Du hast keinen Rang auf dem aktuellen Server!";
+				}
+				?>
+				<div class="advanced-settings">
+					<p class="server-rank"><?php 
+					if(isset($server_rank) && $server_rank === "Error: Du hast keinen Rang auf dem aktuellen Server!") {
+						echo $server_rank;
+					} else {
+						echo "Dein Server Rang ist: ", $server_rank;
+					}
+					?> </p>
+					<h5>Account löschen</h5>
+					<form class="delete-account-form" method="get">
+						<button class="delete-account-btn" name="delete-account" type="submit">Account löschen</button>
+					</form>
+					<?php
+					if(isset($server_rank, $_SESSION["id"]) && !empty($server_rank)) if($server_rank === "Admin") {
+						if ($_SERVER["REQUEST_METHOD"] === "GET" && isset($_GET["delete-account"])) {
+							require("mysql.php");
+
+							$stmt = $mysql->prepare("DELETE FROM accounts WHERE ID = :id");
+							$stmt->execute(array(":id" => $_SESSION["id"]));
+							$stmt->execute();
+
+							session_destroy();
+						}
+						?>
+						<hr style="border: 1px solid #ccc; margin: 20px 0;">
+						<h4>Admin Einstellungen:</h4>
+						<a class="all-accounts" href="admin/accounts-list.php">Alle Accounts</a>
+						<?php
+					}
+					?>
+				</div>
 			</div>
 		</section>
 	</main>

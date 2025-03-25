@@ -9,7 +9,7 @@ session_start();
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="theme-color" content="#12002F">
 	<title>My NAS | Startseite</title>
-	<link rel="website icon" href="Logo/Logo.png">
+	<link rel="website icon" href="Logo/Logo_512px.png">
 
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -26,9 +26,9 @@ session_start();
 				<a href="User_Files.php">Meine Dateien</a>
 				<a href="File_upload.php">Dateien hochladen</a>
 				<?php if(isset($_SESSION["id"])): ?>
-					<a href="account-system/account.php">Mein Konto</a>
+					<a href="account-system/account.php">Mein Account</a>
 				<?php else: ?>
-					<a href="account-system/Login.php">Mein Konto</a>
+					<a href="account-system/Login.php">Mein Account</a>
 				<?php endif; ?>
 				<a href="#">Kontakt</a>
 			</nav>
@@ -51,9 +51,9 @@ session_start();
 		<a href="User_Files.php">Meine Dateien</a>
 		<a href="File_upload.php">Dateien hochladen</a>
 		<?php if(isset($_SESSION["id"])): ?>
-			<a href="account-system/account.php">Mein Konto</a>
+			<a href="account-system/account.php">Mein Account</a>
 		<?php else: ?>
-			<a href="account-system/Login.php">Mein Konto</a>
+			<a href="account-system/Login.php">Mein Account</a>
 		<?php endif; ?>
 		<a href="#">Kontakt</a>
 	</nav>

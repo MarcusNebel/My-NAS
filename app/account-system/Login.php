@@ -63,7 +63,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My NAS | Anmelden</title>
-    <link rel="website icon" href="../Logo/Logo.png">
+    <link rel="website icon" href="../Logo/Logo_512px.png">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="../assets/css/style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -80,9 +80,9 @@
 				<a href="../User_Files.php">Meine Dateien</a>
 				<a href="../File_upload.php">Dateien hochladen</a>
 				<?php if(isset($_SESSION["id"])): ?>
-			    <a href="account.php">Mein Konto</a>
+			    <a href="account.php">Mein Account</a>
 		    <?php else: ?>
-	    		<a href="Login.php">Mein Konto</a>
+	    		<a href="Login.php">Mein Account</a>
     		<?php endif; ?>
 				<a href="#">Kontakt</a>
 			</nav>
@@ -99,9 +99,9 @@
 		<a href="../User_Files.php">Meine Dateien</a>
 		<a href="../File_upload.php">Dateien hochladen</a>
 		<?php if(isset($_SESSION["id"])): ?>
-			<a href="account.php">Mein Konto</a>
+			<a href="account.php">Mein Account</a>
 		<?php else: ?>
-			<a href="Login.php">Mein Konto</a>
+			<a href="Login.php">Mein Account</a>
 		<?php endif; ?>
 		<a href="#">Kontakt</a>
 	</nav>
@@ -109,6 +109,18 @@
     <div class="wrapper">
       <form action="Login.php" method="post">
         <h1>Anmelden</h1>
+        <?php
+        require("mysql.php");
+
+        // Überprüfen, ob die Tabelle leer ist
+        $stmt = $mysql->prepare("SELECT COUNT(*) FROM accounts");
+        $stmt->execute();
+        $count = $stmt->fetchColumn();
+
+        if ($count == 0) {
+            echo "<p>Es gibt noch keinen Account! Bitte erstelle den Ersten Account auf der Registrieren Seite</p>";
+        }
+        ?>
       <?php if (!empty($userError)): ?>
         <p class="error-message"><?php echo $userError; ?></p>
       <?php endif; ?>

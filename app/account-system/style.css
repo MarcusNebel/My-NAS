@@ -14,6 +14,15 @@ body{
   background-position: center;
   background-repeat: no-repeat;
 }
+.account-body {
+  display: flex;
+  justify-content: left;
+  min-height: 100vh;
+  background-color: #12002F;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
 .wrapper{
   width: 420px;
   background: transparent;
@@ -199,6 +208,10 @@ main .account-section {
   align-items: center;
 }
 
+.api-list p {
+  margin-bottom: 32px;
+}
+
 .api-list {
   color: #fff;
   margin-top: 30px;
@@ -233,5 +246,138 @@ i.bx.bxs-trash {
 }
 
 i.bx.bxs-trash:hover {
+  transform: translateY(-2px);
   color: #f00;
+}
+
+i.bx.bxs-edit-alt {
+  font-size: 35px;
+  text-decoration: none;
+  color: #fff;
+  margin-left: 15px;
+  transition: all 0.3s ease;
+}
+
+i.bx.bxs-edit-alt:hover {
+  transform: translateY(-2px);
+}
+
+i.bx.bx-arrow-back {
+  cursor: pointer;
+  font-size: 35px;
+  text-decoration: none;
+  color: #fff;
+  transition: all 0.3s ease;
+}
+
+i.bx.bx-arrow-back:hover {
+  transform: translateY(-2px);
+}
+
+.advanced-settings p {
+  color: #FFF;
+}
+
+.server-rank {
+  margin-bottom: 32px;
+}
+
+h5 {
+  color: #f00;
+  font-size: 25px;
+  margin-bottom: 25px;
+}
+
+.delete-account-form {
+  display: flex;
+  align-items: center;
+}
+
+.delete-account-btn {
+  width: 50%;
+  height: 100%;
+  cursor: pointer;
+  background: #12002F;
+  outline: none;
+  border: 2px solid #f00;
+  border-radius: 40px;
+  font-size: 16px;
+  color: #f00;
+  padding: 13px 20px 13px 20px;
+  transition: all 0.3s ease;
+}
+
+.delete-account-btn:hover {
+  background: #f00;
+  color: #FFF;
+  transform: translateY(-2px);
+}
+
+.all-accounts {
+  text-decoration: none;
+  width: 50%;
+  height: 100%;
+  cursor: pointer;
+  background: #8e44ad;
+  outline: none;
+  border: 2px solid #8e44ad;
+  border-radius: 40px;
+  font-size: 16px;
+  color: #fff;
+  padding: 13px 20px 13px 20px;
+  transition: all 0.3s ease;
+}
+
+.all-accounts:hover {
+  transform: translateY(-2px);
+  background: #9b59b6;
+}
+
+main .accounts-list-section {
+  margin-top: 150px;
+  margin-left: 100px;
+  margin-right: 100px;
+  background-color: #12002F;
+  min-height: 100vh;
+  display: block;
+  background-position: center;
+  background-size: cover;
+  text-align: left;
+}
+
+/* Tabelle Styling */
+table {
+  width: 100%; /* Die Tabelle nimmt die gesamte Breite ein */
+  border-collapse: collapse; /* Entfernt Abstände zwischen Zellen */
+  margin: 20px 0; /* Abstand oben und unten */
+  background-color: transparent; /* Hintergrundfarbe der Tabelle */
+}
+
+th, td {
+  padding: 12px 15px; /* Polsterung innerhalb der Zellen */
+  text-align: left; /* Textausrichtung in Zellen */
+  border-bottom: 1px solid #ddd; /* Untere Grenze für jede Zeile */
+  color: #FFF;
+}
+
+.pen-a {
+  text-decoration: none;
+}
+
+th {
+  background-color: #8e44ad; /* Hintergrundfarbe für die Kopfzeile */
+  color: white; /* Schriftfarbe in der Kopfzeile */
+  font-weight: bold; /* Fettdruck für die Kopfzeile */
+}
+
+tr:nth-child(even) {
+  background-color: #1d004b; /* Abwechselnde Zeilenfarben */
+}
+
+
+/* Optional: Stil für Tabellen-Wrapper */
+.table-container {
+  max-width: 1000px; /* Maximale Breite für die Tabelle */
+  margin: 0 auto; /* Zentriert die Tabelle */
+  overflow-x: auto; /* Ermöglicht horizontales Scrollen, wenn die Tabelle zu breit ist */
 }

@@ -122,11 +122,27 @@ if (!$user || $user["server_rank"] !== "Admin") {
                                     } ?></td>
                                     <td><?php echo htmlspecialchars($row["server_rank"]); ?></td>
                                     <td>
-                                        <a class="pen-a" href="edit.php?id=<?php echo $row['ID']; ?>" 
-                                            title="Bearbeiten"
-                                            onclick="return confirm('Möchten Sie diesen Benutzer wirklich bearbeiten?')">
-                                            <i class='bx bxs-edit-alt'></i>
-                                        </a>
+                                        <?php
+                                        if ($_SESSION["id"] == $row["ID"]) {
+                                            ?>
+                                                <a class="pen-a" href="account.php" 
+                                                    title="Bearbeiten"
+                                                    onclick="return confirm('Möchten Sie ihren Benutzer wirklich bearbeiten?')">
+                                                    <i class='bx bxs-edit-alt'></i>
+                                                </a>
+                                                <?php
+                                            } else {
+                                                ?>
+                                                <a class="pen-a" href="edit.php?id=<?php echo $row['ID']; ?>" 
+                                                    title="Bearbeiten"
+                                                    onclick="return confirm('Möchten Sie diesen Benutzer wirklich bearbeiten?')">
+                                                    <i class='bx bxs-edit-alt'></i>
+                                                </a>
+                                                <?php
+                                            }
+                                            ?>
+
+                                        
 
                                         <?php
                                         if ($_SESSION["id"] == $row["ID"]) {

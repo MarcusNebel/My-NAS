@@ -180,7 +180,7 @@ if (!isset($_SESSION["id"])) {
 						?>
 						<hr style="border: 1px solid #ccc; margin: 20px 0;">
 						<h4>Admin Einstellungen:</h4>
-						<a class="all-accounts" href="admin/accounts-list.php">Alle Accounts</a>
+						<a class="all-accounts" href="accounts-list.php">Alle Accounts</a>
 						<?php
 					}
 					?>

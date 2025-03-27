@@ -111,10 +111,14 @@ if (!isset($_SESSION["id"])) {
 					require("mysql.php");
 
 					if ($_SERVER["REQUEST_METHOD"] === "GET" && isset($_GET["api-submit"]) && empty($row["api_key"])) {
-						$api_key = bin2hex(random_bytes(32));
+						// Erstellen des API-Schlüssels mit drei festen Buchstaben und dann zufälligen Zeichen
+						$prefix = "myn"; // Die festen Buchstaben am Anfang
+						$random_part = bin2hex(random_bytes(30)); // Zufällige Zeichen, hexadezimal, 30 Bytes (also 60 Zeichen)
+						$api_key = $prefix . "-" . $random_part;
+
 						$stmt = $mysql->prepare("UPDATE accounts SET api_key = :api_key WHERE ID = :id");
 						$stmt->execute(array(":api_key" => $api_key, ":id" => $_SESSION["id"]));
-					}					
+					}                    
 
 					$stmt = $mysql->prepare("SELECT api_key FROM accounts WHERE ID = :id");
 					$stmt->execute(array(":id" => $_SESSION["id"]));

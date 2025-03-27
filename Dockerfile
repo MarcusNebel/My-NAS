@@ -17,6 +17,11 @@ RUN mkdir -p /home/nas-website-files/user_files
 RUN chown -R www-data:www-data /home/nas-website-files/user_files/
 RUN chmod -R 775 /home/nas-website-files/user_files/
 
+# Erstellt Verzeichniss für temporäre Zip Dateien
+RUN mkdir -p /home/nas-website-files/tmp_zips/
+RUN chown -R www-data:www-data /home/nas-website-files/tmp_zips/
+RUN chmod -R 775 /home/nas-website-files/tmp_zips/
+
 # Aktiviert mod_rewrite für Apache (wichtig für .htaccess)
 RUN a2enmod rewrite
 

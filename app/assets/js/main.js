@@ -15,3 +15,86 @@ window.onload = function () {
 		mobile_menu.classList.toggle('is-active');
 	});
 }
+
+function handleDownload() {
+    var checkboxes = document.querySelectorAll('.file-checkbox:checked');
+    var files = [];
+
+    checkboxes.forEach(checkbox => {
+        files.push(checkbox.value);
+    });
+
+    if (files.length === 0) {
+        alert("Bitte wählen Sie mindestens eine Datei zum Herunterladen aus.");
+        return;
+    } else if (files.length === 1) {
+        // Direktes Herunterladen einer einzelnen Datei
+        window.location.href = "assets/php/download.php?file=" + encodeURIComponent(files[0]);
+    } else {
+        // Mehrere Dateien als ZIP herunterladen
+        var form = document.createElement("form");
+        form.method = "POST";
+        form.action = "assets/php/zip_download.php";
+        form.style.display = "none";
+
+        files.forEach(file => {
+            var input = document.createElement("input");
+            input.type = "hidden";
+            input.name = "files[]";
+            input.value = file;
+            form.appendChild(input);
+        });
+
+        document.body.appendChild(form);
+        form.submit();
+        document.body.removeChild(form);
+    }
+}
+
+// Event Listener für den Download-Button
+document.addEventListener("DOMContentLoaded", function() {
+    document.getElementById("download-selected").addEventListener("click", handleDownload);
+});
+
+// Event Listener for delete button
+function submitDeleteForm() {
+    var checkboxes = document.querySelectorAll('.file-checkbox:checked');
+    var files = [];
+
+    checkboxes.forEach(checkbox => {
+        files.push(checkbox.value);
+    });
+
+    if (files.length === 0) {
+        alert("Bitte wählen Sie mindestens eine Datei zum Löschen aus.");
+        return;
+    }
+
+    // Bestätigung einholen
+    if (!confirm("Möchten Sie die ausgewählten Dateien wirklich löschen?")) {
+        return;
+    }
+
+    // Form für das Löschen erstellen und absenden
+    var form = document.createElement("form");
+    form.method = "POST";
+    form.action = "assets/php/delete_handler.php";
+    form.style.display = "none";
+
+    files.forEach(file => {
+        var input = document.createElement("input");
+        input.type = "hidden";
+        input.name = "files[]";
+        input.value = file;
+        form.appendChild(input);
+    });
+
+    document.body.appendChild(form);
+    form.submit();
+}
+
+// Event Listener für Löschen und Download
+document.addEventListener("DOMContentLoaded", function() {
+    document.getElementById("delete-selected").addEventListener("click", submitDeleteForm);
+    document.getElementById("download-selected").addEventListener("click", handleDownload);
+});

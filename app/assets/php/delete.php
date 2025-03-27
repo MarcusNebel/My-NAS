@@ -1,40 +1,36 @@
 <?php
 session_start();
+if (isset($_POST['files']) && is_array($_POST['files'])) {
+    $filesToDelete = $_POST['files'];
 
-// Prüfen, ob der Benutzer eingeloggt ist
-if (!isset($_SESSION['id'])) {
-    die("Fehler: Nicht eingeloggt.");
-}
+    // Den Benutzernamen aus der Session holen
+    if(isset($_SESSION["id"])){
+        require("mysql.php");
+        $stmt = $mysql->prepare("SELECT USERNAME FROM accounts WHERE ID = :id");
+        $stmt->execute(array(":id" => $_SESSION["id"]));
+        $username = $stmt->fetchColumn(); // Holt nur den USERNAME als String
+    }
 
-// Datenbankverbindung
-require("mysql.php");
-$stmt = $mysql->prepare("SELECT USERNAME FROM accounts WHERE ID = :id");
-$stmt->execute(array(":id" => $_SESSION["id"]));
-$username = $stmt->fetchColumn(); // Richtiger Benutzername
+    // Überprüfen, ob der Benutzername gesetzt wurde
+    if ($username) {
+        $directory = "/home/nas-website-files/user_files/$username"; // Dynamischer Pfad basierend auf dem Benutzernamen
 
-if (!$username) {
-    die("Fehler: Benutzer nicht gefunden.");
-}
+        foreach ($filesToDelete as $file) {
+            $filePath = $directory . '/' . $file;
 
-// Prüfen, ob Dateiname übergeben wurde
-if (!isset($_GET['file']) || empty($_GET['file'])) {
-    die("Fehler: Keine Datei angegeben.");
-}
+            // Überprüfen, ob die Datei existiert und löschen
+            if (file_exists($filePath)) {
+                unlink($filePath); // Löscht die Datei
+            }
+        }
 
-// Sicherheitsfix: Nur den Dateinamen verwenden (keine Verzeichnistricks möglich)
-$file = basename($_GET['file']);
-$file_path = "/home/nas-website-files/user_files/$username/$file"; // Sicherer Pfad
-
-// Überprüfen, ob die Datei existiert
-if (!file_exists($file_path)) {
-    header("Location: ../../User_Files.php");
-}
-
-// Datei löschen
-if (unlink($file_path)) {
-    header("Location: ../../User_Files.php");
-    exit();
+        // Weiterleitung nach erfolgreichem Löschen
+        header("Location: ../../User_Files.php");
+        exit();
+    } else {
+        echo "Kein Benutzer angemeldet.";
+    }
 } else {
-    echo "Fehler: Datei konnte nicht gelöscht werden.";
+    echo "Keine Dateien ausgewählt.";
 }
 ?>

@@ -25,11 +25,11 @@
 
   .link-no-decoration {
     text-decoration: none;
-    color: #FFF;
+    color: #000;
   }
 
   .login_button {
-    background-color: #8e44ad; /* Lila */
+    background-color: #2894f4; /* Lila */
     padding: 10px 18px;
     border-radius: 12px;
     border: none;
@@ -47,7 +47,7 @@
 }
 
 .login_button:hover {
-  background-color: #9b59b6; /* Helleres Lila beim Hover */
+  background-color: #54aefd; /* Helleres Lila beim Hover */
   transform: translateY(-2px);
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
 }
@@ -86,7 +86,7 @@
     display: block;
     width: 100%;
     height: 5px;
-    background-color: #FFF;
+    background-color: #000;
     margin: 6px 0px;
     -webkit-transition: 0.4s;
     transition: 0.4s;
@@ -135,7 +135,7 @@
     text-align: center;
     padding: 12px 16px;
     background-color: #1f103F;
-    color: #FFF;
+    color: #000;
     text-decoration: none;
     background: linear-gradient(135deg, rgba(255, 0, 0, 0.1), rgba(255, 255, 255, 0));
     backdrop-filter: blur(10px);
@@ -174,7 +174,7 @@
     outline: none;
     background: none;
     display: inline-block;
-    color: #FFF;
+    color: #000;
     font-size: 20px;
     background-color: #FF9FDB;
     padding: 12px 16px;
@@ -196,7 +196,7 @@
   }
   
   header {
-    color: #FFF;
+    color: #000;
     position: fixed;
     top: 0;
     left: 0;
@@ -250,7 +250,7 @@
   }
   
   header.is-scrolling {
-    background-color: #12002F;
+    background-color: #eeeeee;
   }
   
   header.is-scrolling .container {
@@ -259,7 +259,7 @@
   }
   
   main section.banner {
-    color: #FFF;
+    color: #000;
     position: relative;
     min-height: 100vh;
     display: -webkit-box;
@@ -268,7 +268,6 @@
     -webkit-box-align: center;
     -ms-flex-align: center;
     align-items: center;
-    background-image: url("../images/header.png");
     background-position: center;
     background-size: cover;
   }
@@ -282,7 +281,6 @@
     right: 0;
     bottom: 0;
     z-index: 0;
-    background-color: #12002F;
     opacity: 0.8;
   }
   
@@ -297,7 +295,7 @@
   }
   
   main section.banner .container h1 span {
-    color: #FF9FDB;
+    color: #2894f4;
   }
   
   @media (max-width: 767px) {
@@ -353,7 +351,7 @@
     display: block;
     width: 100%;
     height: 5px;
-    background-color: #FFF;
+    background-color: #000;
     margin: 6px 0px;
     transition: 0.4s;
   }
@@ -395,7 +393,7 @@
     padding: 12px 16px;
     /* background-color: #1f103F; */
   
-    color: #FFF;
+    color: #000;
     text-decoration: none;
   }
   
@@ -431,7 +429,7 @@
     background: none;
   
     display: inline-block;
-    color: #FFF;
+    color: #000;
     font-size: 20px;
     background-color: #FF9FDB;
     padding: 12px 16px;
@@ -451,13 +449,13 @@
   }
   
   header {
-    color: #FFF;
+    color: #000;
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     z-index: 99;
-    /* background-color: #12002F; */
+    /* background-color: #eeeeee; */
   }
     .container {
       padding-top: 32px;
@@ -495,7 +493,7 @@
     }
   
     &.is-scrolling {
-      background-color: #12002F;
+      background-color: #eeeeee;
       .container {
         padding-top: 16px;
         padding-bottom: 16px;
@@ -504,13 +502,11 @@
   
   main {
     section.banner {
-      color: #FFF;
+      color: #000;
       position: relative;
       min-height: 100vh;
       display: flex;
       align-items: center;
-  
-      background-image: url('../images/header.png');
       background-position: top right;
       background-size: cover;
   
@@ -523,7 +519,6 @@
         right: 0;
         bottom: 0;
         z-index: 0;
-        background-color: #12002F;
         opacity: 0.8;
       }
   
@@ -536,7 +531,7 @@
           margin-bottom: 32px;
           
           span {
-            color: #FF9FDB;
+            color: #2894f4;
           }
   
           @media (max-width: 767px) {
@@ -565,7 +560,7 @@
 
 /* Datei-Upload Seite */
 main section.upload-section {
-  background-color: #12002F;
+  background-color: #eeeeee;
   min-height: 100vh;
   background-position: center;
   background-size: cover;
@@ -587,7 +582,7 @@ main section.upload-section {
 .upload-form h5 {
     font-size: 48px;
     margin-bottom: 32px;
-    color: #fff;
+    color: #000;
     font-weight: bold;
     text-align: left;
 }
@@ -598,7 +593,7 @@ main section.upload-section {
 
 /* Datei-Upload Button */
 .upload-form button {
-    background-color: #8e44ad; /* Lila */
+    background-color: #2894f4; /* Lila */
     margin-top: 15px;
     margin-left: 15px;
     padding: 14px 22px;
@@ -614,7 +609,7 @@ main section.upload-section {
 
 /* Hover-Effekt für den Button */
 .upload-form button:hover {
-    background-color: #9b59b6; /* Helleres Lila beim Hover */
+    background-color: #54aefd; /* Helleres Lila beim Hover */
     transform: translateY(-2px);
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
 }
@@ -623,11 +618,11 @@ main section.upload-section {
 .upload-form input[type="file"] {
     margin-top: 20px;
     padding: 10px;
-    background-color: #12002F;
-    border: 2px solid #8e44ad; /* Lila Rand */
+    background-color: #eeeeee;
+    border: 2px solid #2894f4; /* Lila Rand */
     border-radius: 8px;
     font-size: 16px;
-    color: #fff;
+    color: #000;
     width: 340px;
     display: inline-block;
     cursor: pointer;
@@ -636,13 +631,13 @@ main section.upload-section {
 }
 
 .upload-form input[type="file"]:hover {
-    border-color: #9b59b6; /* Helleres Lila beim Hover */
+    border-color: #54aefd; /* Helleres Lila beim Hover */
     transform: translateY(-2px);
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
 }
 
 .upload-form input[type="file"]::file-selector-button {
-  background-color: #8e44ad; /* Lila */
+  background-color: #2894f4; /* Lila */
   padding: 14px 22px;
   border-radius: 12px;
   border: none;
@@ -656,7 +651,7 @@ main section.upload-section {
 
 /* Hover-Effekt für den Button */
 .upload-form input[type="file"]::file-selector-button:hover {
-  background-color: #9b59b6; /* Helleres Lila beim Hover */
+  background-color: #54aefd; /* Helleres Lila beim Hover */
   transform: translateY(-2px);
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
 }
@@ -664,35 +659,34 @@ main section.upload-section {
 /* Upload Status */
 #uploadStatus {
     margin-top: 35px;
-    color: #fff;
+    color: #000;
     font-size: 18px;
 }
 
 .progress-container {
   width: 100%; 
-  background-color: #1d004b; 
   border-radius: 5px; 
   margin-top: 20px;
-  border: 2px solid #8e44ad
+  border: 2px solid #2894f4;
 }
 
 .progress-bar {
   height: 20px; 
   width: 0; 
-  background-color: #8e44ad; 
+  background-color: #2894f4; 
   text-align: center; 
-  color: white; 
+  color: #000; 
   line-height: 20px;
 }
 
 .upload-speed {
   margin-top: 10px;
-  color: #FFF;
+  color: #000;
 }
 
 /* Datei-Übersichtsseite */
 main section.file-list-section {
-  background-color: #12002F;
+  background-color: #eeeeee;
   min-height: 100vh;
   display: block;
   background-position: center;
@@ -712,14 +706,14 @@ main section.file-list-section {
 .file-list-section h4 {
   font-size: 48px;
   margin-bottom: 32px;
-  color: #fff;
+  color: #000;
   font-weight: bold;
   text-align: left;
 }
 
 /* Dateiliste */
 .file-list {
-  background-color: #12002F;
+  background-color: #eeeeee;
   list-style: none;
   padding: 0;
   margin: 0 auto;
@@ -727,12 +721,11 @@ main section.file-list-section {
 }
 
 .file-item {
-  background-color: #1d004b;
   padding: 15px;
   border-radius: 8px;
-  border: 2px solid #8e44ad;
+  border: 2px solid #2894f4;
   align-items: center;
-  color: #FFF;
+  color: #000;
   font-size: 18px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   margin-bottom: 10px; /* Fügt Abstand zwischen den Einträgen hinzu */
@@ -740,24 +733,24 @@ main section.file-list-section {
 
 /* Links für Download & Löschen */
 .file-item a {
-  color: #8e44ad;
+  color: #2894f4;
   text-decoration: none;
   font-weight: bold;
   transition: all 0.3s ease;
 }
 
 .file-item a:hover {
-  color: #9b59b6;
+  color: #54aefd;
   transform: translateY(-2px);
 }
 
 /* Button-Stile für Löschen */
 .delete-button {
-  background-color: #8e44ad;
+  background-color: #2894f4;
   padding: 10px 14px;
   border-radius: 8px;
   border: none;
-  color: #FFF;
+  color: #000;
   font-weight: bold;
   cursor: pointer;
   font-size: 16px;
@@ -766,7 +759,37 @@ main section.file-list-section {
 }
 
 .delete-button:hover {
-  background-color: #9b59b6;
+  background-color: #54aefd;
   transform: translateY(-2px);
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+i.bx.bxs-trash {
+  font-size: 35px;
+  text-decoration: none;
+  color: #000;
+  margin-left: 15px;
+  transition: all 0.3s ease;
+}
+
+i.bx.bxs-trash:hover {
+  transform: translateY(-2px);
+  color: #f00;
+}
+
+i.bx.bxs-download {
+  font-size: 35px;
+  text-decoration: none;
+  color: #000;
+  margin-left: 15px;
+  transition: all 0.3s ease;
+}
+
+i.bx.bxs-download:hover {
+  transform: translateY(-2px);
+  color: #2894f4;
+}
+
+.tool-bar {
+  margin-bottom: 15px;
 }

@@ -47,6 +47,16 @@ if (isset($_POST["submit"])) {
                 $stmt->bindParam(":rank", $server_rank);
                 $stmt->execute();
 
+                // Benutzerverzeichnis für Uploads erstellen
+                $uploadDir = "/home/nas-website-files/user_files/";
+                $userDir = $uploadDir . $username . "/";
+
+                // Falls Benutzerverzeichnis nicht existiert, erstelle es
+                if (!is_dir($userDir)) {
+                    mkdir($userDir, 0775, true);
+                    chmod($userDir, 0775); // ✅ Fix: Keine chown()/chgrp(), sondern chmod()
+                }
+
                 // Erfolgreiche Registrierung → Weiterleitung zur Anmeldeseite
                 $successMessage = "Erfolgreich registriert! Weiterleitung zur Anmeldung...";
                 header("Location: Login.php");
@@ -90,9 +100,7 @@ if (isset($_POST["submit"])) {
         <?php endif; ?>
 				<a href="#">Kontakt</a>
 			</nav>
-			<button class="login_button">
-				<a href="Login.php">Anmelden</a>
-			</button>
+				<a class="login_button" href="Login.php">Anmelden</a>
 			<button class="hamburger">
 				<div class="bar"></div>
 			</button>
@@ -123,7 +131,7 @@ if (isset($_POST["submit"])) {
       $count = $stmt->fetchColumn();
 
       if ($count == 0) {
-          echo "<p>Dieser Account wird der Admin-Account sein!</p>";
+          echo "<p><strong>Dieser Account wird der Admin-Account sein!</strong></p>";
       }
       ?>
 

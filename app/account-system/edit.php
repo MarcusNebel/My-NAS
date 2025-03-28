@@ -78,9 +78,7 @@ if (isset($_POST["edit-submit"])) {
                 <a href="account.php">Mein Account</a>
                 <a href="#">Kontakt</a>
             </nav>
-            <button class="login_button">
-                <a href="logout.php">Abmelden</a>
-            </button>
+                <a class="login_button" href="logout.php">Abmelden</a>
         </div>
     </header>
     <main>

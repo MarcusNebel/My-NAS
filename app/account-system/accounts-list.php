@@ -56,13 +56,9 @@ if (!$user || $user["server_rank"] !== "Admin") {
 				<a href="#">Kontakt</a>
 			</nav>
 			<?php if (isset($_SESSION["id"])): ?>
-                <button class="login_button">
-                    <a href="logout.php">Abmelden</a>
-                </button>
+                <a class="login_button" href="logout.php">Abmelden</a>
             <?php else: ?>
-                <button class="login_button">
-                    <a href="Login.php">Anmelden</a>
-                </button>
+                <a class="login_button" href="Login.php">Anmelden</a>
             <?php endif; ?>
 			<button class="hamburger">
 				<div class="bar"></div>
@@ -73,7 +69,7 @@ if (!$user || $user["server_rank"] !== "Admin") {
 		<a href="../index.php">Startseite</a>
 		<a href="../User_Files.php">Meine Dateien</a>
 		<a href="../File_upload.php">Dateien hochladen</a>
-				<?php if(isset($_SESSION["id"])): ?>
+		<?php if(isset($_SESSION["id"])): ?>
 			<a href="account.php">Mein Account</a>
 		<?php else: ?>
 			<a href="Login.php">Mein Account</a>
@@ -115,7 +111,7 @@ if (!$user || $user["server_rank"] !== "Admin") {
                                     <td><?php echo htmlspecialchars($row["USERNAME"]); ?></td>
                                     <td><?php echo htmlspecialchars($row["EMAIL"]); ?></td>
                                     <td><?php echo htmlspecialchars($row["PASSWORD"]); ?></td>
-                                    <td><?php if(isset($rows["api_key"]) && !empty($rows["api_key"])) {
+                                    <td><?php if(isset($row["api_key"]) && !empty($row["api_key"])) {
                                         echo htmlspecialchars($row["api_key"]);
                                     } else {
                                         echo "NULL";

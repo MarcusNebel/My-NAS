@@ -33,13 +33,9 @@ session_start();
 				<a href="#">Kontakt</a>
 			</nav>
 			<?php if (isset($_SESSION["id"])): ?>
-                <button class="login_button">
-                    <a href="account-system/logout.php">Abmelden</a>
-                </button>
+                <a class="login_button" href="account-system/logout.php">Abmelden</a>
             <?php else: ?>
-                <button class="login_button">
-                    <a href="account-system/Login.php">Anmelden</a>
-                </button>
+                <a class="login_button" href="account-system/Login.php">Anmelden</a>
             <?php endif; ?>
 			<button class="hamburger">
 				<div class="bar"></div>
@@ -70,6 +66,5 @@ session_start();
 		</section>
 	</main>
 	<script src="assets/js/main.js"></script>
-	<script src="index.js"></script>
 </body>
 </html>

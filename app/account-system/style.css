@@ -36,6 +36,9 @@ body{
   font-size: 36px;
   text-align: center;
 }
+.wrapper p{
+  margin-top: 10px;
+}
 .wrapper .input-box{
   position: relative;
   width: 100%;

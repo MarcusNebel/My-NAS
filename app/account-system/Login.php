@@ -86,9 +86,7 @@
     		<?php endif; ?>
 				<a href="#">Kontakt</a>
 			</nav>
-			<button class="login_button">
-				<a href="register.php">Registrieren</a>
-			</button>
+				<a class="login_button" href="register.php">Registrieren</a>
 			<button class="hamburger">
 				<div class="bar"></div>
 			</button>
@@ -118,7 +116,7 @@
         $count = $stmt->fetchColumn();
 
         if ($count == 0) {
-            echo "<p>Es gibt noch keinen Account! Bitte erstelle den Ersten Account auf der Registrieren Seite</p>";
+            echo "<p><strong>Es gibt noch keinen Account! Bitte erstelle den ersten Account auf der Registrieren Seite</strong></p>";
         }
         ?>
       <?php if (!empty($userError)): ?>

@@ -1,10 +1,62 @@
 <?php
 session_start();
+
+// Benutzer nicht eingeloggt? Dann umleiten
 if (!isset($_SESSION["id"])) {
-    $_SESSION["redirect_to"] = $_SERVER["REQUEST_URI"]; // Speichert die aktuelle Seite
-    header("Location: Login.php"); // Weiterleitung zur Login-Seite
+    $_SESSION["redirect_to"] = $_SERVER["REQUEST_URI"];
+    header("Location: Login.php");
     exit();
 }
+
+// Datenbankverbindung
+require("mysql.php");
+
+// API-Schlüssel generieren
+if ($_SERVER["REQUEST_METHOD"] === "GET" && isset($_GET["api-submit"])) {
+    $stmt = $mysql->prepare("SELECT api_key FROM accounts WHERE ID = :id");
+    $stmt->execute(array(":id" => $_SESSION["id"]));
+    $row = $stmt->fetch();
+
+    if (empty($row["api_key"])) {
+        $prefix = "myn"; 
+        $random_part = bin2hex(random_bytes(30));
+        $api_key = $prefix . "-" . $random_part;
+
+        $stmt = $mysql->prepare("UPDATE accounts SET api_key = :api_key WHERE ID = :id");
+        $stmt->execute(array(":api_key" => $api_key, ":id" => $_SESSION["id"]));
+
+        // Nach dem Generieren umleiten
+        header("Location: account.php");
+        exit();
+    }
+}
+
+// Account löschen
+if ($_SERVER["REQUEST_METHOD"] === "GET" && isset($_GET["delete-account"])) {
+    $stmt = $mysql->prepare("SELECT USERNAME FROM accounts WHERE ID = :id");
+    $stmt->execute(array(":id" => $_SESSION["id"]));
+    $output = $stmt->fetch();
+    $username = $output["USERNAME"] ?? "Error: Benutzer konnte nicht aus der Datenbank gelesen werden!";
+
+    $stmt = $mysql->prepare("DELETE FROM accounts WHERE ID = :id");
+    $stmt->execute(array(":id" => $_SESSION["id"]));
+
+    $uploadDir = "/home/nas-website-files/user_files/";
+    $userDir = $uploadDir . $username . "/";
+
+    if (is_dir($userDir)) {
+        rmdir($userDir);
+    }
+
+    // Cookie und Session löschen
+    setcookie("login_cookie", "", time() - 3600);
+    session_destroy();
+
+    // Umleiten zur Startseite, damit "delete-account" nicht in der URL bleibt
+    header("Location: ../index.php");
+    exit();
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -39,13 +91,9 @@ if (!isset($_SESSION["id"])) {
 				<a href="#">Kontakt</a>
 			</nav>
 			<?php if (isset($_SESSION["id"])): ?>
-                <button class="login_button">
-                    <a href="logout.php">Abmelden</a>
-                </button>
+                <a class="login_button" href="logout.php">Abmelden</a>
             <?php else: ?>
-                <button class="login_button">
-                    <a href="Login.php">Anmelden</a>
-                </button>
+                <a class="login_button" href="Login.php">Anmelden</a>
             <?php endif; ?>
 			<button class="hamburger">
 				<div class="bar"></div>
@@ -170,24 +218,9 @@ if (!isset($_SESSION["id"])) {
 					<form class="delete-account-form" method="get">
 						<button class="delete-account-btn" name="delete-account" type="submit">Account löschen</button>
 					</form>
-					<?php
-					if(isset($server_rank, $_SESSION["id"]) && !empty($server_rank)) if($server_rank === "Admin") {
-						if ($_SERVER["REQUEST_METHOD"] === "GET" && isset($_GET["delete-account"])) {
-							require("mysql.php");
-
-							$stmt = $mysql->prepare("DELETE FROM accounts WHERE ID = :id");
-							$stmt->execute(array(":id" => $_SESSION["id"]));
-							$stmt->execute();
-
-							session_destroy();
-						}
-						?>
 						<hr style="border: 1px solid #ccc; margin: 20px 0;">
 						<h4>Admin Einstellungen:</h4>
 						<a class="all-accounts" href="accounts-list.php">Alle Accounts</a>
-						<?php
-					}
-					?>
 				</div>
 			</div>
 		</section>

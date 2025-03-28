@@ -77,9 +77,7 @@ if(isset($_POST['submit'])){
 	        	<?php endif; ?>
 				<a href="#">Kontakt</a>
             </nav>
-            <button class="login_button">
-                <a href="Login.php">Anmelden</a>
-            </button>
+                <a class="login_button" href="Login.php">Anmelden</a>
             <button class="hamburger">
                 <div class="bar"></div>
             </button>

@@ -67,15 +67,15 @@ if(isset($_POST['submit'])){
         <div class="container transparancy">
             <h2><a class="link-no-decoration" href="../index.php"><span>MY </span>NAS</a></h2>
             <nav>
-                <a href="../index.php">Startseite</a>
-				<a href="../User_Files.php">Meine Dateien</a>
-				<a href="../File_upload.php">Dateien hochladen</a>
+                <a class="hover-underline-animation left" href="../index.php">Startseite</a>
+				<a class="hover-underline-animation left" href="../User_Files.php">Meine Dateien</a>
+				<a class="hover-underline-animation left" href="../File_upload.php">Dateien hochladen</a>
                 <?php if(isset($_SESSION["id"])): ?>
-		        	<a href="account.php">Mein Account</a>
+		        	<a class="hover-underline-animation left" href="account.php">Mein Account</a>
 	        	<?php else: ?>
-	        		<a href="Login.php">Mein Account</a>
+	        		<a class="hover-underline-animation left" href="Login.php">Mein Account</a>
 	        	<?php endif; ?>
-				<a href="#">Kontakt</a>
+				<a class="hover-underline-animation left" href="#">Kontakt</a>
             </nav>
                 <a class="login_button" href="Login.php">Anmelden</a>
             <button class="hamburger">

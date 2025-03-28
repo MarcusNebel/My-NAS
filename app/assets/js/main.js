@@ -98,3 +98,40 @@ document.addEventListener("DOMContentLoaded", function() {
     document.getElementById("delete-selected").addEventListener("click", submitDeleteForm);
     document.getElementById("download-selected").addEventListener("click", handleDownload);
 });
+
+// Copying the API-Key
+function copyApiKey() {
+    var apiKeyElement = document.getElementById("apiKey");
+    var copyButton = document.getElementById("copyButton");
+
+    if (!apiKeyElement || !copyButton) {
+        console.error("Elemente nicht gefunden!");
+        return;
+    }
+
+    var apiKey = apiKeyElement.innerText.trim();
+
+    if (apiKey === "Kein API-Schlüssel vorhanden") {
+        copyButton.classList.remove("bxs-copy", "copied");
+        copyButton.classList.add("bxs-error", "error");
+        copyButton.title = "Kein Schlüssel!";
+    } else {
+        navigator.clipboard.writeText(apiKey).then(() => {
+            copyButton.classList.remove("bxs-copy", "error");
+            copyButton.classList.add("bxs-check-circle", "copied");
+            copyButton.title = "Kopiert!";
+        }).catch(err => {
+            console.error("Fehler beim Kopieren:", err);
+            copyButton.classList.remove("bxs-copy", "copied");
+            copyButton.classList.add("bxs-error", "error");
+            copyButton.title = "Fehler!";
+        });
+    }
+
+    // Nach 2 Sekunden Icon zurücksetzen
+    setTimeout(() => {
+        copyButton.classList.remove("bxs-check-circle", "bxs-error", "copied", "error");
+        copyButton.classList.add("bxs-copy");
+        copyButton.title = "Kopieren";
+    }, 2000);
+}

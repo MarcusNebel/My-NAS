@@ -129,18 +129,18 @@
     margin: 0 auto 16px;
     text-align: center;
     padding: 12px 16px;
-    background-color: #1f103F;
     color: #000;
     text-decoration: none;
-    background: linear-gradient(135deg, rgba(255, 0, 0, 0.1), rgba(255, 255, 255, 0));
+    border: 1px;
+    border-color: #2894f4;
+    border-radius: 20px;
+    background: linear-gradient(135deg, #2895f46c, #54aefd6c);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
-    border-radius: 20px;
-    border: 1px solid rgba(255, 255, 255, 0.18);
   }
   
   .mobile-nav a:hover {
-    background-color: #24104f;
+    background-color: #5555554b;
   }
   
   @media (min-width: 768px) {
@@ -242,6 +242,34 @@
     color: inherit;
     font-size: 20px;
     text-decoration: none;
+  }
+
+  .hover-underline-animation {
+    position: relative; /* Wichtig: Damit das ::after Pseudoelement relativ zu den Links positioniert wird */
+  }
+  
+  .hover-underline-animation::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    transform: scaleX(0);
+    height: 2px;
+    bottom: 0;
+    left: 0;
+    background-color: #2894f4;
+    transition: transform 0.25s ease-out;
+  }
+  
+  .hover-underline-animation:hover::after {
+    transform: scaleX(1);
+  }
+  
+  .hover-underline-animation.left::after {
+    transform-origin: bottom right;
+  }
+  
+  .hover-underline-animation.left:hover::after {
+    transform-origin: bottom left;
   }
   
   header.is-scrolling {
@@ -393,7 +421,6 @@
   }
   
   .mobile-nav a:hover {
-    background-color: #24104f;
   }
   
   @media (min-width: 768px) {

@@ -240,6 +240,38 @@ main .account-section {
   background: #54aefd;
 }
 
+i.bx.bxs-copy, i.bx.bxs-check-circle, i.bx.bxs-error {
+  margin-left: 15px;
+  text-decoration: none;
+  color: #000;
+  font-size: 30px; /* Gleiche Größe wie der Copy-Button */
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+/* Hover-Effekt für den Copy-Button */
+i.bx.bxs-copy:hover {
+  transform: translateY(-2px);
+  color: #2894f4;
+}
+
+/* Erfolgs-Icon Design */
+i.bx.bxs-check-circle.copied {
+  color: green;  /* Erfolgsfarbe */
+  transform: scale(1.2);  /* Leichte Vergrößerung */
+}
+
+/* Fehler-Icon Design */
+i.bx.bxs-error.error {
+  color: red;  /* Fehlerfarbe */
+  transform: scale(1.2);  /* Leichte Vergrößerung */
+}
+
+/* Sanfter Übergang für Icons (Wechsel zwischen Copy, Check und Error) */
+i.bx.bxs-copy.copied, i.bx.bxs-check-circle, i.bx.bxs-error {
+  transition: all 0.3s ease;
+}
+
 i.bx.bxs-trash {
   font-size: 35px;
   text-decoration: none;

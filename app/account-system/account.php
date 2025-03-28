@@ -80,15 +80,15 @@ if ($_SERVER["REQUEST_METHOD"] === "GET" && isset($_GET["delete-account"])) {
 		<div class="container transparancy">
       		<h2><a class="link-no-decoration" href="../index.php"><span>MY </span>NAS</a></h2>
 			<nav>
-				<a href="../index.php">Startseite</a>
-				<a href="../User_Files.php">Meine Dateien</a>
-				<a href="../File_upload.php">Dateien hochladen</a>
+				<a class="hover-underline-animation left" href="../index.php">Startseite</a>
+				<a class="hover-underline-animation left" href="../User_Files.php">Meine Dateien</a>
+				<a class="hover-underline-animation left" href="../File_upload.php">Dateien hochladen</a>
 				<?php if(isset($_SESSION["id"])): ?>
-					<a href="account.php">Mein Account</a>
+					<a class="hover-underline-animation left" href="account.php">Mein Account</a>
 				<?php else: ?>
-					<a href="Login.php">Mein Account</a>
+					<a class="hover-underline-animation left" href="Login.php">Mein Account</a>
 				<?php endif; ?>
-				<a href="#">Kontakt</a>
+				<a class="hover-underline-animation left" href="#">Kontakt</a>
 			</nav>
 			<?php if (isset($_SESSION["id"])): ?>
                 <a class="login_button" href="logout.php">Abmelden</a>
@@ -181,10 +181,11 @@ if ($_SERVER["REQUEST_METHOD"] === "GET" && isset($_GET["delete-account"])) {
 							onclick="return confirm('Möchten Sie den API Key wirklich löschen?')">
 							<i class="bx bxs-trash"></i>
 						</a>
+						<p><i id="copyButton" onclick="copyApiKey()" class='bx bxs-copy copy-icon'></i></p>
 					</form>
 
 					<ul class="api-list">
-						<p>Dein API-Schlüssel: <strong><?php echo htmlspecialchars($api_key); ?></strong></p>
+						<p>Dein API-Schlüssel: <strong id="apiKey"><?php echo htmlspecialchars($api_key); ?></strong></p>
 					</ul>
 
 					<?php

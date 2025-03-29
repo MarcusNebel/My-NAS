@@ -317,6 +317,26 @@ i.bx.bx-arrow-back:hover {
   margin-bottom: 32px;
 }
 
+.reset-weather-btn {
+  width: 50%;
+  height: 100%;
+  margin-bottom: 32px;
+  cursor: pointer;
+  background: #2894f4;
+  outline: none;
+  border: 2px solid #2894f4;
+  border-radius: 40px;
+  font-size: 16px;
+  color: #FFF;
+  padding: 13px 20px 13px 20px;
+  transition: all 0.3s ease;
+}
+
+.reset-weather-btn:hover {
+  transform: translateY(-2px);
+  background-color: #54aefd;
+}
+
 h5 {
   color: #f00;
   font-size: 25px;

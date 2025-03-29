@@ -64,6 +64,42 @@ session_start();
 				</h1>
 			</div>
 		</section>
+		<div id="scroll-indicator">
+			<svg width="100" height="100" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+				<path d="M12 16l-4-4h8l-4 4z" fill="currentColor"/>
+			</svg>
+		</div>
+		<section class="dashboard">
+				<div class="container">
+					<div class="grid">
+						<div class="card">
+							<h3>CPU Last</h3>
+							<p><?php echo shell_exec("top -bn1 | grep 'Cpu(s)' | awk '{print $2 + $4}'").'%'; ?></p>
+						</div>
+						<div class="card">
+							<h3>RAM Nutzung</h3>
+							<p><?php echo shell_exec("free -m | awk 'NR==2{print $3 \"MB / \" $2 \"MB\"}'"); ?></p>
+						</div>
+						<div class="card">
+							<h3>Speicherplatz</h3>
+							<p><?php echo shell_exec("df -h | grep '/$'"); ?></p>
+						</div>
+						<div class="card" id="weather-card">
+							<h3>Wetter in <span id="city">...</span></h3>
+							<p>Temperatur: <span id="temp">...</span>°C</p>
+							<p>Bedingung: <span id="condition">...</span></p>
+							<p>Höchsttemperatur: <span id="max-temp"></span></p>
+							<p>Tiefsttemperatur: <span id="min-temp"></span></p>
+
+							<h3>Vorschau</h3>
+							<div id="hourly-forecast-container">
+								<ul id="hourly-forecast"></ul>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
 	</main>
 	<script src="assets/js/main.js"></script>
 </body>

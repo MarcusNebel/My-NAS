@@ -215,6 +215,10 @@ if ($_SERVER["REQUEST_METHOD"] === "GET" && isset($_GET["delete-account"])) {
 						echo "Dein Server Rang ist: ", $server_rank;
 					}
 					?> </p>
+
+					<h4>Wetter Einstellungen:</h4>
+					<button class="reset-weather-btn" onclick="resetWeather()">API-Key & Stadt zurücksetzen</button>
+
 					<h5>Account löschen</h5>
 					<form class="delete-account-form" method="get">
 						<button class="delete-account-btn" name="delete-account" type="submit">Account löschen</button>

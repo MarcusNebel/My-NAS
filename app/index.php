@@ -30,7 +30,7 @@ session_start();
 				<?php else: ?>
 					<a class="hover-underline-animation left" href="account-system/Login.php">Mein Account</a>
 				<?php endif; ?>
-				<a class="hover-underline-animation left" href="#">Kontakt</a>
+				<a class="hover-underline-animation left" href="Contact_Page/Contact_Page.php">Kontakt</a>
 			</nav>
 			<?php if (isset($_SESSION["id"])): ?>
                 <a class="login_button" href="account-system/logout.php">Abmelden</a>
@@ -51,7 +51,7 @@ session_start();
 		<?php else: ?>
 			<a href="account-system/Login.php">Mein Account</a>
 		<?php endif; ?>
-		<a href="#">Kontakt</a>
+		<a href="Contact_Page/Contact_Page.php">Kontakt</a>
 	</nav>
 	<main>
 		<section class="banner">

@@ -1,0 +1,42 @@
+body{
+        background-image: #FFF;
+        font-family: 'Fira Sans', sans-serif;
+}
+.uf-contact-form-01 {
+    max-width: 1200px;
+}
+@media (min-width: 576px){
+     .uf-contact-form-01 {
+    min-height: 100vh;
+    align-content: center;
+} 
+}
+.uf-img-contact-form-01{
+      max-width: 100%;
+      animation: uf-animation 4s ease-in-out 1s infinite alternate;
+      position: relative;
+}
+.uf-ct-01-text-primary{
+      color: #2894f4;
+}
+.uf-ct-01-btn-primary{
+      background-color: #2894f4;
+      color: #fff;
+}
+.uf-ct-01-btn-primary:hover{
+      background-color: #54aefd;
+      color: #fff;
+}
+
+@keyframes uf-animation {
+  0%   {top:0px;}
+  50%  {top:-10px;}
+  100% {top:0px;}
+}
+.message {
+      height: 120px;
+}
+.form-control:focus {
+    border-color: #54aefd;
+    box-shadow: 0 0 0 .25rem rgb(84 174 253 / 21%);
+}

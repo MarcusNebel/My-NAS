@@ -88,7 +88,7 @@ if ($_SERVER["REQUEST_METHOD"] === "GET" && isset($_GET["delete-account"])) {
 				<?php else: ?>
 					<a class="hover-underline-animation left" href="Login.php">Mein Account</a>
 				<?php endif; ?>
-				<a class="hover-underline-animation left" href="#">Kontakt</a>
+				<a class="hover-underline-animation left" href="../Contact_Page/Contact_Page.php">Kontakt</a>
 			</nav>
 			<?php if (isset($_SESSION["id"])): ?>
                 <a class="login_button" href="logout.php">Abmelden</a>
@@ -109,7 +109,7 @@ if ($_SERVER["REQUEST_METHOD"] === "GET" && isset($_GET["delete-account"])) {
 		<?php else: ?>
 			<a href="Login.php">Mein Account</a>
 		<?php endif; ?>
-		<a href="#">Kontakt</a>
+		<a href="../Contact_Page/Contact_Page.php">Kontakt</a>
 	</nav>
 	<main>
 		<section class="account-section">

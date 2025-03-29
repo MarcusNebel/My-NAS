@@ -18,6 +18,8 @@ if (!isset($_SESSION["id"])) {
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,400;0,600;0,700;0,900;1,400;1,600;1,700&display=swap" rel="stylesheet" />
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+
     <link rel="stylesheet" href="assets/css/style.css" />
     <!-- Boxicons CSS -->
     <link href="https://cdn.jsdelivr.net/npm/boxicons@2.1.1/css/boxicons.min.css" rel="stylesheet">
@@ -83,6 +85,24 @@ if (!isset($_SESSION["id"])) {
             </div>
         </section>
     </main>
+    <div id="file-info-panel" class="hidden">
+        <div id="file-info-content">
+                <!-- Einzeldatei-Infos -->
+            <div id="single-file-info">
+                <img id="file-preview-img" src="assets/images/file-placeholder.png" alt="Dateivorschau">
+                <p><strong>Name:</strong> <span id="file-name"></span></p>
+                <p><strong>Typ:</strong> <span id="file-type"></span></p>
+                <p><strong>Größe:</strong> <span id="file-size"></span></p>
+                <p><strong>Pfad:</strong> <span id="file-path"></span></p>
+            </div>
+
+            <!-- Mehrere Dateien ausgewählt -->
+            <div id="multi-file-info" style="display: none;">
+                <p><strong>Ausgewählte Dateien:</strong> <span id="total-files"></span></p>
+                <p><strong>Gesamtgröße:</strong> <span id="total-size"></span></p>
+            </div>
+        </div>
+    </div>
     <script src="assets/js/main.js"></script>
 </body>
 </html>

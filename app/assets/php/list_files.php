@@ -17,8 +17,15 @@ if ($username) {
 
         // Liste der Dateien ausgeben
         foreach ($files as $file) {
+            $filePath = $directory . "/" . $file;
+            $fileSize = filesize($filePath); // Holt die Dateigröße
+        
             echo "<li class='file-item'>";
-            echo "<input type='checkbox' name='files[]' value='$file' class='file-checkbox'> $file";
+            echo "<input type='checkbox' name='files[]' value='$file' 
+                        class='file-checkbox' 
+                        data-name='$file' 
+                        data-size='$fileSize' 
+                        data-path='$filePath'> $file";
             echo "</li>";
         }
     } else {

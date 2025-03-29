@@ -420,9 +420,6 @@
     text-decoration: none;
   }
   
-  .mobile-nav a:hover {
-  }
-  
   @media (min-width: 768px) {
     .mobile-nav {
       display: none;
@@ -875,4 +872,47 @@ i.bx.bxs-download:hover {
   font-size: 14px;
   color: green;
   margin-top: 10px;
+}
+
+#file-info-panel {
+  padding: 10px;
+  position: fixed;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 300px;
+  width: 250px;
+  background: rgba(240, 240, 240, 0.925);
+  color: #000;
+  padding: 15px;
+  border-top: 2px solid;
+  border-left: 2px solid;
+  border-bottom: 2px solid;
+  border-color: #2894f4;
+  border-radius: 10px 0 0 10px;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3);
+  display: none;
+  z-index: 1000;
+}
+
+#file-info-panel h4 {
+  margin-top: 0;
+  font-size: 18px;
+  border-bottom: 2px solid #000;
+  padding-bottom: 5px;
+  margin-bottom: 10px;
+}
+
+#file-info-panel p,
+#file-info-panel span {
+  word-wrap: break-word;
+  white-space: normal;
+}
+
+.file-info-content {
+  font-size: 14px;
+}
+
+.file-info-content span {
+  font-weight: bold;
 }

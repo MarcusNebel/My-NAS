@@ -158,7 +158,7 @@ if (isset($_POST["submit"])) {
 
       <div class="input-box">
         <input type="password" name="pw2" placeholder="Passwort wiederholen" required>
-        <i class='bx bx-repeat'></i>
+        <i class='bx bx-refresh'></i>
       </div>
       <?php if (!empty($passwordError)): ?>
         <p class="error-message"><?php echo $passwordError; ?></p>

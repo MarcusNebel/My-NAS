@@ -135,3 +135,65 @@ function copyApiKey() {
         copyButton.title = "Kopieren";
     }, 2000);
 }
+
+// Detail Windows on the right side
+document.addEventListener("DOMContentLoaded", function () {
+    const checkboxes = document.querySelectorAll(".file-checkbox");
+    const fileInfoPanel = document.getElementById("file-info-panel");
+    const fileInfoContent = document.getElementById("file-info-content");
+
+    checkboxes.forEach(checkbox => {
+        checkbox.addEventListener("change", updateFileInfo);
+    });
+
+    function updateFileInfo() {
+        let selectedFiles = Array.from(checkboxes).filter(checkbox => checkbox.checked);
+
+        if (selectedFiles.length === 0) {
+            fileInfoPanel.style.display = "none"; // Panel ausblenden
+            return;
+        }
+
+        let totalSize = 0;
+        let fileList = [];
+
+        selectedFiles.forEach(file => {
+            let fileName = file.getAttribute("data-name");
+            let fileSize = parseInt(file.getAttribute("data-size"));
+            let filePath = file.getAttribute("data-path");
+
+            totalSize += fileSize;
+
+            fileList.push({
+                name: fileName,
+                size: formatFileSize(fileSize),
+                path: filePath
+            });
+        });
+
+        if (selectedFiles.length === 1) {
+            // Einzelne Datei anzeigen
+            let file = fileList[0];
+            fileInfoContent.innerHTML = `
+                <h4>📄 ${file.name}</h4>
+                <p><span>Größe:</span> ${file.size}</p>
+                <p><span>Pfad:</span> ${file.path}</p>
+            `;
+        } else {
+            // Mehrere Dateien: Anzahl + Gesamtgröße
+            fileInfoContent.innerHTML = `
+                <h4>📂 ${selectedFiles.length} Dateien ausgewählt</h4>
+                <p><span>Gesamtgröße:</span> ${formatFileSize(totalSize)}</p>
+            `;
+        }
+
+        fileInfoPanel.style.display = "block"; // Panel anzeigen
+    }
+
+    function formatFileSize(bytes) {
+        if (bytes < 1024) return bytes + " B";
+        else if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(2) + " KB";
+        else if (bytes < 1024 * 1024 * 1024) return (bytes / (1024 * 1024)).toFixed(2) + " MB";
+        else return (bytes / (1024 * 1024 * 1024)).toFixed(2) + " GB";
+    }
+});

@@ -63,17 +63,28 @@ if (!isset($_SESSION["id"])) {
     <main>
         <section class="file-list-section">
             <div class="container_file-list">
-                <h4>Hochgeladene Dateien:</h4>
+                <h4>Meine Dateien:</h4>
 
                 <!-- Werkzeugleiste mit Formular -->
                 <form action="assets/php/delete_handler.php" method="POST" id="delete-form">
-                    <div class="tool-bar">
-                        <a class="pen-a" href="javascript:void(0);" style="text-decoration: none;" id="delete-selected" title="Löschen">
-                            <i class='bx bxs-trash'></i>
+                    <a class="pen-a" href="javascript:void(0);" style="text-decoration: none;" id="download-selected" title="Ausgewählte Dateien herunterladen">
+                        <i class='bx bxs-download'></i>
+                    </a>
+                    
+                    <a class="pen-a" href="javascript:void(0);" style="text-decoration: none;" id="delete-selected" title="Löschen">
+                        <i class='bx bxs-trash'></i>
+                    </a>
+
+                    <div id="plus-icon">
+                        <a class="pen-a" href="javascript:void(0);" style="text-decoration: none;" id="toggle-menu" title="Hinzufügen">
+                            <i class='bx bxs-plus-circle'></i>
                         </a>
-                        <a class="pen-a" href="javascript:void(0);" style="text-decoration: none;" id="download-selected" title="Ausgewählte Dateien herunterladen">
-                            <i class='bx bxs-download'></i>
-                        </a>
+                    </div>
+
+                    <!-- Dropdown-Menü -->
+                    <div class="dropdown-menu">
+                        <a href="javascript:void(0);" id="create-folder"><i class='bx bx-folder-plus'></i> Neuen Ordner erstellen</a>
+                        <a href="File_upload.php" id="upload-file"><i class='bx bx-upload'></i> Datei hochladen</a>
                     </div>
 
                     <hr style="border: 2px solid #000; margin: 20px 0;">
@@ -82,6 +93,28 @@ if (!isset($_SESSION["id"])) {
                         <?php include 'assets/php/list_files.php'; ?>
                     </ul>
                 </form>
+
+            <!-- Abschnitt für den Datei-Upload, anfangs ausgeblendet -->
+            <section class="upload-section" id="upload-section" style="display: none;">
+                <div class="container-upload-section">
+                    <div class="upload-form">
+                        <h5>Datei-Upload:</h5>
+                        <form id="uploadForm" action="assets/php/upload.php" method="post" enctype="multipart/form-data">
+                            <input type="file" id="fileInput" name="file" required>
+                            <button type="submit">Hochladen</button>
+                        </form>
+                        <p id="uploadStatus"></p>
+
+                        <!-- Fortschrittsbalken -->
+                        <div id="progress-container" class="progress-container">
+                            <div id="progress-bar" class="progress-bar">0%</div>
+                        </div>
+
+                        <!-- Anzeige der Upload-Geschwindigkeit -->
+                        <p id="upload-speed" class="upload-speed">Upload-Geschwindigkeit: 0 MB/s</p>
+                    </div>
+                </div>
+            </section>
             </div>
         </section>
     </main>
@@ -89,7 +122,6 @@ if (!isset($_SESSION["id"])) {
         <div id="file-info-content">
                 <!-- Einzeldatei-Infos -->
             <div id="single-file-info">
-                <img id="file-preview-img" src="assets/images/file-placeholder.png" alt="Dateivorschau">
                 <p><strong>Name:</strong> <span id="file-name"></span></p>
                 <p><strong>Typ:</strong> <span id="file-type"></span></p>
                 <p><strong>Größe:</strong> <span id="file-size"></span></p>
@@ -104,5 +136,17 @@ if (!isset($_SESSION["id"])) {
         </div>
     </div>
     <script src="assets/js/main.js"></script>
+    <script>
+        document.getElementById('toggle-menu').addEventListener('click', function() {
+            var dropdownMenu = document.querySelector('.dropdown-menu');
+            
+            // Überprüfen, ob das Dropdown-Menü gerade angezeigt wird oder nicht
+            if (dropdownMenu.style.display === 'block') {
+                dropdownMenu.style.display = 'none';  // Wenn es angezeigt wird, dann ausblenden
+            } else {
+                dropdownMenu.style.display = 'block';  // Wenn es nicht angezeigt wird, dann einblenden
+            }
+        });
+    </script>
 </body>
 </html>

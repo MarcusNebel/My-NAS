@@ -12,7 +12,7 @@ if (!isset($_SESSION["id"])) {
 require("mysql.php");
 $stmt = $mysql->prepare("SELECT USERNAME FROM accounts WHERE ID = :id");
 $stmt->execute(array(":id" => $_SESSION["id"]));
-$username = $stmt->fetchColumn(); // ✅ Fix: Nur den String holen
+$username = $stmt->fetchColumn();
 
 if (!$username) {
     die("Fehler: Benutzer nicht gefunden.");
@@ -25,12 +25,12 @@ $userDir = $uploadDir . $username . "/";
 // Falls Benutzerverzeichnis nicht existiert, erstelle es
 if (!is_dir($userDir)) {
     mkdir($userDir, 0775, true);
-    chmod($userDir, 0775); // ✅ Fix: Keine chown()/chgrp(), sondern chmod()
+    chmod($userDir, 0775);
 }
 
 // Datei-Upload
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file'])) {
-    $fileName = basename($_FILES['file']['name']); // ✅ Sicherheitsfix gegen Pfadangriffe
+    $fileName = basename($_FILES['file']['name']);
     $targetFile = $userDir . $fileName;
 
     // Dateityp validieren

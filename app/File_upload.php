@@ -17,7 +17,8 @@ if (!isset($_SESSION["id"])) {
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,400;0,600;0,700;0,900;1,400;1,600;1,700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,400;0,600;0,700;0,900;1,400;1,600;1,700&display=swap" rel="stylesheet" />    
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     
     <link rel="stylesheet" href="assets/css/style.css" />
 </head>
@@ -61,6 +62,7 @@ if (!isset($_SESSION["id"])) {
         <section class="upload-section">
             <div class="container-upload-section">
                 <div class="upload-form">
+                <button onclick="redirectToUserFiles()"><i class='bx bx-left-arrow-alt' ></i></button>
                     <h5>Datei-Upload:</h5>
                     <form id="uploadForm" action="assets/php/upload.php" method="post" enctype="multipart/form-data">
                         <input type="file" id="fileInput" name="file" required>
@@ -81,5 +83,10 @@ if (!isset($_SESSION["id"])) {
     </main>
     <script src="assets/js/upload_info.js"></script>
     <script src="assets/js/main.js"></script>
+    <script>
+        function redirectToUserFiles() {
+        window.location.href = "../../User_Files.php";
+        }
+    </script>
 </body>
 </html>

@@ -32,6 +32,7 @@ document.getElementById('uploadForm').addEventListener('submit', function (event
     xhr.addEventListener('load', function () {
         if (xhr.status === 200) {
             uploadStatus.innerText = 'Datei erfolgreich hochgeladen!';
+            window.location.href = "../../User_Files.php";
         } else {
             uploadStatus.innerText = 'Fehler beim Hochladen der Datei.';
         }

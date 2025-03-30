@@ -16,6 +16,7 @@ session_start();
 	<link href="https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,400;0,600;0,700;0,900;1,400;1,600;1,700&display=swap" rel="stylesheet" />
 
 	<link rel="stylesheet" href="assets/css/style.css" />
+	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 	<header>
@@ -68,39 +69,92 @@ session_start();
 			<svg width="100" height="100" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 				<path d="M12 16l-4-4h8l-4 4z" fill="currentColor"/>
 			</svg>
+			<p>Dashboard</p>
 		</div>
 		<section class="dashboard">
-				<div class="container">
-					<div class="grid">
-						<div class="card">
-							<h3>CPU Last</h3>
-							<p><?php echo shell_exec("top -bn1 | grep 'Cpu(s)' | awk '{print $2 + $4}'").'%'; ?></p>
-						</div>
-						<div class="card">
-							<h3>RAM Nutzung</h3>
-							<p><?php echo shell_exec("free -m | awk 'NR==2{print $3 \"MB / \" $2 \"MB\"}'"); ?></p>
-						</div>
-						<div class="card">
-							<h3>Speicherplatz</h3>
-							<p><?php echo shell_exec("df -h | grep '/$'"); ?></p>
-						</div>
-						<div class="card" id="weather-card">
-							<h3>Wetter in <span id="city">...</span></h3>
-							<p>Temperatur: <span id="temp">...</span>°C</p>
-							<p>Bedingung: <span id="condition">...</span></p>
-							<p>Höchsttemperatur: <span id="max-temp"></span></p>
-							<p>Tiefsttemperatur: <span id="min-temp"></span></p>
+			<div class="container-dashboard">
+				<div class="flex">
+					<div class="chart-container card">
+						<h3>CPU Auslastung</h3>
+						<canvas id="cpuChart"></canvas>
+					</div>
+					<div class="chart-container card">
+						<h3>RAM Nutzung</h3>
+						<canvas id="ramChart"></canvas>
+					</div>
+				</div>
+			</div>
 
-							<h3>Vorschau</h3>
-							<div id="hourly-forecast-container">
-								<ul id="hourly-forecast"></ul>
-							</div>
-						</div>
+			<div class="other-content">
+				<div class="card">
+					<h3>Speicherplatz</h3>
+					<p>
+						<?php 
+							echo nl2br(shell_exec("df -h --output=size,used,pcent,avail / | tail -1 | awk '{print \"Festplattengröße: \" $1 \"\\nBenutzter Speicher: \" $2 \" (\" $3 \")\\nVerfügbarer Speicher: \" $4}'")); 
+						?>
+					</p>
+				</div>
+				<div class="card" id="weather-card">
+					<h3>Wetter in <span id="city">...</span></h3>
+					<p>Temperatur: <span id="temp">...</span>°C</p>
+					<p>Bedingung: <span id="condition">...</span></p>
+					<p>Höchsttemperatur: <span id="max-temp"></span></p>
+					<p>Tiefsttemperatur: <span id="min-temp"></span></p>
+
+					<h3>Vorschau</h3>
+					<div id="hourly-forecast-container">
+						<ul id="hourly-forecast"></ul>
 					</div>
 				</div>
 			</div>
 		</section>
 	</main>
 	<script src="assets/js/main.js"></script>
+	<script>
+		document.addEventListener('DOMContentLoaded', function() {
+			const ctxCpu = document.getElementById('cpuChart').getContext('2d');
+			const ctxRam = document.getElementById('ramChart').getContext('2d');
+			document.getElementById('cpuChart').style.height = '400px';
+			document.getElementById('cpuChart').style.width = '100%';
+			document.getElementById('ramChart').style.height = '400px';
+			document.getElementById('ramChart').style.width = '100%';
+
+			let cpuChart = new Chart(ctxCpu, {
+				type: 'line',
+				data: { labels: [], datasets: [{ label: 'CPU (%)', borderColor: '#2894f4', data: [], fill: false }] },
+				options: { responsive: true }
+			});
+
+			let ramChart = new Chart(ctxRam, {
+				type: 'line',
+				data: { labels: [], datasets: [{ label: 'RAM (MB)', borderColor: 'green', data: [], fill: false }] },
+				options: { responsive: true }
+			});
+
+			function updateStats() {
+				fetch('assets/php/stats.php')
+					.then(response => response.json())
+					.then(data => {
+						let time = new Date().toLocaleTimeString();
+						cpuChart.data.labels.push(time);
+						cpuChart.data.datasets[0].data.push(data.cpu);
+						if (cpuChart.data.labels.length > 10) {
+							cpuChart.data.labels.shift();
+							cpuChart.data.datasets[0].data.shift();
+						}
+						cpuChart.update();
+						ramChart.data.labels.push(time);
+						ramChart.data.datasets[0].data.push(data.ramUsed);
+						if (ramChart.data.labels.length > 10) {
+							ramChart.data.labels.shift();
+							ramChart.data.datasets[0].data.shift();
+						}
+						ramChart.update();
+					});
+			}
+			setInterval(updateStats, 2000);
+			updateStats();
+		});
+	</script>
 </body>
 </html>

@@ -347,3 +347,139 @@ scrollIndicator.addEventListener("click", () => {
         behavior: 'smooth'
     });
 });
+
+// + Dropdown-menu
+document.getElementById("toggle-menu").addEventListener("click", function() {
+    let menu = document.getElementById("dropdown-menu");
+    // Toggle Visibility of the dropdown
+    if (menu.style.display === "block") {
+        menu.style.display = "none";
+    } else {
+        menu.style.display = "block";
+    }
+});
+
+// Schließt das Menü, wenn außerhalb geklickt wird
+document.addEventListener("click", function(event) {
+    let menu = document.getElementById("dropdown-menu");
+    let button = document.getElementById("toggle-menu");
+
+    if (!menu.contains(event.target) && !button.contains(event.target)) {
+        menu.style.display = "none";
+    }
+});
+
+// Show File-Ipload-Section after clicking on add file
+document.getElementById("upload-file").addEventListener("click", function() {
+    // Versteckt alle anderen Abschnitte und zeigt den Datei-Upload
+    document.getElementById("upload-section").style.display = "block";
+});
+
+// Optional: Falls du den Upload-Fortschritt und Geschwindigkeit anzeigen möchtest
+const uploadForm = document.getElementById("uploadForm");
+uploadForm.addEventListener("submit", function(event) {
+    event.preventDefault();
+
+    const formData = new FormData(uploadForm);
+    const xhr = new XMLHttpRequest();
+    xhr.open("POST", uploadForm.action, true);
+
+    // Zeigt Fortschrittsbalken während des Uploads
+    xhr.upload.onprogress = function(event) {
+        if (event.lengthComputable) {
+            const percent = (event.loaded / event.total) * 100;
+            document.getElementById("progress-bar").style.width = percent + "%";
+            document.getElementById("progress-bar").innerText = Math.round(percent) + "%";
+        }
+    };
+
+    // Zeigt die Upload-Geschwindigkeit
+    let startTime = Date.now();
+    xhr.upload.onloadstart = function() {
+        startTime = Date.now();
+    };
+
+    xhr.upload.onloadend = function() {
+        const endTime = Date.now();
+        const uploadDuration = (endTime - startTime) / 1000; // in Sekunden
+        const fileSize = uploadForm.querySelector('input[type="file"]').files[0].size / 1024 / 1024; // in MB
+        const speed = (fileSize / uploadDuration).toFixed(2); // Geschwindigkeit in MB/s
+        document.getElementById("upload-speed").innerText = `Upload-Geschwindigkeit: ${speed} MB/s`;
+    };
+
+    xhr.send(formData);
+});
+
+async function fetchStats() {
+    try {
+        const response = await fetch('../php/stats.php');
+        const data = await response.json();
+
+        if (data.cpu !== undefined && data.ramUsed !== undefined && data.ramTotal !== undefined) {
+            updateCPUChart(data.cpu);
+            updateRAMChart(data.ramUsed, data.ramTotal);
+        }
+    } catch (error) {
+        console.error("Fehler beim Abrufen der Systemdaten:", error);
+    }
+}
+
+function updateCPUChart(cpuUsage) {
+    if (cpuChart) {
+        cpuChart.data.datasets[0].data.push(cpuUsage);
+        if (cpuChart.data.datasets[0].data.length > 10) {
+            cpuChart.data.datasets[0].data.shift(); // Älteste Werte entfernen
+        }
+        cpuChart.update();
+    }
+}
+
+function updateRAMChart(ramUsed, ramTotal) {
+    if (ramChart) {
+        ramChart.data.datasets[0].data = [ramUsed, ramTotal - ramUsed];
+        ramChart.update();
+    }
+}
+
+setInterval(fetchStats, 1000); // Alle 1 Sekunde aktualisieren
+
+// Initial laden
+fetchStats();
+
+const ctxCPU = document.getElementById('cpuChart').getContext('2d');
+const cpuChart = new Chart(ctxCPU, {
+    type: 'line',
+    data: {
+        labels: Array(10).fill(""),
+        datasets: [{
+            label: 'CPU-Auslastung (%)',
+            data: [],
+            borderColor: 'rgb(40, 148, 244)',
+            borderWidth: 2,
+            fill: false
+        }]
+    },
+    options: {
+        responsive: true,
+        scales: {
+            y: {
+                beginAtZero: true,
+                max: 100
+            }
+        }
+    }
+});
+
+const ctxRAM = document.getElementById('ramChart').getContext('2d');
+const ramChart = new Chart(ctxRAM, {
+    type: 'doughnut',
+    data: {
+        labels: ['Benutzt', 'Frei'],
+        datasets: [{
+            label: 'RAM-Nutzung (MB)',
+            data: [],
+            backgroundColor: ['#2894f4', '#dddddd'],
+            hoverOffset: 4
+        }]
+    }
+});

@@ -55,8 +55,7 @@ if(isset($_POST['submit'])){
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My NAS | Passwort zurücksetzen</title>
     <link rel="website icon" href="../Logo/Logo_512px.png">
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/reset_password.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link href="https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,400;0,600;0,700;0,900;1,400;1,600;1,700&display=swap" rel="stylesheet" />
@@ -98,6 +97,7 @@ if(isset($_POST['submit'])){
 
     <div class="wrapper">
         <form action="" method="post">
+            <h1>Passwort zurücksetzen</h1>
             <div class="input-box">
                 <input type="text" name="reset_code" placeholder="Reset-Code" required> <!-- Reset-Code hier als normales Eingabefeld -->
                 <i class='bx bx-key'></i>
@@ -108,7 +108,7 @@ if(isset($_POST['submit'])){
             </div>
             <div class="input-box">
                 <input type="password" name="pw2" placeholder="Passwort bestätigen" required>
-                <i class='bx bx-lock'></i>
+                <i class='bx bx-refresh'></i>
             </div>
 
             <button type="submit" name="submit" class="btn">Passwort ändern</button>

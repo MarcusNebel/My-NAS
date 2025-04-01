@@ -1,11 +1,9 @@
-* {
-    margin: 0;
-    padding: 0;
-    -webkit-box-sizing: border-box;
-    box-sizing: border-box;
-    font-family: 'Fira Sans', sans-serif;
-  }
-  
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Fira Sans', sans-serif;
+}
 .container {
   width: 100%;
   max-width: 100%;
@@ -405,44 +403,86 @@ main section.banner:after {
 }
 
 body{
-        background-image: #FFF;
-        font-family: 'Fira Sans', sans-serif;
-}
-.uf-contact-form-01 {
-    max-width: 1200px;
-}
-@media (min-width: 576px){
-     .uf-contact-form-01 {
-    min-height: 100vh;
-    align-content: center;
-} 
-}
-.uf-img-contact-form-01{
-      max-width: 100%;
-      animation: uf-animation 4s ease-in-out 1s infinite alternate;
-      position: relative;
-}
-.uf-ct-01-text-primary{
-      color: #2894f4;
-}
-.uf-ct-01-btn-primary{
-      background-color: #2894f4;
-      color: #fff;
-}
-.uf-ct-01-btn-primary:hover{
-      background-color: #54aefd;
-      color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: FFF;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
-@keyframes uf-animation {
-  0%   {top:0px;}
-  50%  {top:-10px;}
-  100% {top:0px;}
+main .accounts-list-section {
+  margin-top: 150px;
+  margin-left: 100px;
+  margin-right: 100px;
+  background-color: #FFF;
+  min-height: 100vh;
+  display: block;
+  background-position: center;
+  background-size: cover;
+  text-align: left;
 }
-.message {
-      height: 120px;
+
+/* Tabelle Styling */
+table {
+  width: 100%; /* Die Tabelle nimmt die gesamte Breite ein */
+  border-collapse: collapse; /* Entfernt Abstände zwischen Zellen */
+  margin: 20px 0; /* Abstand oben und unten */
+  background-color: transparent; /* Hintergrundfarbe der Tabelle */
 }
-.form-control:focus {
-    border-color: #54aefd;
-    box-shadow: 0 0 0 .25rem rgb(84 174 253 / 21%);
+
+th, td {
+  padding: 12px 15px; /* Polsterung innerhalb der Zellen */
+  text-align: left; /* Textausrichtung in Zellen */
+  border-bottom: 1px solid #000; /* Untere Grenze für jede Zeile */
+  color: #000;
+}
+
+.pen-a {
+  text-decoration: none;
+}
+
+th {
+  background-color: #000; /* Hintergrundfarbe für die Kopfzeile */
+  color: white; /* Schriftfarbe in der Kopfzeile */
+  font-weight: bold; /* Fettdruck für die Kopfzeile */
+}
+
+tr:nth-child(even) {
+  background-color: #54aefd; /* Abwechselnde Zeilenfarben */
+}
+
+
+/* Optional: Stil für Tabellen-Wrapper */
+.table-container {
+  max-width: 1000px; /* Maximale Breite für die Tabelle */
+  margin: 0 auto; /* Zentriert die Tabelle */
+  overflow-x: auto; /* Ermöglicht horizontales Scrollen, wenn die Tabelle zu breit ist */
+}
+
+i.bx.bxs-trash {
+  font-size: 35px;
+  text-decoration: none;
+  color: #000;
+  margin-left: 15px;
+  transition: all 0.3s ease;
+}
+
+i.bx.bxs-trash:hover {
+  transform: translateY(-2px);
+  color: #f00;
+}
+
+i.bx.bxs-edit-alt {
+  font-size: 35px;
+  text-decoration: none;
+  color: #000;
+  margin-left: 15px;
+  transition: all 0.3s ease;
+}
+
+i.bx.bxs-edit-alt:hover {
+  transform: translateY(-2px);
 }

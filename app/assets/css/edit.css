@@ -1,11 +1,9 @@
-* {
-    margin: 0;
-    padding: 0;
-    -webkit-box-sizing: border-box;
-    box-sizing: border-box;
-    font-family: 'Fira Sans', sans-serif;
-  }
-  
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Fira Sans', sans-serif;
+}
 .container {
   width: 100%;
   max-width: 100%;
@@ -405,44 +403,111 @@ main section.banner:after {
 }
 
 body{
-        background-image: #FFF;
-        font-family: 'Fira Sans', sans-serif;
-}
-.uf-contact-form-01 {
-    max-width: 1200px;
-}
-@media (min-width: 576px){
-     .uf-contact-form-01 {
-    min-height: 100vh;
-    align-content: center;
-} 
-}
-.uf-img-contact-form-01{
-      max-width: 100%;
-      animation: uf-animation 4s ease-in-out 1s infinite alternate;
-      position: relative;
-}
-.uf-ct-01-text-primary{
-      color: #2894f4;
-}
-.uf-ct-01-btn-primary{
-      background-color: #2894f4;
-      color: #fff;
-}
-.uf-ct-01-btn-primary:hover{
-      background-color: #54aefd;
-      color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: FFF;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
-@keyframes uf-animation {
-  0%   {top:0px;}
-  50%  {top:-10px;}
-  100% {top:0px;}
+.account-body {
+  display: flex;
+  justify-content: left;
+  min-height: 100vh;
+  background-color: #FFF;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
-.message {
-      height: 120px;
+
+main .account-section {
+  background-color: #FFF;
+  min-height: 100vh;
+  display: block;
+  background-position: center;
+  background-size: cover;
+  text-align: left;
 }
-.form-control:focus {
-    border-color: #54aefd;
-    box-shadow: 0 0 0 .25rem rgb(84 174 253 / 21%);
+
+.container_account {
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  padding-top: 130px;
+  padding-left: 100px;
+  padding-right: 100px;
+  display: block;
+
+}
+
+.input-box-account {
+  position: relative;
+  width: 100%;
+  height: 50px;
+  margin: 30px 0;
+}
+
+.input-box-account input{
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  outline: none;
+  border: 2px solid #2894f4;
+  border-radius: 40px;
+  font-size: 16px;
+  color: #000;
+  padding: 20px 45px 20px 20px;
+}
+
+.input-box-account {
+  margin-left: 15px;
+  margin-right: 15px;
+}
+
+.btn-submit {
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+  background: #2894f4;
+  outline: none;
+  border: 2px solid #2894f4;
+  border-radius: 40px;
+  font-size: 16px;
+  color: #000;
+  padding: 13px 20px 13px 20px;
+  margin-top: 30px;
+  transition: all 0.3s ease;
+}
+
+.btn-submit:hover {
+  transform: translateY(-2px);
+  background: #54aefd;
+}
+
+.account-form {
+  display: flex;
+  justify-content: left;
+}
+
+.account-section h4 {
+  font-size: 30px;
+  margin-bottom: 32px;
+  color: #000;
+  font-weight: bold;
+  text-align: left;
+}
+
+i.bx.bx-arrow-back {
+  cursor: pointer;
+  font-size: 35px;
+  text-decoration: none;
+  color: #000;
+  transition: all 0.3s ease;
+}
+
+i.bx.bx-arrow-back:hover {
+  transform: translateY(-2px);
 }

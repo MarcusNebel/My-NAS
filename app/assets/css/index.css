@@ -404,45 +404,214 @@ main section.banner:after {
   opacity: 0.8;
 }
 
-body{
-        background-image: #FFF;
-        font-family: 'Fira Sans', sans-serif;
-}
-.uf-contact-form-01 {
-    max-width: 1200px;
-}
-@media (min-width: 576px){
-     .uf-contact-form-01 {
-    min-height: 100vh;
-    align-content: center;
-} 
-}
-.uf-img-contact-form-01{
-      max-width: 100%;
-      animation: uf-animation 4s ease-in-out 1s infinite alternate;
-      position: relative;
-}
-.uf-ct-01-text-primary{
-      color: #2894f4;
-}
-.uf-ct-01-btn-primary{
-      background-color: #2894f4;
-      color: #fff;
-}
-.uf-ct-01-btn-primary:hover{
-      background-color: #54aefd;
-      color: #fff;
+main section.banner .container {
+  position: relative;
+  z-index: 1;
 }
 
-@keyframes uf-animation {
-  0%   {top:0px;}
-  50%  {top:-10px;}
-  100% {top:0px;}
+main section.banner .container h1 {
+  font-size: 72px;
+  margin-bottom: 32px;
 }
-.message {
-      height: 120px;
+
+main section.banner .container h1 span {
+  color: #2894f4;
 }
-.form-control:focus {
-    border-color: #54aefd;
-    box-shadow: 0 0 0 .25rem rgb(84 174 253 / 21%);
+
+@media (max-width: 767px) {
+  main section.banner .container h1 {
+    font-size: 32px;
+  }
+}
+
+main section.banner .container .subtitle {
+  font-size: 36px;
+  font-weight: 400;
+  margin-bottom: 32px;
+}
+
+@media (max-width: 767px) {
+  main section.banner .container .subtitle {
+    font-size: 20px;
+  }
+}
+
+.dashboard {
+  padding: 20px;
+  background: #FFF;
+}
+
+.flex {
+  display: flex;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+@media (max-width: 768px) {
+  .flex {
+      display: block;
+  }
+
+  .other-content {
+    display: block;
+}
+}
+
+@media (min-width: 769px) {
+  .flex {
+      display: flex;
+  }
+
+  .other-content {
+    display: flex;
+  }
+}
+
+.card {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  border-top: 4px solid #2894f4;
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.card h3 {
+  margin-bottom: 10px;
+  color: #2894f4;
+}
+
+/* Wetteranzeige */
+#city {
+  font-weight: bold;
+  font-size: 1.5em;
+}
+
+#temp {
+  font-size: 1.2em;
+  color: #2894f4;
+}
+
+#condition {
+  font-style: italic;
+  color: #555;
+}
+
+/* Stündliche Vorschau */
+#hourly-container {
+  width: 100%; /* Volle Breite der Hauptkachel */
+  overflow-x: auto; /* Horizontal scrollbar */
+  white-space: nowrap; /* Verhindert Umbrüche */
+  display: flex;
+  gap: 10px;
+  padding: 10px;
+}
+
+#hourly-forecast-container {
+  width: 100%;
+  overflow-x: auto; /* Horizontal scrollen erlauben */
+  white-space: nowrap;
+  scrollbar-width: none; /* Versteckt die Scrollbar in Firefox */
+}
+
+#hourly-forecast {
+  display: flex;
+  flex-wrap: nowrap; /* Verhindert Umbruch */
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+#hourly-forecast-container::-webkit-scrollbar {
+  display: none; /* Versteckt die Scrollbar in Chrome/Safari */
+}
+
+#hourly-forecast li {
+  min-width: 100px; /* Breite einer einzelnen Kachel */
+  text-align: center;
+  padding: 10px;
+  margin-right: 10px;
+  margin-bottom: 8px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.8);
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  flex: 0 0 auto;
+  width: 150px;
+  text-align: center;
+  align-items: center;
+  transition: all 0.3s ease;
+}
+
+#hourly-forecast li:hover {
+  transform: translateY(-5px);
+}
+
+#hourly-forecast img {
+  width: 30px;
+  height: 30px;
+  margin-bottom: 10px;
+}
+
+#hourly-forecast .time {
+  font-size: 1.1em;
+  margin-bottom: 5px;
+}
+
+#hourly-forecast .temp {
+  font-size: 1.2em;
+  color: #2894f4;
+  margin-bottom: 5px;
+}
+
+#hourly-forecast .condition {
+  font-size: 0.9em;
+  color: #555;
+}
+
+#scroll-indicator {
+  position: fixed;
+  cursor: pointer;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  animation: pulse 1s infinite;  /* Pulsierende Animation */
+  opacity: 1;  /* Standardmäßig sichtbar */
+  transition: opacity 0.5s ease; /* Übergang für sanftes Ausblenden */
+}
+
+#scroll-indicator p {
+  margin-left: 11px;
+}
+
+@keyframes pulse {
+  0% {
+      opacity: 1;
+  }
+  50% {
+      opacity: 0.7;
+  }
+  100% {
+      opacity: 1;
+  }
+}
+
+#cpuChart, #ramChart, #diskChart {
+  width: 100% !important;  /* Passt die Breite des Diagramms an den Container an */
+  height: 400px !important; /* Erhöht die Höhe des Diagramms */
+}
+
+@media (max-width: 768px) {
+  #cpuChart, #ramChart, #diskChart {
+      height: 300px; /* Weniger Höhe auf kleineren Geräten */
+  }
+}
+
+@media (min-width: 769px) {
+  #cpuChart, #ramChart, #diskChart {
+      height: 500px; /* Größere Höhe auf Desktop-Geräten */
+  }
 }

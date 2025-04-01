@@ -404,45 +404,207 @@ main section.banner:after {
   opacity: 0.8;
 }
 
-body{
-        background-image: #FFF;
-        font-family: 'Fira Sans', sans-serif;
-}
-.uf-contact-form-01 {
-    max-width: 1200px;
-}
-@media (min-width: 576px){
-     .uf-contact-form-01 {
-    min-height: 100vh;
-    align-content: center;
-} 
-}
-.uf-img-contact-form-01{
-      max-width: 100%;
-      animation: uf-animation 4s ease-in-out 1s infinite alternate;
-      position: relative;
-}
-.uf-ct-01-text-primary{
-      color: #2894f4;
-}
-.uf-ct-01-btn-primary{
-      background-color: #2894f4;
-      color: #fff;
-}
-.uf-ct-01-btn-primary:hover{
-      background-color: #54aefd;
-      color: #fff;
+main section.file-list-section {
+  background-color: #FFF;
+  min-height: 100vh;
+  display: block;
+  background-position: center;
+  background-size: cover;
 }
 
-@keyframes uf-animation {
-  0%   {top:0px;}
-  50%  {top:-10px;}
-  100% {top:0px;}
+.container_file-list {
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  padding-top: 130px;
+  padding-left: 100px;
+  padding-right: 100px;
 }
-.message {
-      height: 120px;
+
+/* Überschrift */
+.file-list-section h4 {
+  font-size: 48px;
+  margin-bottom: 32px;
+  color: #000;
+  font-weight: bold;
+  text-align: left;
 }
-.form-control:focus {
-    border-color: #54aefd;
-    box-shadow: 0 0 0 .25rem rgb(84 174 253 / 21%);
+
+/* Dateiliste */
+.file-list {
+  background-color: #FFF;
+  list-style: none;
+  padding: 0;
+  margin: 0 auto;
+  align-items: center;
+}
+
+.file-item {
+  padding: 15px;
+  border-radius: 8px;
+  border: 2px solid #2894f4;
+  align-items: center;
+  color: #000;
+  font-size: 18px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  margin-bottom: 10px; /* Fügt Abstand zwischen den Einträgen hinzu */
+}
+
+/* Links für Download & Löschen */
+.file-item a {
+  color: #2894f4;
+  text-decoration: none;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+.file-item a:hover {
+  color: #54aefd;
+  transform: translateY(-2px);
+}
+
+/* Button-Stile für Löschen */
+.delete-button {
+  background-color: #2894f4;
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: none;
+  color: #000;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.delete-button:hover {
+  background-color: #54aefd;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+i.bx.bxs-trash {
+  font-size: 35px;
+  text-decoration: none;
+  color: #000;
+  margin-left: 15px;
+  transition: all 0.3s ease;
+}
+
+i.bx.bxs-trash:hover {
+  transform: translateY(-2px);
+  color: #f00;
+}
+
+i.bx.bxs-download {
+  font-size: 35px;
+  text-decoration: none;
+  color: #000;
+  margin-left: 15px;
+  transition: all 0.3s ease;
+}
+
+i.bx.bxs-download:hover {
+  transform: translateY(-2px);
+  color: #2894f4;
+}
+
+/* Stil für die Toolbar */
+.toolbar {
+  display: flex;
+  align-items: center;
+  position: relative;  /* Das übergeordnete Element wird als Bezugspunkt für die Positionierung des Dropdowns genutzt */
+  background-color: #f0f0f0;  /* Optional: Hintergrundfarbe für die Toolbar */
+  padding: 10px 20px;  /* Optional: Padding für die Toolbar */
+}
+
+/* Stil für den Plus-Icon-Container */
+#plus-icon {
+  display: inline-block;
+  cursor: pointer;
+  position: relative; /* Bezugspunkt für das Dropdown-Menü */
+}
+
+/* Dropdown-Menü */
+.dropdown-menu {
+  margin-top: 10px;
+  width: 250px;
+  border: 2px solid #2379d4;
+  border-radius: 10px;
+  display: none;
+  position: relative; /* Über anderen Elementen schweben */
+  top: 100%; /* Direkt unter dem Plus-Icon */
+  left: 0;
+  background-color: white;
+  padding: 10px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+  z-index: 1000; /* Damit das Dropdown über allem liegt */
+}
+
+/* Zusätzliche Stile für das Dropdown */
+.dropdown-menu a {
+  display: block;
+  padding: 8px;
+  text-decoration: none;
+  color: #000;
+}
+
+.dropdown-menu a:hover {
+  background-color: #f0f0f0;
+}
+
+i.bx.bxs-plus-circle {
+  font-size: 35px;
+  text-decoration: none;
+  color: #000;
+  margin-left: 15px;
+  transition: all 0.3s ease;
+}
+
+i.bx.bxs-plus-circle:hover {
+  transform: translateY(-2px);
+  color: #2379d4;
+}
+
+#file-info-panel {
+  padding: 10px;
+  position: fixed;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 300px;
+  width: 250px;
+  background: rgba(240, 240, 240, 0.925);
+  color: #000;
+  padding: 15px;
+  border-top: 2px solid;
+  border-left: 2px solid;
+  border-bottom: 2px solid;
+  border-color: #2894f4;
+  border-radius: 10px 0 0 10px;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3);
+  display: none;
+  z-index: 1000;
+}
+
+#file-info-panel h4 {
+  margin-top: 0;
+  font-size: 18px;
+  border-bottom: 2px solid #000;
+  padding-bottom: 5px;
+  margin-bottom: 10px;
+}
+
+#file-info-panel p,
+#file-info-panel span {
+  word-wrap: break-word;
+  white-space: normal;
+}
+
+.file-info-content {
+  font-size: 14px;
+}
+
+.file-info-content span {
+  font-weight: bold;
 }

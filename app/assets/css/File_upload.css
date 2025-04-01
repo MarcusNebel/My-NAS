@@ -404,45 +404,149 @@ main section.banner:after {
   opacity: 0.8;
 }
 
-body{
-        background-image: #FFF;
-        font-family: 'Fira Sans', sans-serif;
-}
-.uf-contact-form-01 {
-    max-width: 1200px;
-}
-@media (min-width: 576px){
-     .uf-contact-form-01 {
-    min-height: 100vh;
-    align-content: center;
-} 
-}
-.uf-img-contact-form-01{
-      max-width: 100%;
-      animation: uf-animation 4s ease-in-out 1s infinite alternate;
-      position: relative;
-}
-.uf-ct-01-text-primary{
-      color: #2894f4;
-}
-.uf-ct-01-btn-primary{
-      background-color: #2894f4;
-      color: #fff;
-}
-.uf-ct-01-btn-primary:hover{
-      background-color: #54aefd;
-      color: #fff;
+main section.upload-section {
+  background-color: #FFF;
+  min-height: 100vh;
+  background-position: center;
+  background-size: cover;
+  padding: 40px 20px; /* Padding hinzugefügt, um mehr Platz zu schaffen */
 }
 
-@keyframes uf-animation {
-  0%   {top:0px;}
-  50%  {top:-10px;}
-  100% {top:0px;}
+.container-upload-section {
+  width: 100%;
+  max-width: 800px; /* Begrenzung der Breite auf 800px für ein besseres Layout */
+  margin: 0 auto; /* Zentriert den Inhalt */
+  padding-top: 130px;
+  padding-left: 20px;
+  padding-right: 20px;
 }
-.message {
-      height: 120px;
+
+i.bx.bx-left-arrow-alt {
+  font-size: 25px;
+  text-decoration: none;
+  text-align: center;
 }
-.form-control:focus {
-    border-color: #54aefd;
-    box-shadow: 0 0 0 .25rem rgb(84 174 253 / 21%);
+
+.upload-form {
+  display: block;
+  background-color: #FFF; /* Hintergrundfarbe des Formulars */
+  padding: 30px; /* Padding für das Formular */
+  border-radius: 10px; /* Runde Ecken */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Schatten für den Form */
+}
+
+.upload-form h5 {
+  font-size: 48px;
+  margin-bottom: 32px;
+  color: #000;
+  font-weight: bold;
+  text-align: left;
+}
+
+.upload-form form {
+  margin-top: 20px;
+}
+
+.upload-form button {
+  background-color: #2894f4; /* Lila */
+  margin-top: 15px;
+  padding: 14px 22px;
+  border-radius: 12px;
+  border: none;
+  color: #FFF;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 18px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  display: inline-block;
+}
+
+/* Hover-Effekt für den Button */
+.upload-form button:hover {
+  background-color: #54aefd; /* Helleres Lila beim Hover */
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Datei-Upload Input */
+.upload-form input[type="file"] {
+  margin-top: 20px;
+  padding: 10px;
+  background-color: #FFF;
+  border: 2px solid #2894f4; /* Lila Rand */
+  border-radius: 8px;
+  font-size: 16px;
+  color: #000;
+  width: 100%;
+  max-width: 340px; /* Maximale Breite */
+  display: inline-block;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.upload-form input[type="file"]:hover {
+  border-color: #54aefd; /* Helleres Lila beim Hover */
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+.upload-form input[type="file"]::file-selector-button {
+  background-color: #2894f4; /* Lila */
+  padding: 14px 22px;
+  border-radius: 12px;
+  border: none;
+  color: #FFF;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 18px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Hover-Effekt für den Button */
+.upload-form input[type="file"]::file-selector-button:hover {
+  background-color: #54aefd; /* Helleres Lila beim Hover */
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Upload Status */
+#uploadStatus {
+  margin-top: 35px;
+  color: #000;
+  font-size: 18px;
+}
+
+.progress-container {
+  width: 100%; 
+  border-radius: 5px; 
+  margin-top: 20px;
+  border: 2px solid #2894f4;
+  background-color: #FFF; /* Hintergrundfarbe für den Container */
+}
+
+.progress-bar {
+  height: 20px; 
+  width: 0; 
+  background-color: #2894f4; 
+  text-align: center; 
+  color: #000; 
+  line-height: 20px;
+  border-radius: 4px;
+}
+
+.upload-speed {
+  margin-top: 10px;
+  color: #000;
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 0;
+}
+
+/* Optional: Einfache Übergangsanimationen */
+.upload-form input[type="file"],
+.upload-form button {
+  transition: all 0.3s ease-in-out;
 }

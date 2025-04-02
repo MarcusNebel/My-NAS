@@ -31,7 +31,7 @@ if (!isset($_SESSION["id"])) {
             <nav>
                 <a class="hover-underline-animation left" href="index.php">Startseite</a>
                 <a class="hover-underline-animation left" href="User_Files.php">Meine Dateien</a>
-                <a class="hover-underline-animation left" href="File_upload.php">Dateien hochladen</a>
+                <a class="hover-underline-animation left" href="messenger.php">Messenger</a>
                 <?php if(isset($_SESSION["id"])): ?>
                     <a class="hover-underline-animation left" href="account-system/account.php">Mein Account</a>
                 <?php else: ?>
@@ -52,7 +52,7 @@ if (!isset($_SESSION["id"])) {
     <nav class="mobile-nav">
         <a href="index.php">Startseite</a>
         <a href="User_Files.php">Meine Dateien</a>
-        <a href="File_upload.php">Dateien hochladen</a>
+        <a href="messenger.php">Messenger</a>
         <?php if(isset($_SESSION["id"])): ?>
             <a href="account-system/account.php">Mein Account</a>
         <?php else: ?>

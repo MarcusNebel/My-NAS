@@ -73,7 +73,7 @@ if (isset($_POST["edit-submit"])) {
             <nav>
                 <a class="hover-underline-animation left" href="../index.php">Startseite</a>
                 <a class="hover-underline-animation left" href="../User_Files.php">Meine Dateien</a>
-                <a class="hover-underline-animation left" href="../File_upload.php">Dateien hochladen</a>
+                <a class="hover-underline-animation left" href="../messenger.php">Messenger</a>
                 <?php if(isset($_SESSION["id"])): ?>
 					<a class="hover-underline-animation left" href="account.php">Mein Account</a>
 				<?php else: ?>

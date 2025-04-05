@@ -9,23 +9,37 @@ RUN apt-get update && apt-get install -y \
     libzip-dev \
     unzip \
     mariadb-client \
+    openssl \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install gd mysqli pdo pdo_mysql zip
 
-# Erstellt das Verzeichniss für die hocgeldenen Dateien
-RUN mkdir -p /home/nas-website-files/user_files
-RUN chown -R www-data:www-data /home/nas-website-files/user_files/
-RUN chmod -R 775 /home/nas-website-files/user_files/
+# Aktiviere Apache-Module
+RUN a2enmod rewrite ssl
 
-# Erstellt Verzeichniss für temporäre Zip Dateien
-RUN mkdir -p /home/nas-website-files/tmp_zips/
-RUN chown -R www-data:www-data /home/nas-website-files/tmp_zips/
-RUN chmod -R 775 /home/nas-website-files/tmp_zips/
+# SSL-Zertifikatsordner anlegen
+RUN mkdir -p /etc/apache2/ssl
 
-# Aktiviert mod_rewrite für Apache (wichtig für .htaccess)
-RUN a2enmod rewrite
+# Self-Signed Zertifikat erstellen
+RUN openssl req -x509 -newkey rsa:2048 -nodes \
+    -keyout /etc/apache2/ssl/selfsigned.key \
+    -out /etc/apache2/ssl/selfsigned.crt \
+    -days 365 \
+    -subj "/C=DE/ST=NRW/L=Localhost/O=NAS-Website/OU=Dev/CN=localhost"
 
-# Setzt das Arbeitsverzeichnis für die Website
+# Passe die default-ssl.conf an
+RUN sed -i 's|SSLCertificateFile.*|SSLCertificateFile /etc/apache2/ssl/selfsigned.crt|' /etc/apache2/sites-available/default-ssl.conf && \
+    sed -i 's|SSLCertificateKeyFile.*|SSLCertificateKeyFile /etc/apache2/ssl/selfsigned.key|' /etc/apache2/sites-available/default-ssl.conf
+
+# Aktiviere die HTTPS-Site
+RUN a2ensite default-ssl
+
+# Verzeichnisse für Uploads & temporäre Zips
+RUN mkdir -p /home/nas-website-files/user_files && \
+    mkdir -p /home/nas-website-files/tmp_zips/ && \
+    chown -R www-data:www-data /home/nas-website-files/ && \
+    chmod -R 775 /home/nas-website-files/
+
+# Setzt das Arbeitsverzeichnis
 WORKDIR /var/www/html
 
 # Kopiert den Website-Code ins Container-Verzeichnis
@@ -34,14 +48,13 @@ COPY ./app/ /var/www/html/nas-website/
 # Setzt die korrekten Dateiberechtigungen
 RUN chown -R www-data:www-data /var/www/html/nas-website
 
-# Setze das Skript als ausführbar
-RUN chmod +x /var/www/html/nas-website/adjust_upload_limit.sh
+# Skript ausführen (z. B. PHP limits setzen)
+RUN chmod +x /var/www/html/nas-website/adjust_upload_limit.sh && \
+    bash /var/www/html/nas-website/adjust_upload_limit.sh
 
-# Führe das Skript aus
-RUN bash /var/www/html/nas-website/adjust_upload_limit.sh
-
-# Exponiert Port 80 für den Webserver
+# Exponiert sowohl HTTP als auch HTTPS
 EXPOSE 80
+EXPOSE 443
 
-# Startet Apache beim Container-Start
+# Starte Apache im Vordergrund
 CMD ["apache2-foreground"]

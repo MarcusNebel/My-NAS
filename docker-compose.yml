@@ -10,7 +10,8 @@ services:
       - ./app/:/var/www/html/
       - ./app/nas-website-files/user_files/:/home/nas-website-files/user_files # This is the path to your data from the website
     ports:
-      - 8443:80
+      - "80:80"
+      - "8443:443"
     restart: unless-stopped
     environment:
       MYSQL_HOST: db

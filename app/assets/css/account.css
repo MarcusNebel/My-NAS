@@ -476,7 +476,7 @@ main .account-section {
   border: 2px solid #2894f4;
   border-radius: 40px;
   font-size: 16px;
-  color: #000;
+  color: #FFF;
   padding: 13px 20px 13px 20px;
   margin-top: 30px;
   transition: all 0.3s ease;
@@ -494,7 +494,7 @@ main .account-section {
 
 .account-section h4 {
   font-size: 30px;
-  margin-bottom: 32px;
+  margin-bottom: 20px;
   color: #000;
   font-weight: bold;
   text-align: left;
@@ -516,22 +516,25 @@ main .account-section {
 }
 
 .api-btn-submit {
-  width: 50%;
-  height: 100%;
+  width: 50px;
+  height: 50px;
   cursor: pointer;
   background: #2894f4;
   outline: none;
   border: 2px solid #2894f4;
   border-radius: 40px;
-  font-size: 16px;
+  font-size: 32px;
   color: #FFF;
-  padding: 13px 20px 13px 20px;
   transition: all 0.3s ease;
 }
 
 .api-btn-submit:hover {
   transform: translateY(-2px);
   background: #54aefd;
+}
+
+i.bx.bxs-plus-circle {
+  margin-top: 5px;
 }
 
 i.bx.bxs-copy, i.bx.bxs-check-circle, i.bx.bxs-error {
@@ -666,6 +669,7 @@ h5 {
   text-decoration: none;
   width: 50%;
   height: 100%;
+  margin-bottom: 20px;
   cursor: pointer;
   background: #2894f4;
   outline: none;
@@ -680,4 +684,82 @@ h5 {
 .all-accounts:hover {
   transform: translateY(-2px);
   background: #54aefd;
+}
+
+/* Container für den Sprachwähler */
+.lang-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  margin-top: 50px;
+}
+
+/* Überschrift für die Sprachauswahl */
+.lang-container h4 {
+  font-size: 18px;
+  margin-right: 10px;
+  color: #555;
+}
+
+/* Styling für das Dropdown-Menü */
+#lang-switcher {
+  margin-bottom: 10px;
+  font-size: 16px;
+  padding: 10px;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  outline: none;
+  color: #333;
+}
+
+/* Hover- und Focus-Effekte für das Dropdown */
+#lang-switcher:hover, #lang-switcher:focus {
+  border-color: #2894f4;
+  box-shadow: 0 0 8px rgba(40, 148, 244, 0.5);
+}
+
+/* Styling für das Dropdown-Menü, wenn es geöffnet ist */
+#lang-switcher option {
+  padding: 10px;
+}
+
+/* Zusatzliche Anpassung, wenn der Dropdown in einem Container ist */
+.lang-container {
+  text-align: center;
+}
+
+@media (max-width: 767px) {
+  .container_account {
+    padding: 130px 20px;
+  }
+
+  .container_account h4 {
+    font-size: 20px;
+  }
+
+  .account-form {
+    display: block;
+    max-width: 320px;
+  }
+
+  .input-box-account {
+    margin-left: 0px;
+    margin-top: 15px;
+    margin-bottom: 15px;
+  }
+
+  .btn-submit {
+    margin-top: 20px;
+  }
+
+  #apiKey {
+    word-break: break-all;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    white-space: normal;
+  }
 }

@@ -49,7 +49,7 @@ if(isset($_POST['submit'])){
 ?>
 
 <!DOCTYPE html>
-<html lang="de" dir="ltr">
+<html lang="en">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -63,37 +63,40 @@ if(isset($_POST['submit'])){
 </head>
 <body>
     <header>
-        <div class="container transparancy">
-            <h2><a class="link-no-decoration" href="../index.php"><span>MY </span>NAS</a></h2>
-            <nav>
-                <a class="hover-underline-animation left" href="../index.php">Startseite</a>
-				<a class="hover-underline-animation left" href="../User_Files.php">Meine Dateien</a>
-				<a class="hover-underline-animation left" href="../messenger.php">Messenger</a>
-                <?php if(isset($_SESSION["id"])): ?>
-		        	<a class="hover-underline-animation left" href="account.php">Mein Account</a>
-	        	<?php else: ?>
-	        		<a class="hover-underline-animation left" href="Login.php">Mein Account</a>
-	        	<?php endif; ?>
-				<a class="hover-underline-animation left" href="../Contact_Page/Contact_Page.php">Kontakt</a>
-            </nav>
-                <a class="login_button" href="Login.php">Anmelden</a>
-            <button class="hamburger">
-                <div class="bar"></div>
-            </button>
-        </div>
-    </header>
-
-    <nav class="mobile-nav">
-        <a href="../index.php">Startseite</a>
-		<a href="../User_Files.php">Meine Dateien</a>
-		<a href="../messenger.php">Messenger</a>
-        <?php if(isset($_SESSION["id"])): ?>
-			<a href="account.php">Mein Account</a>
+		<div class="container transparancy">
+      		<h2><a class="link-no-decoration" href="index.php"><span>MY </span>NAS</a></h2>
+			<nav>
+				<a class="hover-underline-animation left" href="../index.php" data-lang="home">Startseite</a>
+				<a class="hover-underline-animation left" href="../User_Files.php" data-lang="files">Meine Dateien</a>
+				<a class="hover-underline-animation left" href="../messenger.php" data-lang="messenger">Messenger</a>
+				<?php if(isset($_SESSION["id"])): ?>
+					<a class="hover-underline-animation left" href="../account-system/account.php" data-lang="account">Mein Account</a>
+				<?php else: ?>
+					<a class="hover-underline-animation left" href="../account-system/Login.php" data-lang="account">Mein Account</a>
+				<?php endif; ?>
+				<a class="hover-underline-animation left" href="../Contact_Page/Contact_Page.php" data-lang="contact">Kontakt</a>
+			</nav>
+			<?php if (isset($_SESSION["id"])): ?>
+                <a class="login_button" href="../account-system/logout.php" data-lang="logout">Abmelden</a>
+            <?php else: ?>
+                <a class="login_button" href="../account-system/Login.php" data-lang="login">Anmelden</a>
+            <?php endif; ?>
+			<button class="hamburger">
+				<div class="bar"></div>
+			</button>
+		</div>
+	</header>
+	<nav class="mobile-nav">
+		<a href="../index.php" data-lang="home">Startseite</a>
+		<a href="../User_Files.php" data-lang="files">Meine Dateien</a>
+		<a href="../messenger.php" data-lang="messenger">Messenger</a>
+		<?php if(isset($_SESSION["id"])): ?>
+			<a href="../account-system/account.php" data-lang="account">Mein Account</a>
 		<?php else: ?>
-			<a href="Login.php">Mein Account</a>
+			<a href="../account-system/Login.php" data-lang="account">Mein Account</a>
 		<?php endif; ?>
-		<a href="../Contact_Page/Contact_Page.php">Kontakt</a>
-    </nav>
+		<a href="../Contact_Page/Contact_Page.php" data-lang="contact">Kontakt</a>
+	</nav>
 
     <div class="wrapper">
         <form action="" method="post">
@@ -114,8 +117,8 @@ if(isset($_POST['submit'])){
             <button type="submit" name="submit" class="btn">Passwort ändern</button>
         </form>
     </div>
-
-    <script src="script.js"></script>
+    
     <script src="assets/js/main.js"></script>
+	<script src="assets/js/lang.js"></script>
 </body>
 </html>

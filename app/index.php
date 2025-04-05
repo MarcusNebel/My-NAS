@@ -3,7 +3,7 @@ session_start();
 ?>
 
 <!DOCTYPE html>
-<html lang="de">
+<html lang="en">
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -23,20 +23,20 @@ session_start();
 		<div class="container transparancy">
       		<h2><a class="link-no-decoration" href="index.php"><span>MY </span>NAS</a></h2>
 			<nav>
-				<a class="hover-underline-animation left" href="index.php">Startseite</a>
-				<a class="hover-underline-animation left" href="User_Files.php">Meine Dateien</a>
-				<a class="hover-underline-animation left" href="messenger.php">Messenger</a>
+				<a class="hover-underline-animation left" href="index.php" data-lang="home">Startseite</a>
+				<a class="hover-underline-animation left" href="User_Files.php" data-lang="files">Meine Dateien</a>
+				<a class="hover-underline-animation left" href="messenger.php" data-lang="messenger">Messenger</a>
 				<?php if(isset($_SESSION["id"])): ?>
-					<a class="hover-underline-animation left" href="account-system/account.php">Mein Account</a>
+					<a class="hover-underline-animation left" href="account-system/account.php" data-lang="account">Mein Account</a>
 				<?php else: ?>
-					<a class="hover-underline-animation left" href="account-system/Login.php">Mein Account</a>
+					<a class="hover-underline-animation left" href="account-system/Login.php" data-lang="account">Mein Account</a>
 				<?php endif; ?>
-				<a class="hover-underline-animation left" href="Contact_Page/Contact_Page.php">Kontakt</a>
+				<a class="hover-underline-animation left" href="Contact_Page/Contact_Page.php" data-lang="contact">Kontakt</a>
 			</nav>
 			<?php if (isset($_SESSION["id"])): ?>
-                <a class="login_button" href="account-system/logout.php">Abmelden</a>
+                <a class="login_button" href="account-system/logout.php" data-lang="logout">Abmelden</a>
             <?php else: ?>
-                <a class="login_button" href="account-system/Login.php">Anmelden</a>
+                <a class="login_button" href="account-system/Login.php" data-lang="login">Anmelden</a>
             <?php endif; ?>
 			<button class="hamburger">
 				<div class="bar"></div>
@@ -44,24 +44,24 @@ session_start();
 		</div>
 	</header>
 	<nav class="mobile-nav">
-		<a href="index.php">Startseite</a>
-		<a href="User_Files.php">Meine Dateien</a>
-		<a href="messenger.php">Messenger</a>
+		<a href="index.php" data-lang="home">Startseite</a>
+		<a href="User_Files.php" data-lang="files">Meine Dateien</a>
+		<a href="messenger.php" data-lang="messenger">Messenger</a>
 		<?php if(isset($_SESSION["id"])): ?>
-			<a href="account-system/account.php">Mein Account</a>
+			<a href="account-system/account.php" data-lang="account">Mein Account</a>
 		<?php else: ?>
-			<a href="account-system/Login.php">Mein Account</a>
+			<a href="account-system/Login.php" data-lang="account">Mein Account</a>
 		<?php endif; ?>
-		<a href="Contact_Page/Contact_Page.php">Kontakt</a>
+		<a href="Contact_Page/Contact_Page.php" data-lang="contact">Kontakt</a>
 	</nav>
 	<main>
 		<section class="banner">
 			<div class="container">
 				<h1>
-					Die unsicherste Webseite <br class="hide-mob" />
+					Die sicherste Webseite <br class="hide-mob" />
 					für <span>DEINE</span> Daten
 					<br>
-					<a class="subtitle">Die unsichere Cloud in deinem Netzwerk</a>
+					<a class="subtitle">Die sichere Cloud in deinem Netzwerk</a>
 				</h1>
 			</div>
 		</section>
@@ -87,7 +87,7 @@ session_start();
 
 			<div class="other-content">
 				<div class="card">
-					<h3>Speicherplatz</h3>
+					<h3 data-lang="storage">Speicherplatz</h3>
 					<p>
 						<?php 
 							echo nl2br(shell_exec("df -h --output=size,used,pcent,avail / | tail -1 | awk '{print \"Festplattengröße: \" $1 \"\\nBenutzter Speicher: \" $2 \" (\" $3 \")\\nVerfügbarer Speicher: \" $4}'")); 
@@ -156,5 +156,6 @@ session_start();
 			updateStats();
 		});
 	</script>
+	<script src="assets/js/lang.js"></script>
 </body>
 </html>

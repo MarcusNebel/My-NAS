@@ -8,7 +8,7 @@ if (!isset($_SESSION["id"])) {
 ?>
 
 <!DOCTYPE html>
-<html lang="de">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -24,45 +24,47 @@ if (!isset($_SESSION["id"])) {
 </head>
 <body>
     <header>
-        <div class="container transparancy">
-            <h2><a class="link-no-decoration" href="index.php"><span>MY </span>NAS</a></h2>
-            <nav>
-                <a class="hover-underline-animation left" href="index.php">Startseite</a>
-				<a class="hover-underline-animation left" href="User_Files.php">Meine Dateien</a>
-				<a class="hover-underline-animation left" href="messenger.php">Messenger</a>
-                <?php if(isset($_SESSION["id"])): ?>
-	        		<a class="hover-underline-animation left" href="account-system/account.php">Mein Account</a>
-	        	<?php else: ?>
-	        		<a class="hover-underline-animation left" href="account-system/Login.php">Mein Account</a>
-	        	<?php endif; ?>
-				<a class="hover-underline-animation left" href="Contact_Page/Contact_Page.php">Kontakt</a>
-            </nav>
-            <?php if (isset($_SESSION["id"])): ?>
-                <a class="login_button" href="account-system/logout.php">Abmelden</a>
+		<div class="container transparancy">
+      		<h2><a class="link-no-decoration" href="index.php"><span>MY </span>NAS</a></h2>
+			<nav>
+				<a class="hover-underline-animation left" href="index.php" data-lang="home">Startseite</a>
+				<a class="hover-underline-animation left" href="User_Files.php" data-lang="files">Meine Dateien</a>
+				<a class="hover-underline-animation left" href="messenger.php" data-lang="messenger">Messenger</a>
+				<?php if(isset($_SESSION["id"])): ?>
+					<a class="hover-underline-animation left" href="account-system/account.php" data-lang="account">Mein Account</a>
+				<?php else: ?>
+					<a class="hover-underline-animation left" href="account-system/Login.php" data-lang="account">Mein Account</a>
+				<?php endif; ?>
+				<a class="hover-underline-animation left" href="Contact_Page/Contact_Page.php" data-lang="contact">Kontakt</a>
+			</nav>
+			<?php if (isset($_SESSION["id"])): ?>
+                <a class="login_button" href="account-system/logout.php" data-lang="logout">Abmelden</a>
             <?php else: ?>
-                <a class="login_button" href="account-system/Login.php">Anmelden</a>
+                <a class="login_button" href="account-system/Login.php" data-lang="login">Anmelden</a>
             <?php endif; ?>
-            <button class="hamburger">
-                <div class="bar"></div>
-            </button>
-        </div>
-    </header>
-    <nav class="mobile-nav">
-        <a href="index.php">Startseite</a>
-		<a href="User_Files.php">Meine Dateien</a>
-		<a href="messenger.php">Messenger</a>
+			<button class="hamburger">
+				<div class="bar"></div>
+			</button>
+		</div>
+	</header>
+	<nav class="mobile-nav">
+		<a href="index.php" data-lang="home">Startseite</a>
+		<a href="User_Files.php" data-lang="files">Meine Dateien</a>
+		<a href="messenger.php" data-lang="messenger">Messenger</a>
 		<?php if(isset($_SESSION["id"])): ?>
-			<a href="account-system/account.php">Mein Account</a>
+			<a href="account-system/account.php" data-lang="account">Mein Account</a>
 		<?php else: ?>
-			<a href="account-system/Login.php">Mein Account</a>
+			<a href="account-system/Login.php" data-lang="account">Mein Account</a>
 		<?php endif; ?>
-		<a href="Contact_Page/Contact_Page.php">Kontakt</a>
-    </nav>
+		<a href="Contact_Page/Contact_Page.php" data-lang="contact">Kontakt</a>
+	</nav>
     <main>
         <section class="upload-section">
             <div class="container-upload-section">
                 <div class="upload-form">
-                <button onclick="redirectToUserFiles()"><i class='bx bx-left-arrow-alt' ></i></button>
+                    <a href="User_Files.php">
+                        <i class='bx bx-left-arrow-alt' ></i>
+                    </a>
                     <h5>Datei-Upload:</h5>
                     <form id="uploadForm" action="assets/php/upload.php" method="post" enctype="multipart/form-data">
                         <input type="file" id="fileInput" name="file" required>
@@ -88,5 +90,6 @@ if (!isset($_SESSION["id"])) {
         window.location.href = "../../User_Files.php";
         }
     </script>
+	<script src="assets/js/lang.js"></script>
 </body>
 </html>

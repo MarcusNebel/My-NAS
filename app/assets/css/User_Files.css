@@ -518,13 +518,6 @@ i.bx.bxs-download:hover {
   padding: 10px 20px;  /* Optional: Padding für die Toolbar */
 }
 
-/* Stil für den Plus-Icon-Container */
-#plus-icon {
-  display: inline-block;
-  cursor: pointer;
-  position: relative; /* Bezugspunkt für das Dropdown-Menü */
-}
-
 /* Dropdown-Menü */
 .dropdown-menu {
   margin-top: 10px;
@@ -607,4 +600,33 @@ i.bx.bxs-plus-circle:hover {
 
 .file-info-content span {
   font-weight: bold;
+}
+
+@media (max-width: 767px) {
+  .container_file-list {
+    padding-left: 25px;
+    padding-right: 25px;
+  }
+
+  i.bx.bxs-plus-circle:hover {
+    transform: none;
+    color: #000;
+  }
+
+  i.bx.bxs-trash:hover {
+    transform: none;
+    color: #000;
+  }
+
+  i.bx.bxs-download:hover {
+    transform: none;
+    color: #000;
+  }
+}
+
+@media (min-width: 768px) {
+  .container_file-list {
+    padding-left: 100px;
+    padding-right: 100px;
+  }
 }

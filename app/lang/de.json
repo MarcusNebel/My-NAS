@@ -1,0 +1,15 @@
+{
+    "home": "Startseite",
+    "files": "Meine Dateien",
+    "messenger": "Messenger",
+    "account": "Mein Account",
+    "login": "Anmelden",
+    "logout": "Abmelden",
+    "contact": "Kontakt",
+    "cpu_usage": "CPU Auslastung",
+    "ram_usage": "RAM Nutzung",
+    "storage": "Speicherplatz",
+    "weather": "Wetter in",
+    "dashboard": "Dashboard",
+    "save_website": "The savest Cloud in your Network"
+}

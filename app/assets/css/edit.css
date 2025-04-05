@@ -511,3 +511,23 @@ i.bx.bx-arrow-back {
 i.bx.bx-arrow-back:hover {
   transform: translateY(-2px);
 }
+
+@media (max-width: 767px) {
+  .account-form {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .input-box-account {
+    margin-top: 12px;
+    margin-bottom:12px;
+    margin-left: 0px;
+    margin-right: 0px;
+    width: 320px;
+  }
+
+  .container_account {
+    padding-left: 25px;
+    padding-right: 25px;
+  }
+}

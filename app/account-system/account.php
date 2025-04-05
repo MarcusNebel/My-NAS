@@ -175,7 +175,7 @@ if ($_SERVER["REQUEST_METHOD"] === "GET" && isset($_GET["delete-account"])) {
 
 					<form class="api-form" method="get">
 						<button class="api-btn-submit" name="api-submit" type="submit"><i class='bx bxs-plus-circle'></i></button>
-						<a href="../api/delete.php?api_key=<?php echo urlencode($api_key); ?>" 
+						<a href="../api/delete_api-key.php?api_key=<?php echo urlencode($api_key); ?>" 
 							class="api-btn-delete" 
 							onclick="return confirm('Möchten Sie den API Key wirklich löschen?')">
 							<i class="bx bxs-trash"></i>

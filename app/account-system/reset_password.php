@@ -64,7 +64,7 @@ if(isset($_POST['submit'])){
 <body>
     <header>
 		<div class="container transparancy">
-      		<h2><a class="link-no-decoration" href="index.php"><span>MY </span>NAS</a></h2>
+      		<h2><a class="link-no-decoration" href="../index.php"><span>MY </span>NAS</a></h2>
 			<nav>
 				<a class="hover-underline-animation left" href="../index.php" data-lang="home">Startseite</a>
 				<a class="hover-underline-animation left" href="../User_Files.php" data-lang="files">Meine Dateien</a>

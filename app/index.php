@@ -95,6 +95,7 @@ session_start();
 					</p>
 				</div>
 				<div class="card" id="weather-card">
+					<p id="weather-hint" style="color: red; display: none;">Bitte konfiguriere das Wetter auf der Seite „<a style="text-decoration: none; color: #2489f4;" href="account-system/account.php">Mein Account</a>“, um die Wetterdaten hier anzuzeigen.</p>
 					<h3>Wetter in <span id="city">...</span></h3>
 					<p>Temperatur: <span id="temp">...</span>°C</p>
 					<p>Bedingung: <span id="condition">...</span></p>

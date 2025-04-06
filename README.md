@@ -97,6 +97,8 @@ Once the containers are running, open your browser and visit:
 https://your-server-ip:8443
 ```
 
+You can set-up the weather function on the `My Account` page.
+
 That's it! No manual setup required. The website is ready to use.
 
 ---

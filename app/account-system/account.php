@@ -77,7 +77,7 @@ if ($_SERVER["REQUEST_METHOD"] === "GET" && isset($_GET["delete-account"])) {
 <body class="account-body">
 	<header>
 		<div class="container transparancy">
-      		<h2><a class="link-no-decoration" href="index.php"><span>MY </span>NAS</a></h2>
+      		<h2><a class="link-no-decoration" href="../index.php"><span>MY </span>NAS</a></h2>
 			<nav>
 				<a class="hover-underline-animation left" href="../index.php" data-lang="home">Startseite</a>
 				<a class="hover-underline-animation left" href="../User_Files.php" data-lang="files">Meine Dateien</a>
@@ -223,7 +223,10 @@ if ($_SERVER["REQUEST_METHOD"] === "GET" && isset($_GET["delete-account"])) {
 					</select>
 
 					<h4>Wetter Einstellungen:</h4>
-					<button class="reset-weather-btn" onclick="resetWeather()">API-Key & Stadt zurücksetzen</button>
+					<div class="weather-options">
+						<button class="ad-weather-btn" id="getweatherbtn"><i class='bx bxs-plus-circle'></i> API-Key & Stadt hinzufügen</button>
+						<button class="reset-weather-btn" onclick="resetWeather()">API-Key & Stadt zurücksetzen</button>
+					</div>
 
 					<h5>Account löschen</h5>
 					<form class="delete-account-form" method="get">

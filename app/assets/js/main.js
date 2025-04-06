@@ -198,23 +198,23 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 
-// Wetter abrufen, wenn Button gedrückt wird
+// Weather function
 document.addEventListener("DOMContentLoaded", () => {
     const weatherButton = document.getElementById("getweatherbtn");
 
     if (weatherButton) {
-        weatherButton.addEventListener("click", async () => {
+        weatherButton.addEventListener("click", async () => {  // Hier wird die Event-Listener-Funktion asynchron gemacht
             let apiKey = localStorage.getItem("weather_api_key");
             let city = localStorage.getItem("weather_city");
 
             if (!apiKey || !city) {
-                apiKey = prompt("Bitte gib deinen OpenWeatherMap API-Key ein. Sie finden diesen unter 'https://home.openweathermap.org/api_keys':");
+                apiKey = prompt("Bitte gib deinen OpenWeatherMap API-Key ein. Du findest diesen unter 'https://home.openweathermap.org/api_keys':");
                 city = prompt("Bitte gib deine Stadt ein:");
                 
-                alert("Die Einrichtung für das Wetter ist abgeschlossen. Sie können die Daten auf der Seite 'Mein Account' zurücksetzen.");
+                alert("Die Einrichtung für das Wetter ist abgeschlossen. Du kannst die Daten auf der Seite 'Mein Account' zurücksetzen.");
 
                 if (!apiKey || !city) {
-                    alert("API-Key und Stadt sind erforderlich für das Wetter auf dem Dashboard! Um die Daten einzugeben, laden Sie die Seite neu.");
+                    alert("API-Key und Stadt sind erforderlich für das Wetter auf dem Dashboard! Um die Daten einzugeben, lade die Seite neu.");
                     return;
                 }
 
@@ -251,14 +251,14 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
 
                 // Berechnung der Höchst- und Tiefsttemperatur des aktuellen Tages
-                const today = new Date().setHours(0, 0, 0, 0);
+                const today = new Date().setHours(0, 0, 0, 0); // 00:00 Uhr des heutigen Tages
                 let maxTemp = -Infinity;
                 let minTemp = Infinity;
-                let foundData = false;
+                let foundData = false; // Prüfen, ob Werte für heute gefunden wurden
 
                 hourlyData.list.forEach(entry => {
-                    const entryDate = new Date(entry.dt * 1000).setHours(0, 0, 0, 0);
-                    if (entryDate === today) {
+                    const entryDate = new Date(entry.dt * 1000).setHours(0, 0, 0, 0); // 00:00 Uhr des Eintrags
+                    if (entryDate === today) { 
                         maxTemp = Math.max(maxTemp, entry.main.temp_max);
                         minTemp = Math.min(minTemp, entry.main.temp_min);
                         foundData = true;
@@ -271,7 +271,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 // Anzeige der stündlichen Vorhersage (für die nächsten 6 Stunden)
                 const forecastList = document.getElementById("hourly-forecast");
-                forecastList.innerHTML = "";
+                forecastList.innerHTML = ""; // Alte Einträge löschen
 
                 for (let i = 0; i < 6; i++) {
                     const hourData = hourlyData.list[i];
@@ -288,7 +288,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         <div class="temp">${temp}°C</div>
                         <div class="condition">${condition}</div>
                     `;
-
+                    
                     forecastList.appendChild(listItem);
                 }
             } catch (error) {
@@ -328,6 +328,9 @@ function resetWeather() {
     localStorage.removeItem("weather_city");
     alert("Daten zurückgesetzt! Lade die Seite neu.");
 }
+
+// Wetter beim Laden der Seite abrufen
+getWeather();
 
 // index.php Scroll inicator
 const scrollIndicator = document.getElementById("scroll-indicator");

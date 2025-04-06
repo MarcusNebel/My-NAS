@@ -198,107 +198,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 
-// Weather function
-document.addEventListener("DOMContentLoaded", () => {
-    const weatherButton = document.getElementById("getweatherbtn");
-
-    if (weatherButton) {
-        weatherButton.addEventListener("click", async () => {  // Hier wird die Event-Listener-Funktion asynchron gemacht
-            let apiKey = localStorage.getItem("weather_api_key");
-            let city = localStorage.getItem("weather_city");
-
-            if (!apiKey || !city) {
-                apiKey = prompt("Bitte gib deinen OpenWeatherMap API-Key ein. Du findest diesen unter 'https://home.openweathermap.org/api_keys':");
-                city = prompt("Bitte gib deine Stadt ein:");
-                
-                alert("Die Einrichtung für das Wetter ist abgeschlossen. Du kannst die Daten auf der Seite 'Mein Account' zurücksetzen.");
-
-                if (!apiKey || !city) {
-                    alert("API-Key und Stadt sind erforderlich für das Wetter auf dem Dashboard! Um die Daten einzugeben, lade die Seite neu.");
-                    return;
-                }
-
-                localStorage.setItem("weather_api_key", apiKey);
-                localStorage.setItem("weather_city", city);
-            }
-
-            // URLs für aktuelle Wetterdaten und Vorhersage
-            const currentWeatherUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric&lang=de`;
-            const hourlyForecastUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${apiKey}&units=metric&lang=de`;
-
-            try {
-                // Abrufen der aktuellen Wetterdaten
-                const response = await fetch(currentWeatherUrl);
-                const data = await response.json();
-
-                if (data.cod !== 200) {
-                    alert("Fehler: " + data.message);
-                    return;
-                }
-
-                // Anzeige der aktuellen Wetterdaten
-                document.getElementById("city").textContent = city;
-                document.getElementById("temp").textContent = data.main.temp;
-                document.getElementById("condition").textContent = data.weather[0].description;
-
-                // Abrufen der stündlichen Wettervorhersage
-                const hourlyResponse = await fetch(hourlyForecastUrl);
-                const hourlyData = await hourlyResponse.json();
-
-                if (hourlyData.cod !== "200") {
-                    alert("Fehler: " + hourlyData.message);
-                    return;
-                }
-
-                // Berechnung der Höchst- und Tiefsttemperatur des aktuellen Tages
-                const today = new Date().setHours(0, 0, 0, 0); // 00:00 Uhr des heutigen Tages
-                let maxTemp = -Infinity;
-                let minTemp = Infinity;
-                let foundData = false; // Prüfen, ob Werte für heute gefunden wurden
-
-                hourlyData.list.forEach(entry => {
-                    const entryDate = new Date(entry.dt * 1000).setHours(0, 0, 0, 0); // 00:00 Uhr des Eintrags
-                    if (entryDate === today) { 
-                        maxTemp = Math.max(maxTemp, entry.main.temp_max);
-                        minTemp = Math.min(minTemp, entry.main.temp_min);
-                        foundData = true;
-                    }
-                });
-
-                // Falls keine Daten für heute gefunden wurden, Werte auf "N/A" setzen
-                document.getElementById("max-temp").textContent = foundData ? maxTemp.toFixed(1) + "°C" : "N/A";
-                document.getElementById("min-temp").textContent = foundData ? minTemp.toFixed(1) + "°C" : "N/A";
-
-                // Anzeige der stündlichen Vorhersage (für die nächsten 6 Stunden)
-                const forecastList = document.getElementById("hourly-forecast");
-                forecastList.innerHTML = ""; // Alte Einträge löschen
-
-                for (let i = 0; i < 6; i++) {
-                    const hourData = hourlyData.list[i];
-                    const time = new Date(hourData.dt * 1000).toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" });
-                    const temp = hourData.main.temp;
-                    const condition = hourData.weather[0].description;
-                    const icon = hourData.weather[0].icon;
-
-                    const listItem = document.createElement("li");
-
-                    listItem.innerHTML = `
-                        <img src="http://openweathermap.org/img/wn/${icon}.png" alt="${condition}">
-                        <div class="time">${time}</div>
-                        <div class="temp">${temp}°C</div>
-                        <div class="condition">${condition}</div>
-                    `;
-                    
-                    forecastList.appendChild(listItem);
-                }
-            } catch (error) {
-                console.error("Fehler beim Abrufen der Wetterdaten:", error);
-                alert("Es gab einen Fehler beim Abrufen der Wetterdaten. Bitte versuche es später erneut.");
-            }
-        });
-    }
-});
-
 // Scroll Animation
 const forecastContainer = document.getElementById("hourly-forecast-container");
 
@@ -321,16 +220,6 @@ forecastContainer.addEventListener("wheel", (event) => {
 
     requestAnimationFrame(smoothScroll);
 });
-
-// Funktion zum Zurücksetzen der Wetterdaten
-function resetWeather() {
-    localStorage.removeItem("weather_api_key");
-    localStorage.removeItem("weather_city");
-    alert("Daten zurückgesetzt! Lade die Seite neu.");
-}
-
-// Wetter beim Laden der Seite abrufen
-getWeather();
 
 // index.php Scroll inicator
 const scrollIndicator = document.getElementById("scroll-indicator");

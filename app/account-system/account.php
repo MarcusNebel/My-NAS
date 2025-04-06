@@ -222,12 +222,6 @@ if ($_SERVER["REQUEST_METHOD"] === "GET" && isset($_GET["delete-account"])) {
 						<!-- Weitere Sprachen hier -->
 					</select>
 
-					<h4>Wetter Einstellungen:</h4>
-					<div class="weather-options">
-						<button class="ad-weather-btn" id="getweatherbtn"><i class='bx bxs-plus-circle'></i> API-Key & Stadt hinzufügen</button>
-						<button class="reset-weather-btn" onclick="resetWeather()">API-Key & Stadt zurücksetzen</button>
-					</div>
-
 					<h5>Account löschen</h5>
 					<form class="delete-account-form" method="get">
 						<button class="delete-account-btn" name="delete-account" type="submit">Account löschen</button>

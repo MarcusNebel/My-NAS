@@ -82,29 +82,13 @@ session_start();
 						<h3>RAM Nutzung</h3>
 						<canvas id="ramChart"></canvas>
 					</div>
-				</div>
-			</div>
-
-			<div class="other-content">
-				<div class="card">
-					<h3 data-lang="storage">Speicherplatz</h3>
-					<p>
-						<?php 
-							echo nl2br(shell_exec("df -h --output=size,used,pcent,avail / | tail -1 | awk '{print \"Festplattengröße: \" $1 \"\\nBenutzter Speicher: \" $2 \" (\" $3 \")\\nVerfügbarer Speicher: \" $4}'")); 
-						?>
-					</p>
-				</div>
-				<div class="card" id="weather-card">
-					<p id="weather-hint" style="color: red; display: none;">Bitte konfiguriere das Wetter auf der Seite „<a style="text-decoration: none; color: #2489f4;" href="account-system/account.php">Mein Account</a>“, um die Wetterdaten hier anzuzeigen.</p>
-					<h3>Wetter in <span id="city">...</span></h3>
-					<p>Temperatur: <span id="temp">...</span>°C</p>
-					<p>Bedingung: <span id="condition">...</span></p>
-					<p>Höchsttemperatur: <span id="max-temp"></span></p>
-					<p>Tiefsttemperatur: <span id="min-temp"></span></p>
-
-					<h3>Vorschau</h3>
-					<div id="hourly-forecast-container">
-						<ul id="hourly-forecast"></ul>
+					<div class="card">
+						<h3 data-lang="storage">Speicherplatz</h3>
+						<p>
+							<?php 
+								echo nl2br(shell_exec("df -h --output=size,used,pcent,avail / | tail -1 | awk '{print \"Festplattengröße: \" $1 \"\\nBenutzter Speicher: \" $2 \" (\" $3 \")\\nVerfügbarer Speicher: \" $4}'")); 
+							?>
+						</p>
 					</div>
 				</div>
 			</div>

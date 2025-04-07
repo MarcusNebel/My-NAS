@@ -74,8 +74,8 @@ If you want to use another SMTP Server you have to edit the settings by yourself
 
 You have to fill in the server-IP in the `File_upload.php` file in the following line under `__SERVER_IP__` : 
 
-```php
-xhr.open('POST', 'https://__SERVER_IP__:8080/upload', true);
+```js
+const flaskserverURL = 'https://__SERVER_IP__/upload'
 ```
 
 The Server is now reachable in the local netowrk. 

@@ -111,6 +111,7 @@ if (!isset($_SESSION["id"])) {
         const progressBar = document.getElementById('progress-bar');
         const uploadSpeed = document.getElementById('upload-speed');
         const usernameField = document.getElementById('username');
+        const flaskserverURL = 'https://__SERVER_IP__/upload'
 
         uploadForm.addEventListener('submit', function(e) {
             e.preventDefault();
@@ -153,11 +154,11 @@ if (!isset($_SESSION["id"])) {
             };
 
             xhr.onerror = function() {
-                uploadStatus.textContent = '❌ Fehler beim Upload';
+                uploadStatus.innerHTML = '❌ Fehler beim Upload. Gehe auf <a href="' + flaskserverURL + '" target="_blank" rel="noopener noreferrer">die Seite des upload Servers</a> und vertraue der Verbindung und aktualisiere diese Seite.';
             };
 
             const startTime = Date.now();
-            xhr.open('POST', 'https://__SERVER_IP__:8080/upload', true);
+            xhr.open('POST', flaskserverURL, true);
             xhr.send(formData);
         });
     </script>

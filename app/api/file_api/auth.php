@@ -1,10 +1,42 @@
 <?php
-require_once "../mysql.php"; // DB-Verbindung etc.
 
-function authenticateUser($api_key) {
-    global $pdo;
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
-    $stmt = $pdo->prepare("SELECT USERNAME FROM accounts WHERE api_key = ?");
+require_once __DIR__ . '/../mysql.php';
+
+// Funktion um den API-Key aus den Headern sicher zu holen
+function getApiKeyFromHeaders() {
+    $headers = getallheaders();
+
+    // Normalfall: Flutter schickt den API-Key im Authorization-Header
+    if (isset($headers['Authorization'])) {
+        return $headers['Authorization'];
+    }
+
+    // Fallback: manchmal heißen die Keys anders (z. B. lowercase, nginx-Fallbacks)
+    foreach ($headers as $key => $value) {
+        if (strtolower($key) === 'authorization') {
+            return $value;
+        }
+    }
+
+    return null;
+}
+
+function authenticateUser() {
+    global $mysql;
+
+    $api_key = getApiKeyFromHeaders();
+
+    if (!$api_key) {
+        http_response_code(401);
+        echo json_encode(["error" => "Kein API-Key"]);
+        exit;
+    }
+
+    $stmt = $mysql->prepare("SELECT USERNAME FROM accounts WHERE api_key = ?");
     $stmt->execute([$api_key]);
 
     $username = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -19,12 +51,18 @@ function authenticateUser($api_key) {
 }
 
 function getUserBasePath($username) {
-    $base = realpath("/home/nas-website-files/user_files/$username");
+    $path = '/home/nas-website-files/user_files/' . $username;
+    error_log("🔍 Checke Pfad: " . $path);
+    $base = realpath($path);
+
+    error_log("📁 realpath result: " . ($base ? $base : 'false'));
+
     if (!$base || !is_dir($base)) {
         http_response_code(500);
         echo json_encode(["error" => "Benutzerverzeichnis nicht gefunden"]);
         exit;
     }
+
     return $base;
 }
 

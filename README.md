@@ -70,6 +70,18 @@ Make sure you use an app password for Gmail (without space).
 
 If you want to use another SMTP Server you have to edit the settings by yourself.
 
+### **Configure Server-IP in the `File_upload.php` file**
+
+You have to fill in the server-IP in the `File_upload.php` file in the following line under `__SERVER_IP__` : 
+
+```php
+xhr.open('POST', 'https://__SERVER_IP__:8080/upload', true);
+```
+
+The Server is now reachable in the local netowrk. 
+
+If you want to use it outside the network you have to configure a domain. 
+
 ### 3. **Start the Containers**
 
 Simply run the following command to start the NAS-Website using Docker Compose:

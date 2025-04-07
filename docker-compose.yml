@@ -41,7 +41,7 @@ services:
       context: ./flask-upload   # Hier den Ordner angeben, der die Dockerfile enthält
       dockerfile: Dockerfile    # Falls deine Dockerfile einen anderen Namen hat, kannst du sie hier spezifizieren
     ports:
-      - "5001:5001"
+      - "8080:5001"
     restart: unless-stopped
     volumes:
       - ./app/nas-website-files/user_files:/uploads

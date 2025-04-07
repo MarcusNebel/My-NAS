@@ -157,7 +157,7 @@ if (!isset($_SESSION["id"])) {
             };
 
             const startTime = Date.now();
-            xhr.open('POST', 'https://corporation-retrieve.gl.at.ply.gg:63394/upload', true);
+            xhr.open('POST', 'https://__SERVER_IP__:8080/upload', true);
             xhr.send(formData);
         });
     </script>

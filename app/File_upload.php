@@ -66,8 +66,26 @@ if (!isset($_SESSION["id"])) {
                         <i class='bx bx-left-arrow-alt' ></i>
                     </a>
                     <h5>Datei-Upload:</h5>
-                    <form id="uploadForm" action="assets/php/upload.php" method="post" enctype="multipart/form-data">
-                        <input type="file" id="fileInput" name="file" required>
+
+                    <?php
+                    require_once 'account-system/mysql.php';
+
+                    // Benutzername holen
+                    $username = 'Unbekannt';
+                    if (isset($_SESSION['id'])) {
+                        $stmt = $mysql->prepare("SELECT USERNAME FROM accounts WHERE ID = :id");
+                        $stmt->bindParam(':id', $_SESSION['id']);
+                        $stmt->execute();
+                        $user = $stmt->fetch();
+                        if ($user) {
+                            $username = $user['USERNAME'];
+                        }
+                    }
+                    ?>
+
+                    <form id="uploadForm">
+                    <input type="file" id="fileInput" name="file[]" multiple required>
+                        <input type="hidden" id="username" name="username" value="<?php echo htmlspecialchars($username); ?>">
                         <button type="submit">Hochladen</button>
                     </form>
                     <p id="uploadStatus"></p>
@@ -83,13 +101,67 @@ if (!isset($_SESSION["id"])) {
             </div>
         </section>
     </main>
-    <script src="assets/js/upload_info.js"></script>
-    <script src="assets/js/main.js"></script>
     <script>
-        function redirectToUserFiles() {
-        window.location.href = "../../User_Files.php";
-        }
+        const userId = "<?php echo $_SESSION['id']; ?>";
     </script>
+    <script>
+        const uploadForm = document.getElementById('uploadForm');
+        const fileInput = document.getElementById('fileInput');
+        const uploadStatus = document.getElementById('uploadStatus');
+        const progressBar = document.getElementById('progress-bar');
+        const uploadSpeed = document.getElementById('upload-speed');
+        const usernameField = document.getElementById('username');
+
+        uploadForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const files = fileInput.files;
+            if (files.length === 0) return;
+
+            const formData = new FormData();
+
+            // Alle Dateien zum FormData-Objekt hinzufügen
+            for (let i = 0; i < files.length; i++) {
+                formData.append('file[]', files[i]); // 'file[]' für mehrere Dateien
+            }
+
+            formData.append('username', usernameField.value); // Benutzername mitsenden
+
+            const xhr = new XMLHttpRequest();
+
+            // Fortschrittsanzeige
+            xhr.upload.addEventListener('progress', function(e) {
+                if (e.lengthComputable) {
+                    const percent = Math.round((e.loaded / e.total) * 100);
+                    progressBar.style.width = percent + '%';
+                    progressBar.textContent = percent + '%';
+
+                    const seconds = (Date.now() - startTime) / 1000;
+                    const speed = (e.loaded / 1024 / 1024) / seconds;
+                    uploadSpeed.textContent = `Upload-Geschwindigkeit: ${speed.toFixed(2)} MB/s`;
+                }
+            });
+
+            // Upload abgeschlossen
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    uploadStatus.textContent = '✅ Upload erfolgreich!';
+                    window.location.href = 'User_Files.php';  // Weiterleitung nach dem erfolgreichen Upload
+                } else {
+                    uploadStatus.textContent = '❌ Fehler beim Upload: ' + xhr.responseText;
+                }
+            };
+
+            xhr.onerror = function() {
+                uploadStatus.textContent = '❌ Fehler beim Upload';
+            };
+
+            const startTime = Date.now();
+            xhr.open('POST', 'https://corporation-retrieve.gl.at.ply.gg:63394/upload', true);
+            xhr.send(formData);
+        });
+    </script>
+    <script src="assets/js/main.js"></script>
 	<script src="assets/js/lang.js"></script>
 </body>
 </html>

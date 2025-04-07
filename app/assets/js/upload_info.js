@@ -40,10 +40,11 @@ document.getElementById('uploadForm').addEventListener('submit', function (event
 
     // Fehlerbehandlung für den Upload
     xhr.addEventListener('error', function () {
-        uploadStatus.innerText = 'Es gab einen Fehler beim Hochladen der Datei.';
+        uploadStatus.innerText = 'Es gab einen Fehler beim Hochladen der Datei. Möglicherweise wurde die Verbindung blockiert oder unterbrochen.';
+        console.error('Upload-Fehler:', xhr.status, xhr.statusText);
     });
 
-    // Sende die Formulardaten
-    xhr.open('POST', './assets/php/upload.php', true);
+    // Sende die Formulardaten an die Flask-Upload-Route
+    xhr.open('POST', 'http://localhost:5001/api/upload-file', true);  // URL zum Flask-Server
     xhr.send(formData);
 });

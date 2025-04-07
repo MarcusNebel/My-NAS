@@ -1,14 +1,14 @@
----
-name: nas-website
+version: '3.8'
+
 services: 
   nas-website:
     container_name: nas-website
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile  # Verweist auf deine Dockerfile, die wir weiter unten anpassen
     volumes: 
       - ./app/:/var/www/html/
-      - ./app/nas-website-files/user_files/:/home/nas-website-files/user_files # This is the path to your data from the website
+      - ./app/nas-website-files/user_files/:/home/nas-website-files/user_files # Datenverzeichnis für die Website
     ports:
       - "80:80"
       - "8443:443"
@@ -18,6 +18,9 @@ services:
       MYSQL_USER: root
       MYSQL_PASSWORD: 59LWrt!mDo6GC4
       MYSQL_DATABASE: nas-website
+    networks:
+      - nas-network
+
   db:
     image: mysql:latest
     container_name: mysql
@@ -30,6 +33,27 @@ services:
     volumes:
       - mysql_data:/var/lib/mysql
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
-      
+    networks:
+      - nas-network
+
+  flask-upload:
+    build:
+      context: ./flask-upload   # Hier den Ordner angeben, der die Dockerfile enthält
+      dockerfile: Dockerfile    # Falls deine Dockerfile einen anderen Namen hat, kannst du sie hier spezifizieren
+    ports:
+      - "5001:5001"
+    restart: unless-stopped
+    volumes:
+      - ./app/nas-website-files/user_files:/uploads
+    environment:
+      - FLASK_APP=app.py
+    networks:
+      - nas-network
+
 volumes:
   mysql_data:
+  flask-upload-data:
+
+networks:
+  nas-network:
+    driver: bridge

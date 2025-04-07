@@ -48,10 +48,6 @@ COPY ./app/ /var/www/html/nas-website/
 # Setzt die korrekten Dateiberechtigungen
 RUN chown -R www-data:www-data /var/www/html/nas-website
 
-# Skript ausführen (z. B. PHP limits setzen)
-RUN chmod +x /var/www/html/nas-website/adjust_upload_limit.sh && \
-    bash /var/www/html/nas-website/adjust_upload_limit.sh
-
 # Exponiert sowohl HTTP als auch HTTPS
 EXPOSE 80
 EXPOSE 443

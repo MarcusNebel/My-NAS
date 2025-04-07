@@ -448,6 +448,17 @@ main section.file-list-section {
   font-size: 18px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   margin-bottom: 10px; /* Fügt Abstand zwischen den Einträgen hinzu */
+  transition: all 0.2s ease;
+}
+
+.file-item:hover {
+  cursor: pointer;
+  transform: translateY(-1px);
+}
+
+.select-all-cb {
+  cursor: pointer;
+  font-weight: bold;
 }
 
 /* Links für Download & Löschen */
@@ -630,3 +641,175 @@ i.bx.bxs-plus-circle:hover {
     padding-right: 100px;
   }
 }
+
+/* Overlay-Hintergrund */
+.modal {
+  display: none; /* Wird per JS ein-/ausgeblendet */
+  position: fixed;
+  z-index: 999;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.5); /* Dunkler Hintergrund */
+  backdrop-filter: blur(2px); /* Optionaler Weichzeichner-Effekt */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Modal-Inhalt */
+.modal-content {
+  background-color: #fff;
+  padding: 20px 25px;
+  border-radius: 12px;
+  width: 320px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+  border-top: 5px solid #2894f4; /* Akzentfarbe */
+  animation: fadeInUp 0.3s ease-out;
+}
+
+/* Schließen-Symbol */
+#closeModal {
+  float: right;
+  font-size: 22px;
+  font-weight: bold;
+  color: #666;
+  cursor: pointer;
+}
+
+#closeModal:hover {
+  color: #000;
+}
+
+/* Eingabefeld */
+#folderNameInput {
+  width: 100%;
+  padding: 10px;
+  margin-top: 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 16px;
+}
+
+/* Button */
+#confirmCreateFolder {
+  width: 100%;
+  padding: 10px;
+  margin-top: 15px;
+  background-color: #2894f4;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+#confirmCreateFolder:hover {
+  background-color: #1e7fd6;
+}
+
+/* Animation */
+@keyframes fadeInUp {
+  from {
+      opacity: 0;
+      transform: translateY(20px);
+  }
+  to {
+      opacity: 1;
+      transform: translateY(0);
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.2s ease forwards;
+}
+
+.fade-out {
+  animation: fadeOut 0.2s ease forwards;
+}
+
+@keyframes fadeIn {
+  from {
+      opacity: 0;
+      transform: scale(0.98);
+  }
+  to {
+      opacity: 1;
+      transform: scale(1);
+  }
+}
+
+@keyframes fadeOut {
+  from {
+      opacity: 1;
+      transform: scale(1);
+  }
+  to {
+      opacity: 0;
+      transform: scale(0.98);
+  }
+}
+
+/* Dunkler Overlay */
+#overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7); /* Halbtransparente schwarze Schicht */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999; /* Über den anderen Inhalten anzeigen */
+}
+
+/* Overlay (optional, für Zentrierung) */
+#overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.apple-loader {
+  position: relative;
+  width: 30px;
+  height: 30px;
+}
+
+.apple-loader div {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 4px;
+  height: 12px;
+  background: #cfcfcf;
+  border-radius: 2px;
+  transform-origin: center -5px; /* näher zur Mitte rotieren */
+  animation: apple-spin 1s linear infinite;
+}
+
+@keyframes apple-spin {
+  0%   { opacity: 1; }
+  100% { opacity: 0.2; }
+}
+
+/* Positionierung + Verzögerung */
+.apple-loader div:nth-child(1) { transform: rotate(0deg);   animation-delay: -0.875s; }
+.apple-loader div:nth-child(2) { transform: rotate(45deg);  animation-delay: -0.75s; }
+.apple-loader div:nth-child(3) { transform: rotate(90deg);  animation-delay: -0.625s; }
+.apple-loader div:nth-child(4) { transform: rotate(135deg); animation-delay: -0.5s; }
+.apple-loader div:nth-child(5) { transform: rotate(180deg); animation-delay: -0.375s; }
+.apple-loader div:nth-child(6) { transform: rotate(225deg); animation-delay: -0.25s; }
+.apple-loader div:nth-child(7) { transform: rotate(270deg); animation-delay: -0.125s; }
+.apple-loader div:nth-child(8) { transform: rotate(315deg); animation-delay: 0s; }

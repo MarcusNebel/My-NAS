@@ -490,7 +490,6 @@ i.bx.bx-left-arrow-alt {
 
 .upload-form input[type="file"]:hover {
   border-color: #54aefd; /* Helleres Lila beim Hover */
-  transform: translateY(-2px);
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
 }
 

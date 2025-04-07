@@ -9,6 +9,7 @@ services:
     volumes: 
       - ./app/:/var/www/html/
       - ./app/nas-website-files/user_files/:/home/nas-website-files/user_files # Datenverzeichnis für die Website
+      - ./app/nas-website-files/tmp_zips/:/home/nas-website-files/tmp_zips # Datenverzeichnis für die temporären Zips
     ports:
       - "80:80"
       - "8443:443"

@@ -65,6 +65,14 @@ if (!isset($_SESSION["id"])) {
             <div class="container_file-list">
                 <h4>Meine Dateien:</h4>
 
+                <!-- Apple-Style Overlay und Lade-Kreis -->
+                <div id="overlay" style="display: none; justify-content: center; align-items: center; position: fixed; z-index: 9999; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6);">
+                    <div class="apple-loader">
+                        <div></div><div></div><div></div><div></div>
+                        <div></div><div></div><div></div><div></div>
+                    </div>
+                </div>
+
                 <!-- Werkzeugleiste mit Formular -->
                 <form action="assets/php/delete_handler.php" method="POST" id="delete-form">
                     <a class="pen-a" href="javascript:void(0);" style="text-decoration: none;" id="download-selected" title="Ausgewählte Dateien herunterladen">
@@ -81,13 +89,28 @@ if (!isset($_SESSION["id"])) {
 
                     <!-- Dropdown-Menü -->
                     <div class="dropdown-menu">
+                        <a href="File_upload.php" id="upload-file"><i class='bx bx-upload'></i> Dateien hochladen</a>
                         <a href="javascript:void(0);" id="create-folder"><i class='bx bx-folder-plus'></i> Neuen Ordner erstellen</a>
-                        <a href="File_upload.php" id="upload-file"><i class='bx bx-upload'></i> Datei hochladen</a>
+                    </div>
+
+                    <!-- Modal Fenster -->
+                    <div id="folderModal" class="modal" style="display: none;">
+                        <div class="modal-content" style="background: #fff; padding: 20px; border-radius: 10px; width: 300px; margin: auto;">
+                            <span id="closeModal" style="float:right; cursor:pointer;">&times;</span>
+                            <h3>Ordner erstellen</h3>
+                            <input type="text" id="folderNameInput" placeholder="Ordnername" style="width: 100%; margin-top: 10px; padding: 8px;">
+                            <button id="confirmCreateFolder" type="button" style="margin-top: 10px;">Erstellen</button>
+                        </div>
                     </div>
 
                     <hr style="border: 2px solid #000; margin: 20px 0;">
 
                     <ul class="file-list">
+                        <div style="margin-bottom: 20px; margin-left: 16px;">
+                            <label class="select-all-cb">
+                                <input type="checkbox" class="select-all-cb" id="select-all-checkbox"> Alle auswählen
+                            </label>
+                        </div>
                         <?php include 'assets/php/list_files.php'; ?>
                     </ul>
                 </form>
@@ -135,6 +158,110 @@ if (!isset($_SESSION["id"])) {
     </div>
     <script src="assets/js/main.js"></script>
     <script>
+        // Event-Listener für das Eltern-Element (file-list)
+        document.querySelector('.file-list').addEventListener('click', function(e) {
+            // Wenn der Klick auf eine Checkbox oder ein Dateielement war
+            const target = e.target;
+
+            // Wenn auf eine Datei (li.file-item) oder den Dateinamen geklickt wurde
+            if (target.closest('.file-item')) {
+                const checkbox = target.closest('.file-item').querySelector('.file-checkbox');
+                checkbox.checked = !checkbox.checked;  // Checkbox umschalten
+            }
+        });
+
+        // Alle auswählen (Checkbox "select-all-checkbox")
+        document.getElementById("select-all-checkbox").addEventListener("change", (e) => {
+            const isChecked = e.target.checked;
+            document.querySelectorAll('.file-checkbox').forEach(checkbox => {
+                checkbox.checked = isChecked;  // Alle Checkboxen setzen
+            });
+        });
+    </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const modal = document.getElementById("folderModal");
+            const openBtn = document.getElementById("create-folder");
+            const closeBtn = document.getElementById("closeModal");
+
+            // Öffnen
+            openBtn.addEventListener("click", () => {
+                modal.style.display = "flex";
+                modal.classList.add("fade-in");
+                modal.classList.remove("fade-out");
+
+                // Dropdown-Menü ausblenden
+                const dropdownMenu = document.querySelector(".dropdown-menu");
+                dropdownMenu.style.display = "none";
+            });
+
+            // Schließen mit X
+            closeBtn.addEventListener("click", () => {
+                closeModal();
+            });
+
+            // Schließen bei Klick außerhalb des Modals
+            window.addEventListener("click", function (e) {
+                if (e.target === modal) {
+                    closeModal();
+                }
+            });
+
+            // Schließen mit Escape
+            document.addEventListener("keydown", function (e) {
+                if (e.key === "Escape") {
+                    closeModal();
+                }
+            });
+
+            // Fade-Out-Funktion
+            function closeModal() {
+                modal.classList.remove("fade-in");
+                modal.classList.add("fade-out");
+                setTimeout(() => {
+                    modal.style.display = "none";
+                }, 200); // gleiche Dauer wie in der Animation
+            }
+        });
+
+        document.getElementById("confirmCreateFolder").addEventListener("click", () => {
+            const folderName = document.getElementById("folderNameInput").value.trim();
+
+            if (folderName === "") {
+                alert("Bitte gib einen Ordnernamen ein.");
+                return;
+            }
+
+            fetch("assets/php/create_folder.php", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                },
+                body: `folderName=${encodeURIComponent(folderName)}`
+            })
+            .then(response => {
+                return response.text().then(text => {
+                    if (!response.ok) throw new Error(text); // Fehler auslösen mit Servertext
+                    return text;
+                });
+            })
+            .then(data => {
+                closeModal();
+                location.reload();
+            })
+            .catch(error => {
+                alert(error.message); // Zeigt echten Server-Fehlertext an
+                console.error(error);
+            });
+        });
+
+        // Modal schließen
+        function closeModal() {
+            const modal = document.getElementById("folderModal");
+            modal.style.display = "none";
+        }
+    </script>
+    <script>
         document.getElementById('toggle-menu').addEventListener('click', function() {
             var dropdownMenu = document.querySelector('.dropdown-menu');
             
@@ -144,6 +271,24 @@ if (!isset($_SESSION["id"])) {
             } else {
                 dropdownMenu.style.display = 'block';  // Wenn es nicht angezeigt wird, dann einblenden
             }
+        });
+    </script>
+    <script>
+        const selectAllCheckbox = document.getElementById('select-all-checkbox');
+        const fileCheckboxes = document.querySelectorAll('.file-checkbox');
+
+        selectAllCheckbox.addEventListener('change', function() {
+            fileCheckboxes.forEach(cb => cb.checked = this.checked);
+        });
+
+        fileCheckboxes.forEach(cb => {
+            cb.addEventListener('change', () => {
+                if (!cb.checked) {
+                    selectAllCheckbox.checked = false;
+                } else if ([...fileCheckboxes].every(cb => cb.checked)) {
+                    selectAllCheckbox.checked = true;
+                }
+            });
         });
     </script>
 	<script src="assets/js/lang.js"></script>

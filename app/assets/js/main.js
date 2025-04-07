@@ -32,22 +32,37 @@ function handleDownload() {
         window.location.href = "assets/php/download.php?file=" + encodeURIComponent(files[0]);
     } else {
         // Mehrere Dateien als ZIP herunterladen
-        var form = document.createElement("form");
-        form.method = "POST";
-        form.action = "assets/php/zip_download.php";
-        form.style.display = "none";
-
+        var formData = new FormData();
         files.forEach(file => {
-            var input = document.createElement("input");
-            input.type = "hidden";
-            input.name = "files[]";
-            input.value = file;
-            form.appendChild(input);
+            formData.append('files[]', file);
         });
 
-        document.body.appendChild(form);
-        form.submit();
-        document.body.removeChild(form);
+        // Overlay anzeigen, um dem Benutzer zu zeigen, dass der Download läuft
+        document.getElementById('overlay').style.display = 'flex';
+
+        // AJAX Request zum Herunterladen der ZIP-Datei
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', 'assets/php/zip_download.php', true);
+        xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');  // Setzen des Headers, um den Ajax-Request zu kennzeichnen
+
+        xhr.onload = function () {
+            if (xhr.status === 200) {
+                // Die Antwort des Servers (Dateipfad und Dateiname) parsieren
+                var response = JSON.parse(xhr.responseText);
+                var downloadLink = document.createElement('a');
+                downloadLink.href = response.filePath; // Die URL der heruntergeladenen Datei
+                downloadLink.download = response.zipName; // Der Dateiname der ZIP-Datei
+                downloadLink.click();
+
+                // Overlay wieder ausblenden, wenn der Download bereit ist
+                document.getElementById('overlay').style.display = 'none';
+            } else {
+                alert('Fehler beim Herunterladen der Datei.');
+                document.getElementById('overlay').style.display = 'none'; // Overlay ausblenden, falls ein Fehler auftritt
+            }
+        };
+
+        xhr.send(formData);
     }
 }
 
@@ -196,29 +211,6 @@ document.addEventListener("DOMContentLoaded", function () {
         else if (bytes < 1024 * 1024 * 1024) return (bytes / (1024 * 1024)).toFixed(2) + " MB";
         else return (bytes / (1024 * 1024 * 1024)).toFixed(2) + " GB";
     }
-});
-
-// Scroll Animation
-const forecastContainer = document.getElementById("hourly-forecast-container");
-
-forecastContainer.addEventListener("wheel", (event) => {
-    event.preventDefault();
-    
-    let scrollAmount = event.deltaY * 0.05; // Reduziert die Scrollgeschwindigkeit für sanfteres Scrollen
-    let startTime = performance.now();
-
-    function smoothScroll(currentTime) {
-        let elapsedTime = currentTime - startTime;
-        let progress = Math.min(elapsedTime / 300, 1); // 300ms für sanftes Scrollen
-
-        forecastContainer.scrollLeft += scrollAmount * progress;
-
-        if (progress < 1) {
-            requestAnimationFrame(smoothScroll);
-        }
-    }
-
-    requestAnimationFrame(smoothScroll);
 });
 
 // index.php Scroll inicator

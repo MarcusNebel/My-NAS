@@ -226,9 +226,11 @@ if ($_SERVER["REQUEST_METHOD"] === "GET" && isset($_GET["delete-account"])) {
 					<form class="delete-account-form" method="get">
 						<button class="delete-account-btn" name="delete-account" type="submit">Account löschen</button>
 					</form>
-						<hr style="border: 1px solid #ccc; margin: 20px 0;">
-						<h4>Admin Einstellungen:</h4>
-						<a class="all-accounts" href="accounts-list.php">Alle Accounts</a>
+
+					<hr style="border: 1px solid #ccc; margin: 20px 0;">
+					
+					<h4>Admin Einstellungen:</h4>
+					<a class="all-accounts" href="accounts-list.php">Alle Accounts</a>
 				</div>
 			</div>
 		</section>

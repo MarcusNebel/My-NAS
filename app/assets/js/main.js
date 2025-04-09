@@ -16,9 +16,18 @@ window.onload = function () {
 	});
 }
 
-function handleDownload() {
-    var checkboxes = document.querySelectorAll('.file-checkbox:checked');
-    var files = [];
+let config = {};
+
+async function loadConfig() {
+    const response = await fetch("../../config.json");
+    config = await response.json();
+    console.log(config);  // Überprüfen, ob die Konfiguration richtig geladen wurde
+}
+
+async function handleDownload() {
+    await loadConfig(); // Warten, bis die Konfiguration geladen ist
+    const checkboxes = document.querySelectorAll('.file-checkbox:checked');
+    const files = [];
 
     checkboxes.forEach(checkbox => {
         files.push(checkbox.value);
@@ -27,47 +36,62 @@ function handleDownload() {
     if (files.length === 0) {
         alert("Bitte wählen Sie mindestens eine Datei zum Herunterladen aus.");
         return;
-    } else if (files.length === 1) {
-        // Direktes Herunterladen einer einzelnen Datei
-        window.location.href = "assets/php/download.php?file=" + encodeURIComponent(files[0]);
-    } else {
-        // Mehrere Dateien als ZIP herunterladen
-        var formData = new FormData();
-        files.forEach(file => {
-            formData.append('files[]', file);
-        });
+    }
 
-        // Overlay anzeigen, um dem Benutzer zu zeigen, dass der Download läuft
+    const username = document.getElementById("username-hidden").value;
+
+    if (files.length === 1) {
+        const filePath = encodeURIComponent(files[0]);
+        window.location.href = `/nas-website-files/user_files/${username}/${filePath}`;
+    } else {
         document.getElementById('overlay').style.display = 'flex';
 
-        // AJAX Request zum Herunterladen der ZIP-Datei
-        var xhr = new XMLHttpRequest();
-        xhr.open('POST', 'assets/php/zip_download.php', true);
-        xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');  // Setzen des Headers, um den Ajax-Request zu kennzeichnen
+        try {
+            console.log(username, files);
+            const response = await fetch(config.flaskServerURL + "/zip_download", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ username, files })
+            });
 
-        xhr.onload = function () {
-            if (xhr.status === 200) {
-                // Die Antwort des Servers (Dateipfad und Dateiname) parsieren
-                var response = JSON.parse(xhr.responseText);
-                var downloadLink = document.createElement('a');
-                downloadLink.href = response.filePath; // Die URL der heruntergeladenen Datei
-                downloadLink.download = response.zipName; // Der Dateiname der ZIP-Datei
-                downloadLink.click();
-
-                // Overlay wieder ausblenden, wenn der Download bereit ist
-                document.getElementById('overlay').style.display = 'none';
-            } else {
-                alert('Fehler beim Herunterladen der Datei.');
-                document.getElementById('overlay').style.display = 'none'; // Overlay ausblenden, falls ein Fehler auftritt
+            if (!response.ok) {
+                const errorDetails = await response.json();
+                throw new Error(errorDetails.error || "Fehler beim Herunterladen der ZIP-Datei.");
             }
-        };
 
-        xhr.send(formData);
+            const disposition = response.headers.get("Content-Disposition");
+            const matches = /filename="(.+)"/.exec(disposition);
+            const zipName = matches ? matches[1] : "download.zip";
+
+            const blob = await response.blob();
+            const downloadUrl = window.URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = downloadUrl;
+            a.download = zipName;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            window.URL.revokeObjectURL(downloadUrl);
+        } catch (err) {
+            const zipDownloadURL = config.flaskServerURL + "/zip_download";
+
+            if (err instanceof TypeError && err.message === "Failed to fetch") {
+                document.getElementById("downloadStatus").innerHTML =
+                    '❌ Verbindung zum Download-Server fehlgeschlagen. ' +
+                    'Gehe auf <a href="' + zipDownloadURL + '" target="_blank" rel="noopener noreferrer">' +
+                    'diese Seite</a>, vertraue dem Zertifikat und lade die Seite neu.';
+            } else {
+                alert(`Fehler beim Herunterladen der ZIP-Datei: ${err.message}`);
+            }
+            console.error("Fehlerdetails:", err);
+        } finally {
+            document.getElementById('overlay').style.display = 'none';
+        }
     }
 }
 
 // Event Listener für den Download-Button
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("download-selected").addEventListener("click", handleDownload);
 });
 

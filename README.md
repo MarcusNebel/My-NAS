@@ -70,9 +70,19 @@ Make sure you use an app password for Gmail (without space).
 
 If you want to use another SMTP Server you have to edit the settings by yourself.
 
-### **Configure Server-IP in the `File_upload.php` file**
+### **Configure Server-IP in the `app/config.json` file**
 
-You have to fill in the server-IP in the `File_upload.php` file in the following line under `__SERVER_IP__` : 
+You have to fill in the server-IP in the `app/config.json` file in the following line under `__SERVER_IP__` : 
+
+```json
+{
+    "flaskServerURL": "https://__SERVER_IP__:8080"
+}
+```
+
+### **Configure Server-IP in the `app/File_upload.php` file**
+
+You have to fill in the server-IP in the `app/File_upload.php` file in the following line under `__SERVER_IP__` : 
 
 ```js
 const flaskserverURL = 'https://__SERVER_IP__:8080/upload'

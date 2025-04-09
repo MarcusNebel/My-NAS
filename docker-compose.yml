@@ -37,7 +37,7 @@ services:
     networks:
       - nas-network
 
-  flask-upload:
+  flask-server:
     build:
       context: ./flask-upload   # Hier den Ordner angeben, der die Dockerfile enthält
       dockerfile: Dockerfile    # Falls deine Dockerfile einen anderen Namen hat, kannst du sie hier spezifizieren
@@ -46,6 +46,7 @@ services:
     restart: unless-stopped
     volumes:
       - ./app/nas-website-files/user_files:/uploads
+      - ./app/nas-website-files/tmp_zips:/tmp_zips # Datenverzeichnis für temporäre Zips
     environment:
       - FLASK_APP=app.py
     networks:

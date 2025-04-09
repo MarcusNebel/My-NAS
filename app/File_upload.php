@@ -111,7 +111,17 @@ if (!isset($_SESSION["id"])) {
         const progressBar = document.getElementById('progress-bar');
         const uploadSpeed = document.getElementById('upload-speed');
         const usernameField = document.getElementById('username');
-        const flaskserverURL = 'https://__SERVER_IP__:8080/upload'
+        const flaskserverURL = 'https://192.168.188.27:8080/upload'
+
+
+        let config = {};
+
+        async function loadConfig() {
+            const response = await fetch("config.json");
+            config = await response.json();
+            console.log(config);  // Überprüfen, ob die Konfiguration richtig geladen wurde
+        }
+
 
         uploadForm.addEventListener('submit', function(e) {
             e.preventDefault();

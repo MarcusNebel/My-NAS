@@ -65,6 +65,25 @@ if (!isset($_SESSION["id"])) {
             <div class="container_file-list">
                 <h4>Meine Dateien:</h4>
 
+                <?php
+                require_once 'account-system/mysql.php';
+
+                // Benutzername holen
+                $username = 'Unbekannt';
+                if (isset($_SESSION['id'])) {
+                    $stmt = $mysql->prepare("SELECT USERNAME FROM accounts WHERE ID = :id");
+                    $stmt->bindParam(':id', $_SESSION['id']);
+                    $stmt->execute();
+                    $user = $stmt->fetch();
+                    if ($user) {
+                        $username = $user['USERNAME'];
+                    }
+                }
+                ?>
+
+                <!-- Verstecktes Input-Feld für den Benutzernamen -->
+                <input type="hidden" id="username-hidden" value="<?php echo $username; ?>">
+
                 <!-- Apple-Style Overlay und Lade-Kreis -->
                 <div id="overlay" style="display: none; justify-content: center; align-items: center; position: fixed; z-index: 9999; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6);">
                     <div class="apple-loader">
@@ -92,6 +111,8 @@ if (!isset($_SESSION["id"])) {
                         <a href="File_upload.php" id="upload-file"><i class='bx bx-upload'></i> Dateien hochladen</a>
                         <a href="javascript:void(0);" id="create-folder"><i class='bx bx-folder-plus'></i> Neuen Ordner erstellen</a>
                     </div>
+
+                    <strong><p id="downloadStatus" style="margin-top: 10px;"></p></strong>
 
                     <!-- Modal Fenster -->
                     <div id="folderModal" class="modal" style="display: none;">

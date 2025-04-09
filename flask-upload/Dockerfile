@@ -13,6 +13,9 @@ COPY app.py .
 # Upload-Verzeichnis erstellen
 RUN mkdir -p /uploads && chmod -R 777 /uploads
 
+# Zip Verzeichnis
+RUN mkdir -p /tmp_zips && chmod -R 777 /tmp_zips
+
 # OpenSSL installieren
 RUN apt-get update && apt-get install -y openssl
 

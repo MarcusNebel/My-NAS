@@ -823,7 +823,12 @@ i.bx.bxs-plus-circle:hover {
   color: #000;
   margin-left: 15px;
   align-items: center;
-  transition: transform 0.2s ease;
+  transition: all 0.3s ease;
+}
+
+#search-icon:hover {
+  transform: translateY(-2px);
+  color: #2894f4;
 }
 
 #search-input {
@@ -837,7 +842,7 @@ i.bx.bxs-plus-circle:hover {
   bottom: 10px;
   border: 1px solid #2894f4;
   border-radius: 12px;
-  transition: width 0.3s ease, opacity 0.3s ease;
+  transition: all 0.3s ease;
   opacity: 0;
   pointer-events: none;
 }
@@ -845,5 +850,9 @@ i.bx.bxs-plus-circle:hover {
   width: 200px;
   opacity: 1;
   pointer-events: auto;
+  border-color: #2894f4;
+}
+#search-input:hover {
+  transform: translateY(-2px);
   border-color: #2894f4;
 }

@@ -94,6 +94,9 @@ if (!isset($_SESSION["id"])) {
 
                 <!-- Werkzeugleiste mit Formular -->
                 <form action="assets/php/delete_handler.php" method="POST" id="delete-form">
+                    <i id="search-icon" class='bx bx-search'></i>
+                    <input type="text" id="search-input" placeholder="Datei suchen..." />
+
                     <a class="pen-a" href="javascript:void(0);" style="text-decoration: none;" id="download-selected" title="Ausgewählte Dateien herunterladen">
                         <i class='bx bxs-download'></i>
                     </a>
@@ -111,7 +114,7 @@ if (!isset($_SESSION["id"])) {
                         <a href="File_upload.php" id="upload-file"><i class='bx bx-upload'></i> Dateien hochladen</a>
                         <a href="javascript:void(0);" id="create-folder"><i class='bx bx-folder-plus'></i> Neuen Ordner erstellen</a>
                     </div>
-
+                    
                     <strong><p id="downloadStatus" style="margin-top: 10px;"></p></strong>
 
                     <!-- Modal Fenster -->
@@ -181,13 +184,13 @@ if (!isset($_SESSION["id"])) {
     <script>
         // Event-Listener für das Eltern-Element (file-list)
         document.querySelector('.file-list').addEventListener('click', function(e) {
-            // Wenn der Klick auf eine Checkbox oder ein Dateielement war
             const target = e.target;
 
             // Wenn auf eine Datei (li.file-item) oder den Dateinamen geklickt wurde
             if (target.closest('.file-item')) {
                 const checkbox = target.closest('.file-item').querySelector('.file-checkbox');
                 checkbox.checked = !checkbox.checked;  // Checkbox umschalten
+                updateSelectAllCheckbox();  // Überprüfen, ob alle Checkboxen ausgewählt sind
             }
         });
 
@@ -197,7 +200,21 @@ if (!isset($_SESSION["id"])) {
             document.querySelectorAll('.file-checkbox').forEach(checkbox => {
                 checkbox.checked = isChecked;  // Alle Checkboxen setzen
             });
+            updateSelectAllCheckbox();  // Überprüfen, ob alle Checkboxen ausgewählt sind
         });
+
+        // Funktion zum Überprüfen des Status der "alle auswählen"-Checkbox
+        function updateSelectAllCheckbox() {
+            const allCheckboxes = document.querySelectorAll('.file-checkbox');
+            const selectAllCheckbox = document.getElementById('select-all-checkbox');
+            
+            // Prüfen, ob alle Checkboxen aktiviert sind
+            const allChecked = Array.from(allCheckboxes).every(checkbox => checkbox.checked);
+            selectAllCheckbox.checked = allChecked;  // Setzt die "alle auswählen"-Checkbox entsprechend
+
+            // Wenn nicht alle Checkboxen aktiv sind, wird sie deaktiviert
+            selectAllCheckbox.indeterminate = !allChecked && Array.from(allCheckboxes).some(checkbox => checkbox.checked);
+        }
     </script>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
@@ -311,6 +328,34 @@ if (!isset($_SESSION["id"])) {
                 }
             });
         });
+    </script>
+    <script>
+        const searchIcon = document.getElementById("search-icon");
+        const searchInput = document.getElementById("search-input");
+
+        searchIcon.addEventListener("click", () => {
+            searchInput.classList.toggle("show");
+
+            if (searchInput.classList.contains("show")) {
+            searchInput.focus();
+            } else {
+            searchInput.value = ""; // Eingabe löschen
+            filterFiles("");        // Alle Dateien wieder anzeigen
+            }
+        });
+
+        searchInput.addEventListener("input", () => {
+            const filter = searchInput.value.toLowerCase();
+            filterFiles(filter);
+        });
+
+        function filterFiles(filter) {
+            const files = document.querySelectorAll(".file-item");
+            files.forEach(file => {
+            const fileName = file.querySelector(".file-name").textContent.toLowerCase();
+            file.style.display = fileName.includes(filter) ? "block" : "none";
+            });
+        }
     </script>
 	<script src="assets/js/lang.js"></script>
 </body>

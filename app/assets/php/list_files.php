@@ -22,9 +22,10 @@ if ($username) {
                             class='file-checkbox' 
                             data-name='$file' 
                             data-size='$fileSize' 
-                            data-path='$filePath'> $file";
+                            data-path='$filePath'>";
+                echo "<span class='file-name'> $file </span>";
                 echo "</li>";
-            }
+            }            
         } else {
             echo "<script>document.getElementById('no-files-text').style.display = 'block';</script>";
         }

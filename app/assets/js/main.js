@@ -40,9 +40,14 @@ async function handleDownload() {
 
     const username = document.getElementById("username-hidden").value;
 
+    // Den Pfad aus der URL extrahieren
+    const urlParams = new URLSearchParams(window.location.search);
+    const path = urlParams.get('path') || '';  // Falls kein Pfad angegeben ist, verwenden wir einen leeren String
+
     if (files.length === 1) {
-        const filePath = encodeURIComponent(files[0]);
-        window.location.href = `/nas-website-files/user_files/${username}/${filePath}`;
+        // Den gesamten Pfad korrekt zusammenfügen, ohne Slashes zu kodieren
+        const filePath = '/' + path + '/' + files[0]; // Kein encodeURIComponent, um Slashes zu erhalten
+        window.location.href = `/nas-website-files/user_files/${username}${filePath}`; // Hier wird der vollständige Pfad verwendet
     } else {
         document.getElementById('overlay').style.display = 'flex';
 
@@ -51,7 +56,7 @@ async function handleDownload() {
             const response = await fetch(config.flaskServerURL + "/zip_download", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ username, files })
+                body: JSON.stringify({ username, files, path })
             });
 
             if (!response.ok) {
@@ -115,9 +120,12 @@ function submitDeleteForm() {
     }
 
     // Form für das Löschen erstellen und absenden
+    const urlParams = new URLSearchParams(window.location.search);
+    const path = urlParams.get('path') || '';
+
     var form = document.createElement("form");
     form.method = "POST";
-    form.action = "assets/php/delete_handler.php";
+    form.action = `assets/php/delete_handler.php?path=${encodeURIComponent(path)}`;
     form.style.display = "none";
 
     files.forEach(file => {

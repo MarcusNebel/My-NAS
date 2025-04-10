@@ -15,7 +15,11 @@ if (!$username) {
     die("Benutzername nicht gefunden.");
 }
 
-$directory = "/home/nas-website-files/user_files/$username/";
+// Den path-Parameter aus der URL holen, falls vorhanden
+$path = isset($_GET['path']) ? $_GET['path'] : '';  // Den Pfad aus der URL
+
+// Verzeichnis, in dem sich die Dateien befinden
+$directory = "/home/nas-website-files/user_files/$username/$path/";  // Den Pfad in den Dateipfad einfügen
 $deletedFiles = [];
 
 foreach ($_POST['files'] as $file) {
@@ -23,6 +27,9 @@ foreach ($_POST['files'] as $file) {
     
     if (file_exists($filePath) && unlink($filePath)) {
         $deletedFiles[] = $file;
+    } else {
+        echo "Pfad nicht korrekt:";
+        echo ($filePath);
     }
 }
 

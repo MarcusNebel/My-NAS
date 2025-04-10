@@ -95,12 +95,12 @@ if (!isset($_SESSION["id"])) {
                 <!-- Werkzeugleiste mit Formular -->
                 <form action="assets/php/delete_handler.php" method="POST" id="delete-form">
                     <i id="search-icon" class='bx bx-search'></i>
-                    <input type="text" id="search-input" placeholder="Datei suchen..." />
+                    <input type="text" id="search-input" placeholder="Dateien suchen...">
 
                     <a class="pen-a" href="javascript:void(0);" style="text-decoration: none;" id="download-selected" title="Ausgewählte Dateien herunterladen">
                         <i class='bx bxs-download'></i>
                     </a>
-                    
+
                     <a class="pen-a" href="javascript:void(0);" style="text-decoration: none;" id="delete-selected" title="Löschen">
                         <i class='bx bxs-trash'></i>
                     </a>
@@ -111,7 +111,7 @@ if (!isset($_SESSION["id"])) {
 
                     <!-- Dropdown-Menü -->
                     <div class="dropdown-menu">
-                        <a href="File_upload.php" id="upload-file"><i class='bx bx-upload'></i> Dateien hochladen</a>
+                        <a href="File_upload.php?path=<?php echo urlencode($_GET['path'] ?? ''); ?>" id="upload-file"><i class='bx bx-upload'></i> Dateien hochladen</a>
                         <a href="javascript:void(0);" id="create-folder"><i class='bx bx-folder-plus'></i> Neuen Ordner erstellen</a>
                     </div>
                     
@@ -129,39 +129,35 @@ if (!isset($_SESSION["id"])) {
 
                     <hr style="border: 2px solid #000; margin: 20px 0;">
 
-                    <ul class="file-list">
-                        <div style="margin-bottom: 20px; margin-left: 16px;">
-                            <label class="select-all-cb">
-                                <input type="checkbox" class="select-all-cb" id="select-all-checkbox"> Alle auswählen
-                            </label>
-                        </div>
+                    <input type="hidden" name="current_path" id="current_path" value="<?php echo isset($_GET['path']) ? htmlspecialchars($_GET['path']) : ''; ?>">
+
+                    <div class="path-navigation" id="path-nav">
+                        <?php
+                        // Start mit dem Haus
+                        echo "<a href='?'><i class='bx bxs-home'></i></a>";
+
+                        $currentPath = isset($_GET['path']) ? $_GET['path'] : '';
+                        $pathParts = explode('/', $currentPath);
+                        $currentSubPath = '';
+                        foreach ($pathParts as $part) {
+                            $currentSubPath .= $currentSubPath ? "/$part" : $part;
+                            echo " <span class='path-separator'>›</span> <a href='?path=" . urlencode($currentSubPath) . "'>$part</a>";
+                        }
+                        ?>
+                    </div>
+
+                    <div style="margin-bottom: 20px; margin-left: 16px;">
+                        <label class="select-all-cb">
+                            <input type="checkbox" class="select-all-cb" id="select-all-checkbox"> Alle auswählen
+                        </label>
+                    </div>
+
+                    <ul id="file-list" class="file-list">
                         <?php include 'assets/php/list_files.php'; ?>
                     </ul>
-                </form>
+                    </form>
 
-            <!-- Abschnitt für den Datei-Upload, anfangs ausgeblendet -->
-            <section class="upload-section" id="upload-section" style="display: none;">
-                <div class="container-upload-section">
-                    <div class="upload-form">
-                        <h5>Datei-Upload:</h5>
-                        <form id="uploadForm" action="assets/php/upload.php" method="post" enctype="multipart/form-data">
-                            <input type="file" id="fileInput" name="file" required>
-                            <button type="submit">Hochladen</button>
-                        </form>
-                        <p id="uploadStatus"></p>
-
-                        <!-- Fortschrittsbalken -->
-                        <div id="progress-container" class="progress-container">
-                            <div id="progress-bar" class="progress-bar">0%</div>
-                        </div>
-
-                        <!-- Anzeige der Upload-Geschwindigkeit -->
-                        <p id="upload-speed" class="upload-speed">Upload-Geschwindigkeit: 0 MB/s</p>
-                    </div>
-                </div>
-            </section>
-            </div>
-        </section>
+        </div>
     </main>
     <div id="file-info-panel" class="hidden">
         <div id="file-info-content">
@@ -180,17 +176,35 @@ if (!isset($_SESSION["id"])) {
             </div>
         </div>
     </div>
+    <input type="hidden" name="current_path" id="current_path" value="<?php echo isset($_GET['path']) ? htmlspecialchars($_GET['path']) : ''; ?>">
     <script src="assets/js/main.js"></script>
     <script>
         // Event-Listener für das Eltern-Element (file-list)
-        document.querySelector('.file-list').addEventListener('click', function(e) {
-            const target = e.target;
+        document.querySelector('.file-list').addEventListener('click', function (e) {
+            const fileItem = e.target.closest('.file-item');
+            if (!fileItem) return;
 
-            // Wenn auf eine Datei (li.file-item) oder den Dateinamen geklickt wurde
-            if (target.closest('.file-item')) {
-                const checkbox = target.closest('.file-item').querySelector('.file-checkbox');
-                checkbox.checked = !checkbox.checked;  // Checkbox umschalten
-                updateSelectAllCheckbox();  // Überprüfen, ob alle Checkboxen ausgewählt sind
+            // Verhindere Aktion bei Doppelklick – wird dort separat behandelt
+            if (e.detail === 2) return;
+
+            // Einzelklick → Checkbox toggeln (aber nicht auf Link direkt)
+            if (!e.target.closest('a')) {
+                const checkbox = fileItem.querySelector('.file-checkbox');
+                if (checkbox) {
+                    checkbox.checked = !checkbox.checked;
+                    updateSelectAllCheckbox();
+                }
+            }
+        });
+
+        // Doppelklick → in den Ordner navigieren
+        document.querySelector('.file-list').addEventListener('dblclick', function(e) {
+            const item = e.target.closest('.file-item.directory');
+            if (item) {
+                const path = item.getAttribute('data-path');
+                if (path) {
+                    window.location.href = '?path=' + path;
+                }
             }
         });
 
@@ -332,29 +346,45 @@ if (!isset($_SESSION["id"])) {
     <script>
         const searchIcon = document.getElementById("search-icon");
         const searchInput = document.getElementById("search-input");
+        const fileList = document.getElementById('file-list');
 
+        // Zeigt das Suchfeld an oder blendet es aus, wenn auf das Such-Icon geklickt wird
         searchIcon.addEventListener("click", () => {
             searchInput.classList.toggle("show");
 
             if (searchInput.classList.contains("show")) {
-            searchInput.focus();
+                searchInput.focus();
             } else {
-            searchInput.value = ""; // Eingabe löschen
-            filterFiles("");        // Alle Dateien wieder anzeigen
+                searchInput.value = ""; // Eingabe löschen, wenn ausgeblendet
+                searchFiles(""); // Alle Dateien anzeigen
             }
         });
 
-        searchInput.addEventListener("input", () => {
-            const filter = searchInput.value.toLowerCase();
-            filterFiles(filter);
+        // Eventlistener für Eingaben im Suchfeld
+        searchInput.addEventListener('input', function () {
+            const query = this.value.trim(); // Holen der Eingabe und Entfernen von Leerzeichen
+
+            // Bei leerer Eingabe alle Dateien anzeigen
+            if (query === '') {
+                searchFiles('');
+            } else {
+                // Anfrage senden, wenn eine Eingabe gemacht wurde
+                searchFiles(query);
+            }
         });
 
-        function filterFiles(filter) {
-            const files = document.querySelectorAll(".file-item");
-            files.forEach(file => {
-            const fileName = file.querySelector(".file-name").textContent.toLowerCase();
-            file.style.display = fileName.includes(filter) ? "block" : "none";
-            });
+        // Funktion für die Suchanfrage
+        function searchFiles(query) {
+            const currentPath = document.getElementById("current_path").value;
+
+            fetch(`assets/php/list_files.php?search=${encodeURIComponent(query)}&path=${encodeURIComponent(currentPath)}`)
+                .then(response => response.text())
+                .then(data => {
+                    fileList.innerHTML = data;
+                })
+                .catch(error => {
+                    console.error('Fehler bei der Anfrage:', error);
+                });
         }
     </script>
 	<script src="assets/js/lang.js"></script>

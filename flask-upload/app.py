@@ -23,6 +23,8 @@ app.config['MAX_CONTENT_LENGTH'] = 100 * 1024 * 1024 * 1024  # 100 GB
 @app.route('/upload', methods=['POST'])
 def upload_file():
     username = request.form.get('username')
+    sub_path = request.form.get('path', '')  # Unterordner (optional)
+
     if not username:
         return jsonify({'error': 'Kein Benutzername übermittelt'}), 400
 
@@ -33,19 +35,19 @@ def upload_file():
     if not files:
         return jsonify({'error': 'Keine Dateien ausgewählt'}), 400
 
-    # Ordner für Benutzer erstellen (falls nicht vorhanden)
+    # Zielordner: /uploads/<Benutzername>/<Pfad>
     user_folder = os.path.join(app.config['UPLOAD_FOLDER'], username)
-    os.makedirs(user_folder, exist_ok=True)
+    full_upload_path = os.path.join(user_folder, sub_path.strip("/"))
+    os.makedirs(full_upload_path, exist_ok=True)
 
-    # Dateien speichern
     saved_files = []
     for file in files:
         if file.filename == '':
             continue
         try:
-            file_path = os.path.join(user_folder, file.filename)
+            file_path = os.path.join(full_upload_path, file.filename)
             file.save(file_path)
-            saved_files.append(file.filename)
+            saved_files.append(os.path.join(sub_path, file.filename))
         except Exception as e:
             return jsonify({'error': str(e)}), 500
 
@@ -56,10 +58,12 @@ BASE_DIR = "/uploads"  # Passe bei Bedarf an
 
 @app.route('/zip_download', methods=['POST'])
 def zip_download():
-    data = request.json  # Hier wird der JSON-Body des Requests geparsed
-    print("Request JSON:", data)  # Ausgabe der gesamten JSON-Daten
+    data = request.json
+    print("Request JSON:", data)
+
     username = data.get("username")
     files = data.get("files")
+    path = data.get("path", "")  # Der Pfad aus dem Request
 
     if not username or not files:
         return jsonify({"error": "Username oder Dateien fehlen"}), 400
@@ -68,7 +72,6 @@ def zip_download():
     if not os.path.exists(user_dir):
         return jsonify({"error": "Benutzerverzeichnis nicht gefunden"}), 404
 
-    # Datum und Uhrzeit für den Zip-Namen formatieren
     current_time = datetime.now(ZoneInfo("Europe/Berlin")).strftime("%Y-%m-%d_%H-%M-%S")
     zip_name = f"My-NAS_{username}_{current_time}.zip"
 
@@ -77,15 +80,25 @@ def zip_download():
     try:
         with zipfile.ZipFile(zip_buffer, "w", zipfile.ZIP_DEFLATED) as zipf:
             for rel_path in files:
-                abs_path = os.path.join(user_dir, rel_path)
-                if os.path.isfile(abs_path):
-                    zipf.write(abs_path, arcname=rel_path)
+                # Den Pfad aus der URL zum relativen Pfad hinzufügen
+                full_rel_path = os.path.join(path, rel_path) if path else rel_path
+                safe_rel_path = full_rel_path.strip("/")
+
+                abs_path = os.path.join(user_dir, safe_rel_path)
+
+                # Sicherheitscheck
+                abs_user_dir = os.path.abspath(user_dir)
+                abs_file_path = os.path.abspath(abs_path)
+                if not abs_file_path.startswith(abs_user_dir):
+                    return jsonify({"error": f"Ungültiger Pfad: {full_rel_path}"}), 403
+
+                if os.path.isfile(abs_file_path):
+                    zipf.write(abs_file_path, arcname=safe_rel_path)
                 else:
                     print(f"Datei nicht gefunden: {abs_path}")
-                    return jsonify({"error": f"Datei {rel_path} nicht gefunden"}), 404
+                    return jsonify({"error": f"Datei {full_rel_path} nicht gefunden"}), 404
     except Exception as e:
         return jsonify({"error": f"Fehler beim Erstellen der ZIP-Datei: {str(e)}"}), 500
-
 
     zip_buffer.seek(0)
 

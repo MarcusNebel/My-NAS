@@ -15,9 +15,11 @@ if (!$username) {
     die("Benutzername nicht gefunden.");
 }
 
-// Datei validieren
+// Pfad abrufen und validieren
+$path = isset($_GET['path']) ? $_GET['path'] : '';
 $file = basename($_GET['file']);
-$directory = "/home/nas-website-files/user_files/$username/";
+$directory = "/home/nas-website-files/user_files/$username/$path/";
+
 $filePath = $directory . $file;
 
 if (!file_exists($filePath)) {

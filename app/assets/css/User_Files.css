@@ -431,6 +431,12 @@ main section.file-list-section {
 }
 
 /* Dateiliste */
+ul {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+
 .file-list {
   background-color: #FFF;
   list-style: none;
@@ -448,6 +454,8 @@ main section.file-list-section {
   font-size: 18px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   margin-bottom: 10px; /* Fügt Abstand zwischen den Einträgen hinzu */
+  user-select: none; /* Verhindert Textauswahl */
+  -webkit-user-select: none; /* Für Safari */
   transition: all 0.2s ease;
 }
 
@@ -457,21 +465,10 @@ main section.file-list-section {
 }
 
 .select-all-cb {
-  cursor: pointer;
+  user-select: none; /* Verhindert Textauswahl */
+  -webkit-user-select: none; /* Für Safari */
+  cursor: pointer; /* Optional: zeigt an, dass man klicken kann */
   font-weight: bold;
-}
-
-/* Links für Download & Löschen */
-.file-item a {
-  color: #2894f4;
-  text-decoration: none;
-  font-weight: bold;
-  transition: all 0.3s ease;
-}
-
-.file-item a:hover {
-  color: #54aefd;
-  transform: translateY(-2px);
 }
 
 /* Button-Stile für Löschen */
@@ -855,4 +852,60 @@ i.bx.bxs-plus-circle:hover {
 #search-input:hover {
   transform: translateY(-2px);
   border-color: #2894f4;
+}
+
+i.bx.bxs-home {
+  text-decoration: none;
+  color: #000;
+  font-size: 20px;
+  transition: all 0.3s ease;
+}
+
+i.bx.bxs-home:hover {
+  color: #2894f4;
+  transform: translateY(-1px);  
+}
+
+.path-navigation {
+  text-decoration: none;
+  font-size: 16px;
+  margin: 12px 0;
+  padding-left: 10px;
+  font-weight: 500;
+  color: #333;
+}
+
+
+.path-navigation a {
+  color: #000;
+  text-decoration: none;
+  margin: 0 2px;
+  transition: all 0.2s ease;
+}
+
+.path-navigation a:hover {
+  text-decoration: underline;
+  color: #2894f4;
+}
+
+.path-separator {
+  color: #616161;
+  margin: 0 2px;
+}
+
+.path-home {
+  font-size: 18px;
+}
+
+/* Ordner-Link: schwarz & ohne Unterstrich */
+li.file-item.directory a {
+  color: black;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+li.file-item.directory i {
+  margin-left: 5px;
+  color: rgb(255, 208, 0);
+  text-decoration: none;
 }

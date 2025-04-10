@@ -84,10 +84,15 @@ if (!isset($_SESSION["id"])) {
                     ?>
 
                     <form id="uploadForm">
-                    <input type="file" id="fileInput" name="file[]" multiple required>
+                        <input type="file" id="fileInput" name="file[]" multiple required>
                         <input type="hidden" id="username" name="username" value="<?php echo htmlspecialchars($username); ?>">
+
+                        <!-- NEU: Unterordner Eingabefeld -->
+                        <input type="text" id="path" name="path" style="display: none;" placeholder="Ordner (optional)" />
+
                         <button type="submit">Hochladen</button>
                     </form>
+
                     <p id="uploadStatus"></p>
 
                     <!-- Fortschrittsbalken -->
@@ -111,65 +116,86 @@ if (!isset($_SESSION["id"])) {
         const progressBar = document.getElementById('progress-bar');
         const uploadSpeed = document.getElementById('upload-speed');
         const usernameField = document.getElementById('username');
-        const flaskserverURL = 'https://__SERVER_IP__:8080/upload'
 
+        let flaskServerURL = ''; // Variable für die Flask-Server-URL
 
-        let config = {};
-
+        // Funktion, um die config.json zu laden und die Flask-Server URL zu setzen
         async function loadConfig() {
-            const response = await fetch("config.json");
-            config = await response.json();
-            console.log(config);  // Überprüfen, ob die Konfiguration richtig geladen wurde
+            const response = await fetch('../../config.json');
+            const config = await response.json();
+            flaskServerURL = config.flaskServerURL + '/upload'; // URL aus config.json und '/upload' anhängen
+            console.log(flaskServerURL); // Zum Debuggen
         }
 
+        // Lade die Konfiguration und starte den Upload-Prozess
+        loadConfig().then(() => {
+            uploadForm.addEventListener('submit', function(e) {
+                e.preventDefault();
 
-        uploadForm.addEventListener('submit', function(e) {
-            e.preventDefault();
+                const files = fileInput.files;
+                if (files.length === 0) return;
 
-            const files = fileInput.files;
-            if (files.length === 0) return;
+                const formData = new FormData();
 
-            const formData = new FormData();
-
-            // Alle Dateien zum FormData-Objekt hinzufügen
-            for (let i = 0; i < files.length; i++) {
-                formData.append('file[]', files[i]); // 'file[]' für mehrere Dateien
-            }
-
-            formData.append('username', usernameField.value); // Benutzername mitsenden
-
-            const xhr = new XMLHttpRequest();
-
-            // Fortschrittsanzeige
-            xhr.upload.addEventListener('progress', function(e) {
-                if (e.lengthComputable) {
-                    const percent = Math.round((e.loaded / e.total) * 100);
-                    progressBar.style.width = percent + '%';
-                    progressBar.textContent = percent + '%';
-
-                    const seconds = (Date.now() - startTime) / 1000;
-                    const speed = (e.loaded / 1024 / 1024) / seconds;
-                    uploadSpeed.textContent = `Upload-Geschwindigkeit: ${speed.toFixed(2)} MB/s`;
+                // Alle Dateien zum FormData-Objekt hinzufügen
+                for (let i = 0; i < files.length; i++) {
+                    formData.append('file[]', files[i]); // 'file[]' für mehrere Dateien
                 }
+
+                formData.append('username', usernameField.value); // Benutzername mitsenden
+                const pathField = document.getElementById('path');
+                formData.append('path', pathField.value); // NEU: Pfad mitsenden
+
+                const xhr = new XMLHttpRequest();
+
+                // Fortschrittsanzeige
+                xhr.upload.addEventListener('progress', function(e) {
+                    if (e.lengthComputable) {
+                        const percent = Math.round((e.loaded / e.total) * 100);
+                        progressBar.style.width = percent + '%';
+                        progressBar.textContent = percent + '%';
+
+                        const seconds = (Date.now() - startTime) / 1000;
+                        const speed = (e.loaded / 1024 / 1024) / seconds;
+                        uploadSpeed.textContent = `Upload-Geschwindigkeit: ${speed.toFixed(2)} MB/s`;
+                    }
+                });
+
+                // Upload abgeschlossen
+                xhr.onload = function() {
+                    if (xhr.status === 200) {
+                        uploadStatus.textContent = '✅ Upload erfolgreich!';
+                        window.location.href = 'User_Files.php';  // Weiterleitung nach dem erfolgreichen Upload
+                    } else {
+                        uploadStatus.textContent = '❌ Fehler beim Upload: ' + xhr.responseText;
+                    }
+                };
+
+                xhr.onerror = function() {
+                    uploadStatus.innerHTML = '❌ Fehler beim Upload. Gehe auf <a href="' + flaskServerURL + '" target="_blank" rel="noopener noreferrer">die Seite des Upload-Servers</a> und vertraue der Verbindung und aktualisiere diese Seite.';
+                };
+
+                const startTime = Date.now();
+                xhr.open('POST', flaskServerURL, true);
+                xhr.send(formData);
             });
+        });
+    </script>
+    <script>
+        // Funktion zum Auslesen des URL-Parameters "path"
+        function getPathFromUrl() {
+            const params = new URLSearchParams(window.location.search);
+            return params.get("path") || "";
+        }
 
-            // Upload abgeschlossen
-            xhr.onload = function() {
-                if (xhr.status === 200) {
-                    uploadStatus.textContent = '✅ Upload erfolgreich!';
-                    window.location.href = 'User_Files.php';  // Weiterleitung nach dem erfolgreichen Upload
-                } else {
-                    uploadStatus.textContent = '❌ Fehler beim Upload: ' + xhr.responseText;
-                }
-            };
-
-            xhr.onerror = function() {
-                uploadStatus.innerHTML = '❌ Fehler beim Upload. Gehe auf <a href="' + flaskserverURL + '" target="_blank" rel="noopener noreferrer">die Seite des upload Servers</a> und vertraue der Verbindung und aktualisiere diese Seite.';
-            };
-
-            const startTime = Date.now();
-            xhr.open('POST', flaskserverURL, true);
-            xhr.send(formData);
+        // Nach dem Laden der Seite den Wert ins Input-Feld schreiben
+        window.addEventListener("DOMContentLoaded", () => {
+            const pathInput = document.getElementById("path");
+            const pathFromUrl = getPathFromUrl();
+            console.log('Uploadpath: ' + pathFromUrl);
+            if (pathFromUrl && pathInput) {
+                pathInput.value = pathFromUrl;
+            }
         });
     </script>
     <script src="assets/js/main.js"></script>

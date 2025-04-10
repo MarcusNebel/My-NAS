@@ -80,14 +80,6 @@ You have to fill in the server-IP in the `app/config.json` file in the following
 }
 ```
 
-### **Configure Server-IP in the `app/File_upload.php` file**
-
-You have to fill in the server-IP in the `app/File_upload.php` file in the following line under `__SERVER_IP__` : 
-
-```js
-const flaskserverURL = 'https://__SERVER_IP__:8080/upload'
-```
-
 The Server is now reachable in the local netowrk. 
 
 If you want to use it outside the network you have to configure a domain. 

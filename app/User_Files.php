@@ -284,7 +284,7 @@ if (!isset($_SESSION["id"])) {
                 return;
             }
 
-            fetch("assets/php/create_folder.php", {
+            fetch("assets/php/create_folder.php?path=<?php echo urlencode($_GET['path'] ?? ''); ?>", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded",

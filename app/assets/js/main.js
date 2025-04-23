@@ -104,40 +104,61 @@ document.addEventListener("DOMContentLoaded", function () {
 function submitDeleteForm() {
     var checkboxes = document.querySelectorAll('.file-checkbox:checked');
     var files = [];
+    var folders = [];
 
+    // Dateien und Ordner trennen
     checkboxes.forEach(checkbox => {
-        files.push(checkbox.value);
+        if (checkbox.dataset.type === "folder") {
+            folders.push(checkbox.value);
+        } else {
+            files.push(checkbox.value);
+        }
     });
 
-    if (files.length === 0) {
-        alert("Bitte wählen Sie mindestens eine Datei zum Löschen aus.");
+    if (files.length === 0 && folders.length === 0) {
+        alert("Bitte wählen Sie mindestens eine Datei oder einen Ordner zum Löschen aus.");
         return;
     }
 
-    // Bestätigung einholen
-    if (!confirm("Möchten Sie die ausgewählten Dateien wirklich löschen?")) {
+    // Erste Bestätigungsabfrage
+    if (!confirm("Möchten Sie die ausgewählten Dateien und Ordner wirklich löschen?")) {
         return;
     }
 
-    // Form für das Löschen erstellen und absenden
+    // Zweite Bestätigungsabfrage
+    if (!confirm("Sind Sie sicher? Dieser Vorgang kann nicht rückgängig gemacht werden.")) {
+        return;
+    }
+
+    // Gemeinsames Formular erstellen
     const urlParams = new URLSearchParams(window.location.search);
     const path = urlParams.get('path') || '';
 
-    var form = document.createElement("form");
-    form.method = "POST";
-    form.action = `assets/php/delete_handler.php?path=${encodeURIComponent(path)}`;
-    form.style.display = "none";
+    var deleteForm = document.createElement("form");
+    deleteForm.method = "POST";
+    deleteForm.action = `assets/php/delete_handler_combined.php?path=${encodeURIComponent(path)}`;
+    deleteForm.style.display = "none";
 
+    // Dateien hinzufügen
     files.forEach(file => {
         var input = document.createElement("input");
         input.type = "hidden";
         input.name = "files[]";
         input.value = file;
-        form.appendChild(input);
+        deleteForm.appendChild(input);
     });
 
-    document.body.appendChild(form);
-    form.submit();
+    // Ordner hinzufügen
+    folders.forEach(folder => {
+        var input = document.createElement("input");
+        input.type = "hidden";
+        input.name = "folders[]";
+        input.value = folder;
+        deleteForm.appendChild(input);
+    });
+
+    document.body.appendChild(deleteForm);
+    deleteForm.submit();
 }
 
 // Event Listener für Löschen und Download

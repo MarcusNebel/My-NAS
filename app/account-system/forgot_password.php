@@ -49,7 +49,7 @@
               
                   // Inhalt der E-Mail
                   $mail->isHTML(true);
-                  $mail->Subject = $config['email']['subject'];
+                  $mail->Subject = $config['email']['reset_password'];
                   $mail->Body    = "
                       <h3>Hello $username,</h3>
                       <p>To reset your My NAS password use the following code:</p>

@@ -32,21 +32,28 @@ if (isset($_POST['submit'])) {
     $email = $_POST['email'];
     $subject = $_POST['subject'];
     $message = $_POST['message'];
-    
+
+    // PHPMailer einbinden
     $mail = new PHPMailer(true);
-    
+
     try {
+        // Konfigurationsdatei einlesen
+        $config = json_decode(file_get_contents('../config.json'), true);
+
+        // SMTP Konfiguration aus der Konfigurationsdatei
         $mail->isSMTP();
-        $mail->Host = 'smtp.gmail.com'; // SMTP Server
-        $mail->SMTPAuth = true;
-        $mail->Username   = 'youremail@gmail.com'; // Deine E-Mail-Adresse
-        $mail->Password   = 'your_App_Password'; // Dein App-Passwort (nicht das account passwort)
-        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-        $mail->Port = 587;
-        
-        $mail->setFrom($email, $name);
-        $mail->addAddress('mynas-support@nebel-home.de', 'My NAS Support');
-        
+        $mail->Host       = $config['smtp']['host'];
+        $mail->SMTPAuth   = $config['smtp']['auth'];
+        $mail->Username   = $config['smtp']['username'];
+        $mail->Password   = $config['smtp']['password'];
+        $mail->SMTPSecure = $config['smtp']['encryption'] === 'tls' ? PHPMailer::ENCRYPTION_STARTTLS : PHPMailer::ENCRYPTION_SMTPS;
+        $mail->Port       = $config['smtp']['port'];
+
+        // Absender und Empfänger
+        $mail->setFrom($email, $name); // Absender ist der Benutzer
+        $mail->addAddress($config['email']['support_address'], $config['email']['support_name']); // Empfänger aus der Konfiguration
+
+        // Inhalt der E-Mail
         $mail->isHTML(true);
         $mail->Subject = $subject;
         $mail->Body = "
@@ -55,7 +62,8 @@ if (isset($_POST['submit'])) {
             <p><strong>Nachricht:</strong></p>
             <p>$message</p>
         ";
-        
+
+        // E-Mail senden
         $mail->send();
         $success = "Ihre Nachricht wurde erfolgreich gesendet!";
     } catch (Exception $e) {

@@ -1,61 +1,116 @@
 <?php
-   ini_set('display_errors', 1);
-   ini_set('display_startup_errors', 1);
-   error_reporting(E_ALL);
-    require("mysql.php");
-    if(isset($_COOKIE["login_cookie"])){
-     $stmt = $mysql->prepare("SELECT * FROM accounts WHERE rememberTOKEN = ?");
-     $stmt->execute([$_COOKIE["login_cookie"]]);
-      if($stmt->rowCount() == 1){
-       $row = $stmt->fetch();
-        session_start();
-       $_SESSION["id"] = $row["ID"];
-       header("Location: ../index.php");
-       exit();
-     } else {
-       setcookie("login_cookie", "", time() -1);
-     }
-   }
-    if(isset($_POST["submit"])){
-      // Eingabe holen und prüfen, ob es eine E-Mail oder ein Benutzername ist
-     $input = $_POST["username"];
-     if (filter_var($input, FILTER_VALIDATE_EMAIL)) {
-       // Eingabe ist eine E-Mail-Adresse
-       $stmt = $mysql->prepare("SELECT * FROM accounts WHERE EMAIL = :input");
-     } else {
-       // Eingabe ist ein Benutzername
-       $stmt = $mysql->prepare("SELECT * FROM accounts WHERE USERNAME = :input");
-     }
-      $stmt->bindParam(":input", $input);
-     $stmt->execute();
-     $count = $stmt->rowCount();
-      if($count == 1){
-       // Benutzer gefunden
-       $row = $stmt->fetch();
-       if(password_verify($_POST["pw"], $row["PASSWORD"])){
-          if(isset($_POST["rememberme"])){
-           $token = bin2hex(random_bytes(32));
-            $stmt = $mysql->prepare("UPDATE accounts SET rememberTOKEN = ? WHERE USERNAME = ?");
-           $stmt->execute([$token, $_POST["username"]]);
-            setcookie("login_cookie", $token, time() + (3600*24*30));
-         }
-          session_start();
-         $_SESSION["id"] = $row["ID"];
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+// Anpassen des Pfads zu PHPMailer
+require '../PHPMailer/src/PHPMailer.php'; // Pfad zu PHPMailer anpassen
+require '../PHPMailer/src/SMTP.php';      // SMTP-Klasse einbinden
+require '../PHPMailer/src/Exception.php'; // Fehlerbehandlung
+
+
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+require("mysql.php");
+if(isset($_COOKIE["login_cookie"])){
+  $stmt = $mysql->prepare("SELECT * FROM accounts WHERE rememberTOKEN = ?");
+  $stmt->execute([$_COOKIE["login_cookie"]]);
+  if($stmt->rowCount() == 1){
+    $row = $stmt->fetch();
+    session_start();
+    $_SESSION["id"] = $row["ID"];
+    header("Location: ../index.php");
+      exit();
+  } else {
+    setcookie("login_cookie", "", time() -1);
+  }
+}
+if(isset($_POST["submit"])){
+  // Eingabe holen und prüfen, ob es eine E-Mail oder ein Benutzername ist
+  $input = $_POST["username"];
+  if (filter_var($input, FILTER_VALIDATE_EMAIL)) {
+    // Eingabe ist eine E-Mail-Adresse
+    $stmt = $mysql->prepare("SELECT * FROM accounts WHERE EMAIL = :input");
+  } else {
+    // Eingabe ist ein Benutzername
+    $stmt = $mysql->prepare("SELECT * FROM accounts WHERE USERNAME = :input");
+  }
+  $stmt->bindParam(":input", $input);
+  $stmt->execute();
+  $count = $stmt->rowCount();
+  if($count == 1){
+    // Benutzer gefunden
+    $row = $stmt->fetch();
+    if(password_verify($_POST["pw"], $row["PASSWORD"])){
+      if(isset($_POST["rememberme"])){
+        $token = bin2hex(random_bytes(32));
+        $stmt = $mysql->prepare("UPDATE accounts SET rememberTOKEN = ? WHERE USERNAME = ?");
+        $stmt->execute([$token, $_POST["username"]]);
+        setcookie("login_cookie", $token, time() + (3600*24*30));
+      }
+      session_start();
+      $_SESSION["id"] = $row["ID"];
          
-         // Prüfen, ob eine Zielseite gespeichert ist
-         $redirect_to = isset($_SESSION["redirect_to"]) ? $_SESSION["redirect_to"] : "../index.php";
-         unset($_SESSION["redirect_to"]); // Nach dem Login löschen
+      // Prüfen, ob eine Zielseite gespeichert ist
+      $redirect_to = isset($_SESSION["redirect_to"]) ? $_SESSION["redirect_to"] : "../index.php";
+      unset($_SESSION["redirect_to"]); // Nach dem Login löschen
+
+      // Benutzerordner prüfen und erstellen
+      $username = $row["USERNAME"]; // Benutzername aus der Datenbank
+      $email = $row["EMAIL"]; // Email aus der Datenbank
+      $user_folder = "/home/nas-website-files/user_files/" . $username;
+      if (!is_dir($user_folder)) {
+        mkdir($user_folder, 0755, true); // Ordner erstellen, falls er nicht existiert
+        chmod($user_folder, 0755);
+      }
+
+      // Email für neuen Login
+      $mail = new PHPMailer(true);
+      try {
+      // Konfigurationsdatei laden
+      $config = json_decode(file_get_contents('../config.json'), true);
+                
+      // Server-Einstellungen aus der Konfigurationsdatei
+      $mail->isSMTP();
+      $mail->Host       = $config['smtp']['host'];
+      $mail->SMTPAuth   = $config['smtp']['auth'];
+      $mail->Username   = $config['smtp']['username'];
+      $mail->Password   = $config['smtp']['password'];
+      $mail->SMTPSecure = $config['smtp']['encryption'] === 'tls' ? PHPMailer::ENCRYPTION_STARTTLS : PHPMailer::ENCRYPTION_SMTPS;
+      $mail->Port       = $config['smtp']['port'];
          
-         header("Location: " . $redirect_to);
-         exit();
-       } else {
-         $passwordError = "Falsches Passwort";
-       }
-     } else {
-       $userError = "Benutzer oder Email nich vergeben";
-     }
-   }
-  ?>
+      // Absender und Empfänger
+      $mail->setFrom($config['email']['from_address'], $config['email']['from_name']);
+      $mail->addAddress($email, $username);
+                
+      // Inhalt der E-Mail
+      $mail->isHTML(true);
+      $mail->Subject = $config['email']['signed_in'];
+      $mail->Body    = "
+      <h3>Hello $username,</h3>
+      <br>
+      <p>You logged in to your My NAS account.</p>
+      <p>You're now logged in to your account.</p>
+      <p>If that were not you you can change your password or contact the admin of your My NAS server.</p>
+      <p>If that were you, you can ignore this email.</p>
+      <br>
+      <p>Bye!</p>";
+                
+      // E-Mail senden
+      $mail->send();
+      } catch (Exception $e) {
+        $error = "Fehler beim Senden der E-Mail: " . $mail->ErrorInfo;
+      }
+
+      header("Location: " . $redirect_to);
+      exit();
+    } else {
+      $passwordError = "Falsches Passwort";
+    }
+  } else {
+    $userError = "Benutzer oder Email nich vergeben";
+  }
+}
+?>
 
 <!DOCTYPE html>
 <html lang="en">

@@ -1,73 +1,114 @@
 <?php
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+// Anpassen des Pfads zu PHPMailer
+require '../PHPMailer/src/PHPMailer.php'; // Pfad zu PHPMailer anpassen
+require '../PHPMailer/src/SMTP.php';      // SMTP-Klasse einbinden
+require '../PHPMailer/src/Exception.php'; // Fehlerbehandlung
+
 $usernameError = "";
 $emailError = "";
 $passwordError = "";
 $successMessage = "";
 
 if (isset($_POST["submit"])) {
-    require("mysql.php");
+  require("mysql.php");
     
-    $username = trim($_POST["username"]);
-    $email = trim($_POST["email"]);
-    $password = $_POST["pw"];
-    $passwordRepeat = $_POST["pw2"];
+  $username = trim($_POST["username"]);
+  $email = trim($_POST["email"]);
+  $password = $_POST["pw"];
+  $passwordRepeat = $_POST["pw2"];
 
-    // Überprüfen, ob Benutzername oder E-Mail bereits existiert
-    $stmt = $mysql->prepare("SELECT * FROM accounts WHERE USERNAME = :user OR EMAIL = :email");
-    $stmt->bindParam(":user", $username);
-    $stmt->bindParam(":email", $email);
-    $stmt->execute();
-    $count = $stmt->rowCount();
-
-    if ($count > 0) {
-        // Fehler: Benutzername oder E-Mail existiert bereits
-        $row = $stmt->fetch();
-        if ($row["USERNAME"] == $username) {
-            $usernameError = "Dieser Benutzername ist bereits vergeben.";
-        }
-        if ($row["EMAIL"] == $email) {
-            $emailError = "Diese E-Mail-Adresse ist bereits registriert.";
-        }
-    } else {
-        // Prüfen, ob dies der erste Benutzer ist
-        $stmt = $mysql->prepare("SELECT COUNT(*) AS total FROM accounts");
-        $stmt->execute();
-        $row = $stmt->fetch();
-        $server_rank = ($row["total"] == 0) ? 'Admin' : 'User'; // Erster Nutzer = Admin, sonst User
-
-        // Passwortprüfung
-        if ($password === $passwordRepeat) {
-            if (strlen($password) >= 6) { // Mindestlänge setzen
-                // Benutzer registrieren
-                $stmt = $mysql->prepare("INSERT INTO accounts (USERNAME, EMAIL, PASSWORD, server_rank) VALUES (:user, :email, :pw, :rank)");
-                $stmt->bindParam(":user", $username);
-                $stmt->bindParam(":email", $email);
-                $hash = password_hash($password, PASSWORD_BCRYPT);
-                $stmt->bindParam(":pw", $hash);
-                $stmt->bindParam(":rank", $server_rank);
-                $stmt->execute();
-
-                // Benutzerverzeichnis für Uploads erstellen
-                $uploadDir = "/home/nas-website-files/user_files/";
-                $userDir = $uploadDir . $username . "/";
-
-                // Falls Benutzerverzeichnis nicht existiert, erstelle es
-                if (!is_dir($userDir)) {
-                    mkdir($userDir, 0775, true);
-                    chmod($userDir, 0775); // ✅ Fix: Keine chown()/chgrp(), sondern chmod()
-                }
-
-                // Erfolgreiche Registrierung → Weiterleitung zur Anmeldeseite
-                $successMessage = "Erfolgreich registriert! Weiterleitung zur Anmeldung...";
-                header("Location: Login.php");
-                exit();
-            } else {
-                $passwordError = "Das Passwort muss mindestens 6 Zeichen lang sein.";
-            }
-        } else {
-            $passwordError = "Die Passwörter stimmen nicht überein.";
-        }
+  // Überprüfen, ob Benutzername oder E-Mail bereits existiert
+  $stmt = $mysql->prepare("SELECT * FROM accounts WHERE USERNAME = :user OR EMAIL = :email");
+  $stmt->bindParam(":user", $username);
+  $stmt->bindParam(":email", $email);
+  $stmt->execute();
+  $count = $stmt->rowCount();
+  if ($count > 0) {
+    // Fehler: Benutzername oder E-Mail existiert bereits
+    $row = $stmt->fetch();
+    if ($row["USERNAME"] == $username) {
+        $usernameError = "Dieser Benutzername ist bereits vergeben.";
     }
+    if ($row["EMAIL"] == $email) {
+        $emailError = "Diese E-Mail-Adresse ist bereits registriert.";
+    }
+} else {
+  // Prüfen, ob dies der erste Benutzer ist
+  $stmt = $mysql->prepare("SELECT COUNT(*) AS total FROM accounts");
+  $stmt->execute();
+  $row = $stmt->fetch();
+  $server_rank = ($row["total"] == 0) ? 'Admin' : 'User'; // Erster Nutzer = Admin, sonst User
+  // Passwortprüfung
+  if ($password === $passwordRepeat) {
+    if (strlen($password) >= 6) { // Mindestlänge setzen
+      // Benutzer registrieren
+      $stmt = $mysql->prepare("INSERT INTO accounts (USERNAME, EMAIL, PASSWORD, server_rank) VALUES (:user, :email, :pw, :rank)");
+      $stmt->bindParam(":user", $username);
+      $stmt->bindParam(":email", $email);
+      $hash = password_hash($password, PASSWORD_BCRYPT);
+      $stmt->bindParam(":pw", $hash);
+      $stmt->bindParam(":rank", $server_rank);
+      $stmt->execute();
+
+      // Benutzerverzeichnis für Uploads erstellen
+      $uploadDir = "/home/nas-website-files/user_files/";
+      $userDir = $uploadDir . $username . "/";
+
+      // Falls Benutzerverzeichnis nicht existiert, erstelle es
+      if (!is_dir($userDir)) {
+        mkdir($userDir, 0775, true);
+        chmod($userDir, 0775); // ✅ Fix: Keine chown()/chgrp(), sondern chmod()
+      }
+
+      // Erfolgreiche Registrierung → Bestätigungs Email
+      $mail = new PHPMailer(true);
+      try {
+        // Konfigurationsdatei laden
+        $config = json_decode(file_get_contents('../config.json'), true);
+                
+        // Server-Einstellungen aus der Konfigurationsdatei
+        $mail->isSMTP();
+        $mail->Host       = $config['smtp']['host'];
+        $mail->SMTPAuth   = $config['smtp']['auth'];
+        $mail->Username   = $config['smtp']['username'];
+        $mail->Password   = $config['smtp']['password'];
+        $mail->SMTPSecure = $config['smtp']['encryption'] === 'tls' ? PHPMailer::ENCRYPTION_STARTTLS : PHPMailer::ENCRYPTION_SMTPS;
+        $mail->Port       = $config['smtp']['port'];
+                
+        // Absender und Empfänger
+        $mail->setFrom($config['email']['from_address'], $config['email']['from_name']);
+        $mail->addAddress($email, $username);
+                
+        // Inhalt der E-Mail
+        $mail->isHTML(true);
+        $mail->Subject = $config['email']['registered'];
+        $mail->Body    = "
+        <h3>Hello $username,</h3>
+        <p>Your My NAS account is created succesfully.</p>
+        <br>
+        <p>You can now use it as your personal My NAS account to save some data on it.</p>
+        <p>If you have some issues with My NAS use the contact-page on My NAS.</p>
+        <p>Thank you for creating your account.</p>
+        <br>
+        <p>Bye!</p>";
+        // E-Mail senden
+        $mail->send();
+        } catch (Exception $e) {
+          $error = "Fehler beim Senden der E-Mail: " . $mail->ErrorInfo;
+        }
+
+        $successMessage = "Erfolgreich registriert! Weiterleitung zur Anmeldung...";
+        header("Location: Login.php");
+        exit();
+      } else {
+        $passwordError = "Das Passwort muss mindestens 6 Zeichen lang sein.";
+      }
+    } else {
+      $passwordError = "Die Passwörter stimmen nicht überein.";
+    }
+  }
 }
 ?>
 

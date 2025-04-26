@@ -9,8 +9,12 @@
         "port": 587
     },
     "email": {
+        "support_address": "__SERVER_ADMIN_EMAIL__",
+        "support_name": "My NAS Support",
         "from_address": "mynas-support@gmail.com",
         "from_name": "My NAS Support",
-        "subject": "Neues Passwort festlegen"
+        "reset_password": "Create new password",
+        "registered": "My NAS account created", 
+        "signed_in": "New device logged in"
     }
 }

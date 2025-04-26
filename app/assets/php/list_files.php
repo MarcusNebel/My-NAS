@@ -21,17 +21,6 @@ if (isset($username)) {
     // Kombiniere den Basisordner mit dem Benutzernamen und dem aktuellen Pfad
     $directory = $baseDirectory . $username . ($currentPath ? '/' . $currentPath : '');
 
-    // Überprüfen, ob der Ordner existiert
-    if (!is_dir($directory)) {
-        if (headers_sent($file, $line)) {
-            die("Header wurden bereits gesendet in Datei $file auf Zeile $line.");
-        }
-
-        // Weiterleitung auf die User_Files.php, wenn der Ordner nicht existiert
-        header("Location: ../../User_Files.php?path=");
-        exit();
-    }
-
     // Suche
     $search = isset($_GET['search']) ? strtolower($_GET['search']) : '';
     $filesAndDirs = array_diff(scandir($directory), array('.', '..')); // Verzeichnisse und Dateien scannen

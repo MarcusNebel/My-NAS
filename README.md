@@ -58,6 +58,7 @@ All SMTP settings are now configured exclusively in the `app/config.json` file. 
 
 ```json
 {
+    "flaskServerURL": "https://__SERVER_IP__:8080",
     "smtp": {
         "host": "smtp.gmail.com",
         "auth": true,
@@ -67,30 +68,26 @@ All SMTP settings are now configured exclusively in the `app/config.json` file. 
         "port": 587
     },
     "email": {
+        "support_address": "__SERVER_ADMIN_EMAIL__",
+        "support_name": "My NAS Support",
         "from_address": "mynas-support@gmail.com",
         "from_name": "My NAS Support",
-        "subject": "Set a new password"
+        "reset_password": "Create new password",
+        "registered": "My NAS account created", 
+        "signed_in": "New device logged in"
     }
 }
+
 ```
 
+- **`flaskServerURL`**: The URL of your My NAS server.
 - **`host`**: SMTP server address (e.g., `smtp.gmail.com`).
 - **`username`**: Your email address.
 - **`password`**: Your app password.
-- **`encryption`**: Encryption type (e.g., `tls`).
 - **`port`**: Port for the SMTP server (e.g., `587`).
+- **`support_address`**: The email to reach the server admin.
 
 > **Note:** For Gmail, use an app password instead of your regular account password.
-
-#### **Configure Server-IP in the `app/config.json` file**
-
-Add the server IP into the `app/config.json` file under `__SERVER_IP__`:
-
-```json
-{
-    "flaskServerURL": "https://__SERVER_IP__:8080"
-}
-```
 
 The website is now accessible within the local network.
 

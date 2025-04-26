@@ -28,36 +28,45 @@
              $stmt->bindParam(":email", $_POST['email']);
              $stmt->execute();
               // E-Mail mit PHPMailer versenden
-             $mail = new PHPMailer(true);
+              $mail = new PHPMailer(true);
+
               try {
-                 // Server-Einstellungen
-                 $mail->isSMTP();
-                 $mail->Host       = 'smtp.gmail.com'; // SMTP-Server (z. B. Gmail, Outlook, GMX)
-                 $mail->SMTPAuth   = true;
-                 $mail->Username   = 'youremail@gmail.com'; // Deine E-Mail-Adresse
-                 $mail->Password   = 'your_App_Password'; // Dein App-Passwort (nicht das account passwort)
-                 $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-                 $mail->Port       = 587;
+                  // Konfigurationsdatei laden
+                  $config = json_decode(file_get_contents('../config.json'), true);
+              
+                  // Server-Einstellungen aus der Konfigurationsdatei
+                  $mail->isSMTP();
+                  $mail->Host       = $config['smtp']['host'];
+                  $mail->SMTPAuth   = $config['smtp']['auth'];
+                  $mail->Username   = $config['smtp']['username'];
+                  $mail->Password   = $config['smtp']['password'];
+                  $mail->SMTPSecure = $config['smtp']['encryption'] === 'tls' ? PHPMailer::ENCRYPTION_STARTTLS : PHPMailer::ENCRYPTION_SMTPS;
+                  $mail->Port       = $config['smtp']['port'];
+              
                   // Absender und Empfänger
-                 $mail->setFrom('mynas-support@gmail.com', 'My NAS Support');
-                 $mail->addAddress($_POST['email'], $username);
+                  $mail->setFrom($config['email']['from_address'], $config['email']['from_name']);
+                  $mail->addAddress($_POST['email'], $username);
+              
                   // Inhalt der E-Mail
-                 $mail->isHTML(true);
-                 $mail->Subject = 'Neues Passwort festlegen';
-                 $mail->Body    = "
-                     <h3>Hallo $username,</h3>
-                     <p>Um Ihr Passwort zurückzusetzen, verwenden Sie bitte den folgenden Code:</p>
-                     <h2>$code</h2>
-                     <p>Geben Sie diesen Code auf der Website ein, um fortzufahren.</p>
-                     <br>
-                     <p>Falls Sie diese Anfrage nicht gestellt haben, ignorieren Sie bitte diese E-Mail.</p>
-                 ";
+                  $mail->isHTML(true);
+                  $mail->Subject = $config['email']['subject'];
+                  $mail->Body    = "
+                      <h3>Hello $username,</h3>
+                      <p>To reset your My NAS password use the following code:</p>
+                      <h2>$code</h2>
+                      <p>Paste the code on the My NAS website to continue.</p>
+                      <br>
+                      <p>If you did not make this request, please ignore this email.</p>
+                      <br>
+                      <p>The code will be useless in 15 minutes.";
+              
+                  // E-Mail senden
                   $mail->send();
-                 header("Location: reset_password.php"); // Weiterleitung zur Seite für den Code
-                 exit();
-             } catch (Exception $e) {
-                 $error = "Fehler beim Senden der E-Mail: " . $mail->ErrorInfo;
-             }
+                  header("Location: reset_password.php"); // Weiterleitung zur Seite für den Code
+                  exit();
+              } catch (Exception $e) {
+                  $error = "Fehler beim Senden der E-Mail: " . $mail->ErrorInfo;
+              }
          } else {
              $error = "Diese E-Mail-Adresse ist nicht registriert!";
          }

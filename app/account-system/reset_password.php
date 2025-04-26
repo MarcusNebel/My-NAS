@@ -35,7 +35,6 @@ if(isset($_POST['submit'])){
             if ($stmt->rowCount() === 0) {
                 die("Fehler: Das Passwort wurde nicht geändert. Der Reset-Code ist möglicherweise ungültig oder wurde bereits verwendet.");
             }
-            echo "Passwort erfolgreich geändert!";
             header("Location: Login.php");
             exit;
         } else {

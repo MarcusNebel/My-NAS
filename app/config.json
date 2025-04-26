@@ -1,17 +1,16 @@
 {
     "flaskServerURL": "https://__SERVER_IP__:8080",
-
     "smtp": {
         "host": "smtp.gmail.com",
         "auth": true,
-        "username": "creativevideos2408@gmail.com",
-        "password": "zijtixxdfairckps",
+        "username": "youremail@gmail.com",
+        "password": "your_App_Password",
         "encryption": "tls",
         "port": 587
     },
     "email": {
         "from_address": "mynas-support@gmail.com",
         "from_name": "My NAS Support",
-        "subject": "Create new password"
+        "subject": "Neues Passwort festlegen"
     }
 }

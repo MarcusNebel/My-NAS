@@ -163,16 +163,10 @@ if (!isset($_SESSION["id"])) {
         <div id="file-info-content">
                 <!-- Einzeldatei-Infos -->
             <div id="single-file-info">
-                <p><strong>Name:</strong> <span id="file-name"></span></p>
-                <p><strong>Typ:</strong> <span id="file-type"></span></p>
-                <p><strong>Größe:</strong> <span id="file-size"></span></p>
-                <p><strong>Pfad:</strong> <span id="file-path"></span></p>
             </div>
 
             <!-- Mehrere Dateien ausgewählt -->
             <div id="multi-file-info" style="display: none;">
-                <p><strong>Ausgewählte Dateien:</strong> <span id="total-files"></span></p>
-                <p><strong>Gesamtgröße:</strong> <span id="total-size"></span></p>
             </div>
         </div>
     </div>
@@ -197,13 +191,22 @@ if (!isset($_SESSION["id"])) {
             }
         });
 
-        // Doppelklick → in den Ordner navigieren
         document.querySelector('.file-list').addEventListener('dblclick', function(e) {
             const item = e.target.closest('.file-item.directory');
             if (item) {
+                // Alle Checkboxen abwählen
+                document.querySelectorAll('.file-checkbox').forEach(cb => cb.checked = false);
+
+                // Die zugehörige Checkbox in diesem Ordner aktivieren
+                const checkbox = item.querySelector('.file-checkbox');
+                if (checkbox) {
+                    checkbox.checked = true;
+                }
+
+                // In den Ordner navigieren
                 const path = item.getAttribute('data-path');
                 if (path) {
-                    window.location.href = '?path=' + path;
+                    window.location.href = '?path=' + encodeURIComponent(path);
                 }
             }
         });

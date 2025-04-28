@@ -1,3 +1,4 @@
 Flask==2.2.3
 Werkzeug==2.2.2
 flask-cors
+pymysql==1.0.3

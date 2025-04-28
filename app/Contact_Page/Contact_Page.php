@@ -127,7 +127,18 @@ if (isset($_POST['submit'])) {
                 <div class="row justify-content-center bg-white rounded-4 shadow py-5 gx-5 px-lg-5">
                     <div class="col-md-6 text-center">
                         <h2 class="uf-ct-01-text-primary text-uppercase fw-bold">Kontaktiere uns</h2>
-                        <p>Oder erreiche uns unter: <a href="mailto:mynas-support@nebel-home.de" class="text-decoration-none"><br>mynas-support@nebel-home.de</a></p>
+                        <?php
+                        // config.json einlesen
+                        $config = json_decode(file_get_contents('../config.json'), true);
+
+                        // E-Mail-Adresse auslesen
+                        $supportEmail = $config['email']['support_address'];
+                        ?>
+
+                        <p>
+                            Oder erreiche uns unter: 
+                            <a href="mailto:<?php echo htmlspecialchars($supportEmail); ?>" class="text-decoration-none"><br><?php echo htmlspecialchars($supportEmail); ?></a>
+                        </p>
                         <img src="./images/plane.png" alt="" class="uf-img-contact-form-01 pt-4 d-md-block d-none">
                     </div>
                     <div class="col-md-6">

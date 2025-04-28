@@ -10,6 +10,12 @@ if (isset($_SESSION["id"])) {
     $username = $stmt->fetchColumn();
 }
 
+$user_folder = "/home/nas-website-files/user_files/" . $username;
+if (!is_dir($user_folder)) {
+    mkdir($user_folder, 0755, true); // Ordner erstellen, falls er nicht existiert
+    chmod($user_folder, 0755);
+}
+
 $baseDirectory = "/home/nas-website-files/user_files/";
 $currentPath = isset($_GET['path']) ? $_GET['path'] : ''; // Aktueller Pfad
 

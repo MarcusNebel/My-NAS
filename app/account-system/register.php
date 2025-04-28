@@ -90,9 +90,7 @@ if (isset($_POST["submit"])) {
         <br>
         <p>You can now use it as your personal My NAS account to save some data on it.</p>
         <p>If you have some issues with My NAS use the contact-page on My NAS.</p>
-        <p>Thank you for creating your account.</p>
-        <br>
-        <p>Bye!</p>";
+        <p>Thank you for creating your account.</p>";
         // E-Mail senden
         $mail->send();
         } catch (Exception $e) {

@@ -10,6 +10,12 @@ header('Content-Type: application/json');
 $username = authenticateUser();
 $basePath = getUserBasePath($username);
 
+$user_folder = "/home/nas-website-files/user_files/" . $username;
+if (!is_dir($user_folder)) {
+    mkdir($user_folder, 0755, true); // Ordner erstellen, falls er nicht existiert
+    chmod($user_folder, 0755);
+}
+
 function scanDirectory($path, $relativePath = '') {
     $result = [];
     $items = new DirectoryIterator($path);

@@ -91,9 +91,7 @@ if(isset($_POST["submit"])){
       <p>You logged in to your My NAS account.</p>
       <p>You're now logged in to your account.</p>
       <p>If that were not you you can change your password or contact the admin of your My NAS server.</p>
-      <p>If that were you, you can ignore this email.</p>
-      <br>
-      <p>Bye!</p>";
+      <p>If that were you, you can ignore this email.</p>";
                 
       // E-Mail senden
       $mail->send();

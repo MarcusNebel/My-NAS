@@ -5,11 +5,11 @@ services:
     container_name: nas-website
     build:
       context: .
-      dockerfile: Dockerfile  # Verweist auf deine Dockerfile, die wir weiter unten anpassen
+      dockerfile: Dockerfile  # PHP-Apache Dockerfile
     volumes: 
       - ./app/:/var/www/html/
-      - ./app/nas-website-files/user_files/:/home/nas-website-files/user_files # Datenverzeichnis für die Website
-      - ./app/nas-website-files/tmp_zips/:/home/nas-website-files/tmp_zips # Datenverzeichnis für die temporären Zips
+      - ./app/nas-website-files/user_files/:/home/nas-website-files/user_files # Datenverzeichnis Website
+      - ./app/nas-website-files/tmp_zips/:/home/nas-website-files/tmp_zips # Temporäre Zips
     ports:
       - "80:80"
       - "8443:443"
@@ -21,6 +21,7 @@ services:
       MYSQL_DATABASE: nas-website
     networks:
       - nas-network
+      - update-network
 
   db:
     image: mysql:latest
@@ -36,21 +37,24 @@ services:
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
       - nas-network
+      - update-network
 
   flask-server:
+    container_name: flask-server
     build:
-      context: ./flask-upload   # Hier den Ordner angeben, der die Dockerfile enthält
-      dockerfile: Dockerfile    # Falls deine Dockerfile einen anderen Namen hat, kannst du sie hier spezifizieren
+      context: ./flask-upload   # Flask-Server Dockerfile
+      dockerfile: Dockerfile
     ports:
       - "8080:5001"
     restart: unless-stopped
     volumes:
       - ./app/nas-website-files/user_files:/uploads
-      - ./app/nas-website-files/tmp_zips:/tmp_zips # Datenverzeichnis für temporäre Zips
+      - ./app/nas-website-files/tmp_zips:/tmp_zips # Temporäre Zips
     environment:
       - FLASK_APP=app.py
     networks:
       - nas-network
+      - update-network
 
 volumes:
   mysql_data:
@@ -58,4 +62,6 @@ volumes:
 
 networks:
   nas-network:
+    driver: bridge
+  update-network: 
     driver: bridge

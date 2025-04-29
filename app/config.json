@@ -1,20 +1,20 @@
 {
-    "flaskServerURL": "https://__SERVER_IP__:8080",
+    "flaskServerURL": "https://192.168.188.27:8080",
     "smtp": {
         "host": "smtp.gmail.com",
         "auth": true,
-        "username": "youremail@gmail.com",
-        "password": "your_App_Password",
+        "username": "creativevideos2408@gmail.com",
+        "password": "zijtixxdfairckps",
         "encryption": "tls",
         "port": 587
     },
     "email": {
-        "support_address": "__SERVER_ADMIN_EMAIL__",
+        "support_address": "marcusnebel09+mynas-support@gmail.com",
         "support_name": "My NAS Support",
         "from_address": "mynas-support@gmail.com",
         "from_name": "My NAS Support",
         "reset_password": "Create new password",
-        "registered": "My NAS account created", 
+        "registered": "My NAS account created",
         "signed_in": "New device logged in"
     }
 }

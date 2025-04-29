@@ -1,0 +1,1 @@
+pythonw ./update-server/update-flask-server.py

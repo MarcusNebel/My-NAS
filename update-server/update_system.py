@@ -5,8 +5,12 @@ import zipfile
 import shutil
 import json
 import time
+import sys
 
-print("Update Skript läuft!")
+sys.stdout.reconfigure(encoding='utf-8')
+sys.stderr.reconfigure(encoding='utf-8')
+
+print("Update-script is running!")
 
 # Docker-Kommandos ausführen
 def run_docker_command(command, cwd=None):
@@ -134,13 +138,14 @@ def rebuild_and_start_containers(compose_file):
     print("Building and starting containers...")
 
     try:
+        # Build containers
         build_result = subprocess.run(
             f"docker compose -f {compose_file} build --no-cache",
             shell=True,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
-            encoding="utf-8",
-            errors="replace"
+            encoding="utf-8",  # Verwende UTF-8
+            errors="replace"  # Ersetze nicht darstellbare Zeichen
         )
 
         if build_result.returncode != 0:
@@ -150,13 +155,14 @@ def rebuild_and_start_containers(compose_file):
         print("Build completed successfully.")
         print(build_result.stdout)
 
+        # Start containers
         start_result = subprocess.run(
             f"docker compose -f {compose_file} up -d",
             shell=True,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
-            encoding="utf-8",
-            errors="replace"
+            encoding="utf-8",  # Verwende UTF-8
+            errors="replace"  # Ersetze nicht darstellbare Zeichen
         )
 
         if start_result.returncode != 0:

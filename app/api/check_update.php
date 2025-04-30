@@ -64,9 +64,20 @@ if (json_last_error() !== JSON_ERROR_NONE) {
 // Version aus dem Feld "name" holen
 $latestVersion = trim($releaseData['name']); // Aktuelle Versionsnummer aus dem Feld "name"
 
+// Release Notes aus dem Feld "body" holen
+$releaseNotes = isset($releaseData['body']) ? trim($releaseData['body']) : "Keine Release Notes verfügbar.";
+
 // Vergleich der Versionen
 if (version_compare(ltrim($latestVersion, 'v'), ltrim($currentVersion, 'v'), '>')) {
-    echo json_encode(['update_available' => true, 'latest_version' => $latestVersion]);
+    echo json_encode([
+        'update_available' => true,
+        'latest_version' => $latestVersion,
+        'release_notes' => $releaseNotes // Markdown wird direkt weitergegeben
+    ]);
 } else {
-    echo json_encode(['update_available' => false]);
+    echo json_encode([
+        'update_available' => false,
+        'latest_version' => $latestVersion,
+        'release_notes' => $releaseNotes
+    ]);
 }

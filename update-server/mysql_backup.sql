@@ -41,7 +41,7 @@ CREATE TABLE `accounts` (
 
 LOCK TABLES `accounts` WRITE;
 /*!40000 ALTER TABLE `accounts` DISABLE KEYS */;
-INSERT INTO `accounts` VALUES (1,'Marcus','$2y$10$L6WhXG6P3kqhPw8MKJb3p.zggQVknOV.lj6AvwpBN8mSTuqYKP1o2','marcusnebel09@gmail.com',NULL,NULL,NULL,'Admin');
+INSERT INTO `accounts` VALUES (1,'Marcus','$2y$10$ntJJA35.8dryESfnBMtmKubn4fKcdM2FztozJqkC38GlbWWaU3//a','marcusnebel09@gmail.com',NULL,NULL,NULL,'Admin');
 /*!40000 ALTER TABLE `accounts` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -54,4 +54,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-04-29 21:22:22
+-- Dump completed on 2025-04-30  9:06:59

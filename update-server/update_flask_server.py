@@ -1,7 +1,10 @@
 from flask import Flask, jsonify, request
+from flask_cors import CORS
 from subprocess import Popen, PIPE
 
 app = Flask(__name__)
+
+CORS(app)
 
 # Route to trigger the update process
 @app.route('/update', methods=['POST'])

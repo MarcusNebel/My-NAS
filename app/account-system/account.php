@@ -113,6 +113,71 @@ if ($_SERVER["REQUEST_METHOD"] === "GET" && isset($_GET["delete-account"])) {
 	<main>
 		<section class="account-section">
 			<div class="container_account">
+				<section class="update-section">
+					<div class="update-header">
+						<i class='bx bx-error'></i>
+						<span><strong>Update Hinweis</strong></span>
+					</div>
+					<div class="update-notification">
+						<p><strong>Ein neues Update ist Verfügbar: </strong><data id="latest-version">Version wird geladen...</data></p>
+						<p><strong>Release notes: </strong><br><p style="padding-left: 15px;"><data id="latest-version-release-notes">Release Notes werden geladen...</data></p></p>
+					</div>
+					<div class="update-footer">
+						<button id="start-update" class="start-update">Update installieren</button>
+						<script>
+							const updateButton = document.getElementById("start-update");
+
+							updateButton.addEventListener('click', async () => {
+								const originalText = updateButton.innerHTML;
+
+								try {
+									// Lade die URL aus der config.json
+									const configResponse = await fetch('../config.json'); // Passe den Pfad an die tatsächliche Position der config.json an
+									if (!configResponse.ok) {
+										throw new Error('Fehler beim Laden der config.json');
+									}
+
+									const config = await configResponse.json();
+									const proxyUrl = config.proxy_update_server_ip; // Kombiniere die IP mit der Proxy-Route
+
+									// Lade den Ladekreis
+									updateButton.innerHTML = '<span class="loader"></span>';
+
+									// Sende den POST-Request mit der geladenen URL
+									const response = await fetch(proxyUrl, {
+										method: 'POST',
+										headers: {
+											'Content-Type': 'application/json' // Setze den Content-Type auf JSON
+										},
+										body: JSON.stringify({ trigger: true }) // Beispiel-Daten
+									});
+
+									if (!response.ok) {
+										throw new Error(`Fehler beim Senden des POST-Requests: ${response.statusText}`);
+									}
+
+									console.log('POST-Request erfolgreich gesendet');
+									updateButton.innerHTML = "Fertig"; // Optional: Ändere den Button-Text auf "Fertig"
+								} catch (error) {
+									// Fehlerbehandlung
+									updateButton.innerHTML = originalText;
+
+									// Prüfe, ob der Fehler auf "Connection refused" hinweist
+									if (error.message.includes('Failed to fetch') || error.message.includes('connection refused')) {
+										console.error('Verbindung zum Proxy fehlgeschlagen:', error);
+
+										// Füge eine Meldung mit einem Link zur Proxy-Seite ein
+										updateButton.innerHTML = `
+											<span style="color: #fff;">Verbindung fehlgeschlagen. Bitte <a href="https://192.168.188.27:8081/proxy-update" target="_blank">prüfe den Proxy-Status</a>.</span>
+										`;
+									} else {
+										console.error('Fehler beim Senden des POST-Requests:', error);
+									}
+								}
+							});
+						</script>
+					</div>
+				</section>
 				<h4>Persönliche Daten:</h4>
 				<?php 
 				if(isset($_SESSION["id"])){
@@ -237,5 +302,39 @@ if ($_SERVER["REQUEST_METHOD"] === "GET" && isset($_GET["delete-account"])) {
 	</main>
 	<script src="../assets/js/main.js"></script>
 	<script src="../assets/js/lang.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/marked@4.0.0/marked.min.js"></script>
+	<script>
+		document.addEventListener("DOMContentLoaded", function () {
+            console.log("Marked.js verfügbar:", typeof marked);
+
+            fetch("../../api/check_update.php")
+                .then(response => response.json())
+                .then(data => {
+                    console.log("API-Daten:", data);
+
+                    if (data.update_available) {
+                        const versionElement = document.getElementById("latest-version");
+                        if (versionElement) {
+                            versionElement.textContent = `Version ${data.latest_version}`;
+                        }
+
+                        const releaseNotesElement = document.getElementById("latest-version-release-notes");
+                        if (releaseNotesElement) {
+                            try {
+                                const renderedHtml = marked.parse(data.release_notes);
+                                releaseNotesElement.innerHTML = renderedHtml;
+                            } catch (error) {
+                                console.error("Fehler beim Rendern von Markdown:", error);
+                                releaseNotesElement.textContent =
+                                    "Fehler beim Rendern der Release Notes.";
+                            }
+                        }
+                    }
+                })
+                .catch((error) => {
+                    console.error("Fehler beim Abrufen der Update-Informationen:", error);
+                });
+        });
+	</script>
 </body>
 </html>

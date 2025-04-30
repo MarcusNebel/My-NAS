@@ -99,23 +99,15 @@ Start the NAS-Website using Docker Compose:
 
 **Windows**
 
-Run the `start-windows.cmd` file.
+```powershell
+docker-compose up -d
+```
 
 **MacOS and Linux**
 
 ```sh
-chmod +x start-linux-macOS.sh
-bash start-linux-macOS.sh
+docker-compose up -d
 ```
-
-### 3.5 **Start update system on system-startup**
-
-**Windows**
-
-Add a shortcut to the run-update_flask_server.cmd and move it to the startup folder: 
-
-> Open the start-up folder: 
->    - Press `Windows + R` type `shell:startup` and press `Enter`.
 
 This will start the necessary containers and automatically set up everything, including:
 - **Apache + PHP**

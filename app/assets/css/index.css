@@ -595,3 +595,13 @@ main section.banner .container .subtitle {
 #update-popup .popup-content .popup-header i .bx .bx-error {
   color: #000;
 }
+
+#update-popup .popup-footer a {
+  text-decoration: none;
+  color: #2894f4;
+  border: none;
+  padding: 10px 20px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}

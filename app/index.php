@@ -142,7 +142,7 @@ session_start();
 			updateStats();
 		});
 	</script>
-	<script src="../assets/js/update_popup.js"></script>
+	<script src="../assets/js/update.js"></script>
 	<script src="assets/js/lang.js"></script>
 </body>
 </html>

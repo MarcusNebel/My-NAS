@@ -113,7 +113,7 @@ if ($_SERVER["REQUEST_METHOD"] === "GET" && isset($_GET["delete-account"])) {
 	<main>
 		<section class="account-section">
 			<div class="container_account">
-				<section class="update-section">
+				<section class="update-section" style="display: none;">
 					<div class="update-header">
 						<i class='bx bx-error'></i>
 						<span><strong>Update Hinweis</strong></span>
@@ -313,6 +313,12 @@ if ($_SERVER["REQUEST_METHOD"] === "GET" && isset($_GET["delete-account"])) {
                     console.log("API-Daten:", data);
 
                     if (data.update_available) {
+						const updateSection = document.getElementsByClassName("update-section")[0];
+					if (updateSection) {
+						updateSection.style.display = "block";
+					} else {
+						console.error("Element mit der Klasse 'update-section' wurde nicht gefunden.");
+					}
                         const versionElement = document.getElementById("latest-version");
                         if (versionElement) {
                             versionElement.textContent = `Version ${data.latest_version}`;

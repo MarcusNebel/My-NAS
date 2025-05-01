@@ -103,7 +103,16 @@ async function handleDownload() {
         a.remove();
         window.URL.revokeObjectURL(downloadUrl);
     } catch (err) {
-        alert(`Fehler beim Herunterladen der ZIP-Datei: ${err.message}`);
+        const zipDownloadURL = config.flaskServerURL + "/zip_download";
+
+        if (err instanceof TypeError && err.message === "Failed to fetch") {
+            document.getElementById("downloadStatus").innerHTML =
+                '❌ Verbindung zum Download-Server fehlgeschlagen. ' +
+                'Gehe auf <a href="' + zipDownloadURL + '" target="_blank" rel="noopener noreferrer">' +
+                'diese Seite</a>, vertraue dem Zertifikat und lade die Seite neu.';
+        } else {
+            alert(`Fehler beim Herunterladen der ZIP-Datei: ${err.message}`);
+        }
         console.error("Fehlerdetails:", err);
     } finally {
         document.getElementById('overlay').style.display = 'none';

@@ -61,7 +61,7 @@ if (isset($username)) {
             if ($file['is_dir']) {
                 // Ordner
                 echo "<li class='file-item directory' data-path='" . htmlspecialchars($filePath) . "'>";
-                echo "<input type='checkbox' class='file-checkbox' data-type='folder' value='" . htmlspecialchars($file['name']) . "'>";
+                echo "<input type='checkbox' class='file-checkbox' data-type='folder' data-full-path='" . htmlspecialchars($directory . "/" . $filePath) . "' value='" . htmlspecialchars($file['name']) . "'>";
                 echo "<i class='bx bxs-folder'></i> " . htmlspecialchars($file['name']);
                 echo "</li>";
             } else {
@@ -73,7 +73,7 @@ if (isset($username)) {
                         data-type='file'
                         data-name='" . htmlspecialchars($file['name']) . "' 
                         data-size='" . $fileSize . "' 
-                        data-path='" . htmlspecialchars($directory . "/" . $file['name']) . "'>";
+                        data-full-path='" . htmlspecialchars($directory . "/" . $file['name']) . "'>";
                 echo "<span class='file-name'> " . htmlspecialchars($file['name']) . "</span>";
                 echo "</li>";
             }

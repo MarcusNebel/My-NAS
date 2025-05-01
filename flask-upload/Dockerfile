@@ -11,10 +11,10 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY app.py .
 
 # Upload-Verzeichnis erstellen
-RUN mkdir -p /uploads && chmod -R 777 /uploads
+RUN mkdir -p /home/nas-website-files/user_files && chmod -R 777 /home/nas-website-files/user_files
 
 # Zip Verzeichnis
-RUN mkdir -p /tmp_zips && chmod -R 777 /tmp_zips
+RUN mkdir -p /home/nas-website-files/tmp_zips && chmod -R 777 /home/nas-website-files/tmp_zips
 
 # OpenSSL installieren
 RUN apt-get update && apt-get install -y openssl

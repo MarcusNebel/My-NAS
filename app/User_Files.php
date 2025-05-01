@@ -192,6 +192,7 @@ if (!isset($_SESSION["id"])) {
         });
 
         document.querySelector('.file-list').addEventListener('dblclick', function(e) {
+            console.log("geladen")
             const item = e.target.closest('.file-item.directory');
             if (item) {
                 // Alle Checkboxen abwählen

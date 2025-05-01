@@ -28,13 +28,20 @@ async function handleDownload() {
     await loadConfig(); // Warten, bis die Konfiguration geladen ist
     const checkboxes = document.querySelectorAll('.file-checkbox:checked');
     const files = [];
+    const folders = []; // Speichert die ausgewählten Ordner
 
     checkboxes.forEach(checkbox => {
-        files.push(checkbox.value);
+        if (checkbox.dataset.type === 'folder') {
+            console.log("Ordner ausgewählt:", checkbox.dataset.fullPath); // Debugging
+            folders.push(checkbox.dataset.fullPath); // Ordnerpfad hinzufügen
+        } else {
+            console.log("Datei ausgewählt:", checkbox.dataset.fullPath); // Debugging
+            files.push(checkbox.dataset.fullPath); // Datei hinzufügen
+        }
     });
 
-    if (files.length === 0) {
-        alert("Bitte wählen Sie mindestens eine Datei zum Herunterladen aus.");
+    if (files.length === 0 && folders.length === 0) {
+        alert("Bitte wählen Sie mindestens eine Datei oder einen Ordner zum Herunterladen aus.");
         return;
     }
 
@@ -44,54 +51,62 @@ async function handleDownload() {
     const urlParams = new URLSearchParams(window.location.search);
     const path = urlParams.get('path') || '';  // Falls kein Pfad angegeben ist, verwenden wir einen leeren String
 
-    if (files.length === 1) {
-        // Den gesamten Pfad korrekt zusammenfügen, ohne Slashes zu kodieren
-        const filePath = '/' + path + '/' + files[0]; // Kein encodeURIComponent, um Slashes zu erhalten
-        window.location.href = `/nas-website-files/user_files/${username}${filePath}`; // Hier wird der vollständige Pfad verwendet
-    } else {
-        document.getElementById('overlay').style.display = 'flex';
+    document.getElementById('overlay').style.display = 'flex';
 
-        try {
-            console.log(username, files);
-            const response = await fetch(config.flaskServerURL + "/zip_download", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ username, files, path })
+    try {
+        // Dateien aus den ausgewählten Ordnern abrufen
+        for (const folder of folders) {
+            const folderContents = await fetch('assets/php/list_folder_contents.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams({ folderPath: folder }),
             });
 
-            if (!response.ok) {
-                const errorDetails = await response.json();
-                throw new Error(errorDetails.error || "Fehler beim Herunterladen der ZIP-Datei.");
+            if (!folderContents.ok) {
+                const errorDetails = await folderContents.json();
+                throw new Error(errorDetails.error || 'Fehler beim Abrufen des Ordnerinhalts.');
             }
 
-            const disposition = response.headers.get("Content-Disposition");
-            const matches = /filename="(.+)"/.exec(disposition);
-            const zipName = matches ? matches[1] : "download.zip";
-
-            const blob = await response.blob();
-            const downloadUrl = window.URL.createObjectURL(blob);
-            const a = document.createElement("a");
-            a.href = downloadUrl;
-            a.download = zipName;
-            document.body.appendChild(a);
-            a.click();
-            a.remove();
-            window.URL.revokeObjectURL(downloadUrl);
-        } catch (err) {
-            const zipDownloadURL = config.flaskServerURL + "/zip_download";
-
-            if (err instanceof TypeError && err.message === "Failed to fetch") {
-                document.getElementById("downloadStatus").innerHTML =
-                    '❌ Verbindung zum Download-Server fehlgeschlagen. ' +
-                    'Gehe auf <a href="' + zipDownloadURL + '" target="_blank" rel="noopener noreferrer">' +
-                    'diese Seite</a>, vertraue dem Zertifikat und lade die Seite neu.';
-            } else {
-                alert(`Fehler beim Herunterladen der ZIP-Datei: ${err.message}`);
-            }
-            console.error("Fehlerdetails:", err);
-        } finally {
-            document.getElementById('overlay').style.display = 'none';
+            const folderFiles = await folderContents.json();
+            folderFiles.forEach(file => {
+                if (!file.is_dir) {
+                    files.push(file.path); // Dateien aus dem Ordner hinzufügen
+                }
+            });
         }
+
+        console.log("Username:", username, "Files:", files);
+
+        // Daten an den Flask-Server senden
+        const response = await fetch(config.flaskServerURL + "/zip_download", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ username, files, folders, path }) // Füge Ordner hinzu
+        });
+
+        if (!response.ok) {
+            const errorDetails = await response.json();
+            throw new Error(errorDetails.error || "Fehler beim Herunterladen der ZIP-Datei.");
+        }
+
+        const disposition = response.headers.get("Content-Disposition");
+        const matches = /filename="(.+)"/.exec(disposition);
+        const zipName = matches ? matches[1] : "download.zip";
+
+        const blob = await response.blob();
+        const downloadUrl = window.URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = downloadUrl;
+        a.download = zipName;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        window.URL.revokeObjectURL(downloadUrl);
+    } catch (err) {
+        alert(`Fehler beim Herunterladen der ZIP-Datei: ${err.message}`);
+        console.error("Fehlerdetails:", err);
+    } finally {
+        document.getElementById('overlay').style.display = 'none';
     }
 }
 

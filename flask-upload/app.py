@@ -12,7 +12,7 @@ app = Flask(__name__)
 CORS(app)  # CORS aktivieren
 
 # --- Konfiguration ---
-UPLOAD_FOLDER = '/uploads'  # Im Container
+UPLOAD_FOLDER = '/home/nas-website-files/user_files'  # Im Container
 BASE_DIR = UPLOAD_FOLDER
 
 DB_CONFIG = {
@@ -123,6 +123,8 @@ def upload_file():
 # --- ZIP-Download Route ---
 @app.route('/zip_download', methods=['POST'])
 def zip_download():
+    import os
+
     data = request.json
     print("Request JSON:", data)
 
@@ -145,21 +147,25 @@ def zip_download():
     try:
         with zipfile.ZipFile(zip_buffer, "w", zipfile.ZIP_DEFLATED) as zipf:
             for rel_path in files:
-                full_rel_path = os.path.join(path, rel_path) if path else rel_path
-                safe_rel_path = full_rel_path.strip("/")
-                abs_path = os.path.join(user_dir, safe_rel_path)
+                # Prüfen, ob der Pfad absolut ist
+                if os.path.isabs(rel_path):
+                    abs_path = os.path.abspath(rel_path)  # Absoluten Pfad direkt verwenden
+                else:
+                    full_rel_path = os.path.join(path, rel_path) if path else rel_path
+                    safe_rel_path = full_rel_path.strip("/")
+                    abs_path = os.path.join(user_dir, safe_rel_path)  # Basis-Pfad nur anhängen, wenn relativ
 
                 # Sicherheitscheck
                 abs_user_dir = os.path.abspath(user_dir)
                 abs_file_path = os.path.abspath(abs_path)
                 if not abs_file_path.startswith(abs_user_dir):
-                    return jsonify({"error": f"Ungültiger Pfad: {full_rel_path}"}), 403
+                    return jsonify({"error": f"Ungültiger Pfad: {rel_path}"}), 403
 
                 if os.path.isfile(abs_file_path):
-                    zipf.write(abs_file_path, arcname=safe_rel_path)
+                    zipf.write(abs_file_path, arcname=os.path.relpath(abs_file_path, user_dir))
                 else:
                     print(f"Datei nicht gefunden: {abs_path}")
-                    return jsonify({"error": f"Datei {full_rel_path} nicht gefunden"}), 404
+                    return jsonify({"error": f"Datei {rel_path} nicht gefunden"}), 404
     except Exception as e:
         return jsonify({"error": f"Fehler beim Erstellen der ZIP-Datei: {str(e)}"}), 500
 

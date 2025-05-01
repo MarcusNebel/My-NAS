@@ -48,8 +48,8 @@ services:
       - "8080:5001"
     restart: unless-stopped
     volumes:
-      - ./nas-website-files/user_files:/uploads
-      - ./nas-website-files/tmp_zips:/tmp_zips # Temporäre Zips
+      - ./nas-website-files/user_files/:/home/nas-website-files/user_files # Datenverzeichnis Website
+      - ./nas-website-files/tmp_zips/:/home/nas-website-files/tmp_zips # Temporäre Zips
     environment:
       - FLASK_APP=app.py
     networks:

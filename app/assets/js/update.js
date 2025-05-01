@@ -43,7 +43,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         releaseNotesElement.textContent = "Keine Release Notes verfügbar.";
                     }
                 }
-
+                
                 const releaseNotesElement = document.getElementById("latest-version-release-notes");
                 if (releaseNotesElement) {
                     if (data.release_notes) {
@@ -53,7 +53,7 @@ document.addEventListener("DOMContentLoaded", function () {
                             releaseNotesElement.innerHTML = renderedHtml;
                         } catch (error) {
                             console.error("Fehler beim Rendern von Markdown:", error);
-                            releaseNotesElement.textContent = "Fehler beim Rendern der Release Notes.";
+                            releaseNotesElement.textContent = "";
                         }
                     } else {
                         releaseNotesElement.textContent = "Keine Release Notes verfügbar.";

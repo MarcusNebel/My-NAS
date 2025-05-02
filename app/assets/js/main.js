@@ -77,43 +77,22 @@ async function handleDownload() {
 
         console.log("Username:", username, "Files:", files);
 
-        // Daten an den Flask-Server senden
-        const response = await fetch(config.flaskServerURL + "/zip_download", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ username, files, folders, path }) // Füge Ordner hinzu
-        });
+        // Einzelne Dateien herunterladen
+        for (const file of files) {
+            const fileName = file.split('/').pop(); // Extrahiere den Dateinamen
+            const downloadURL = `assets/php/download_file.php?file=${encodeURIComponent(fileName)}&path=${encodeURIComponent(path)}`;
 
-        if (!response.ok) {
-            const errorDetails = await response.json();
-            throw new Error(errorDetails.error || "Fehler beim Herunterladen der ZIP-Datei.");
+            const a = document.createElement("a");
+            a.href = downloadURL;
+            a.target = "_blank";
+            a.download = fileName;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
         }
-
-        const disposition = response.headers.get("Content-Disposition");
-        const matches = /filename="(.+)"/.exec(disposition);
-        const zipName = matches ? matches[1] : "download.zip";
-
-        const blob = await response.blob();
-        const downloadUrl = window.URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = downloadUrl;
-        a.download = zipName;
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-        window.URL.revokeObjectURL(downloadUrl);
     } catch (err) {
-        const zipDownloadURL = config.flaskServerURL + "/zip_download";
-
-        if (err instanceof TypeError && err.message === "Failed to fetch") {
-            document.getElementById("downloadStatus").innerHTML =
-                '❌ Verbindung zum Download-Server fehlgeschlagen. ' +
-                'Gehe auf <a href="' + zipDownloadURL + '" target="_blank" rel="noopener noreferrer">' +
-                'diese Seite</a>, vertraue dem Zertifikat und lade die Seite neu.';
-        } else {
-            alert(`Fehler beim Herunterladen der ZIP-Datei: ${err.message}`);
-        }
         console.error("Fehlerdetails:", err);
+        alert(`Fehler beim Herunterladen der Dateien: ${err.message}`);
     } finally {
         document.getElementById('overlay').style.display = 'none';
     }

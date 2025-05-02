@@ -162,16 +162,26 @@ if ($_SERVER["REQUEST_METHOD"] === "GET" && isset($_GET["delete-account"])) {
 									// Fehlerbehandlung
 									updateButton.innerHTML = originalText;
 
-									// Prüfe, ob der Fehler auf "Connection refused" hinweist
-									if (error.message.includes('Failed to fetch') || error.message.includes('connection refused')) {
-										console.error('Verbindung zum Proxy fehlgeschlagen:', error);
+									try {
+										// Lade die URL aus config.json erneut für den Fehlerlink (falls sie vorher nicht verfügbar war)
+										const configResponse = await fetch('../config.json'); 
+										const config = await configResponse.json();
+										const proxyUrlForError = config.proxy_update_server_ip;
 
-										// Füge eine Meldung mit einem Link zur Proxy-Seite ein
-										updateButton.innerHTML = `
-											<span style="color: #fff;">Verbindung fehlgeschlagen. Bitte <a href="https://192.168.188.27:8081/proxy-update" target="_blank">prüfe den Proxy-Status</a>.</span>
-										`;
-									} else {
-										console.error('Fehler beim Senden des POST-Requests:', error);
+										// Prüfe, ob der Fehler auf "Connection refused" hinweist
+										if (error.message.includes('Failed to fetch') || error.message.includes('connection refused')) {
+											console.error('Verbindung zum Proxy fehlgeschlagen:', error);
+
+											// Füge eine Meldung mit einem dynamischen Link zur Proxy-Seite ein
+											updateButton.innerHTML = `
+												<span style="color: #fff;">Verbindung fehlgeschlagen. Bitte <a href="${proxyUrlForError}/proxy-update" target="_blank">prüfe den Proxy-Status</a>.</span>
+											`;
+										} else {
+											console.error('Fehler beim Senden des POST-Requests:', error);
+										}
+									} catch (configError) {
+										console.error('Fehler beim Laden der config.json für Fehlermeldung:', configError);
+										updateButton.innerHTML = originalText; // Fallback auf Original-Text
 									}
 								}
 							});

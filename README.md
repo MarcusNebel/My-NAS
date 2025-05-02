@@ -1,6 +1,6 @@
-# NAS-Website
+# My NAS
 
-This is the repository for the **NAS-Website** project, a simple web application for managing user accounts with MySQL, PHP, HTML, CSS, and JavaScript. The website runs inside a Docker container for easy deployment.
+This is the repository for the **My NAS** project, a simple web application for managing user accounts with MySQL, PHP, HTML, CSS, and JavaScript. The website runs inside a Docker container for easy deployment.
 
 ## Features
 
@@ -36,7 +36,7 @@ This is the repository for the **NAS-Website** project, a simple web application
 
 ```bash
 cd ~
-git clone https://github.com/MarcusNebel/NAS-Website.git nas-website
+git clone https://github.com/MarcusNebel/My-NAS.git nas-website
 cd nas-website
 ```
 
@@ -52,18 +52,20 @@ cd nas-website
 
 ### 2. **Configuration**
 
-#### **Configure SMTP for Password Reset**
+#### **Configure SMTP for Password Reset and IP-adresses**
 
-All SMTP settings are now configured exclusively in the `app/config.json` file. Open this file and edit the corresponding fields:
+All SMTP and IP settings are now configured exclusively in the `app/config.json` file. Open this file and edit the corresponding fields:
 
 ```json
 {
     "flaskServerURL": "https://__SERVER_IP__:8080",
+    "update_server_ip": "http://__SERVER_IP__:5000",
+    "proxy_update_server_ip": "https://__SERVER_IP__:8081/proxy-update",
     "smtp": {
         "host": "smtp.gmail.com",
         "auth": true,
-        "username": "your-email@gmail.com",
-        "password": "your-app-password",
+        "username": "youremail@gmail.com",
+        "password": "your_App_Password",
         "encryption": "tls",
         "port": 587
     },
@@ -77,10 +79,9 @@ All SMTP settings are now configured exclusively in the `app/config.json` file. 
         "signed_in": "New device logged in"
     }
 }
-
 ```
 
-- **`flaskServerURL`**: The URL of your My NAS server.
+- **`__SERVER_IP__`**: Place the server IP (or Domain) here.
 - **`host`**: SMTP server address (e.g., `smtp.gmail.com`).
 - **`username`**: Your email address.
 - **`password`**: Your app password.
@@ -95,24 +96,26 @@ If you want to use it outside the network, you'll need to configure a domain.
 
 ### 3. **Start the Containers**
 
-Start the NAS-Website using Docker Compose:
+Start My NAS using Docker Compose:
 
 **Windows**
 
-```powershell
-docker-compose up -d
-```
+Run the `start-windows.cmd` file.
+
+> To be shure that the update server is running every time you have to put a shortcut of the `run-update-flask-server.cmd` into the Startup folder that you can acces over `Windows + R` and then `shell:startup`. 
 
 **MacOS and Linux**
 
 ```sh
-docker-compose up -d
+chmod +x start-linux-macOS.sh
+bash start-linux-macOS.sh
 ```
 
 This will start the necessary containers and automatically set up everything, including:
 - **Apache + PHP**
 - **MySQL Database**
 - **Database Initialization** (automatic creation of tables and configurations)
+- **Update Server to update My NAS automaticly on new Github release**
 
 ### 4. **Access the Website**
 
@@ -128,109 +131,9 @@ That's it! No manual setup required. The website is ready to use.
 
 ---
 
-## Setting up SSL with Let's Encrypt
-
-### Step 1: Remove the OpenSSL Self-Signed Certificate
-
-If you previously generated a self-signed certificate using OpenSSL, remove it to avoid conflicts:
-
-```bash
-rm -rf /etc/apache2/selfsigned.key
-rm -rf /etc/apache2/ssl/selfsigned.crt
-```
-
-### Step 2: Install Certbot
-
-Install Certbot with the following command:
-
-```bash
-sudo apt update
-sudo apt install certbot -y
-```
-
-### Step 3: Request a Let's Encrypt SSL Certificate
-
-Request an SSL certificate using Certbot. Replace `yourdomain.com` with your actual domain name:
-
-```bash
-sudo certbot certonly --standalone -d yourdomain.com
-```
-
-Certbot stores the certificates in the following directory:
-- **Certificate**: `/etc/letsencrypt/live/yourdomain.com/fullchain.pem`
-- **Private Key**: `/etc/letsencrypt/live/yourdomain.com/privkey.pem`
-
-### Step 4: Configure Your Web Server
-
-#### Nginx Configuration
-
-```nginx
-server {
-    listen 443 ssl;
-    server_name yourdomain.com;
-
-    ssl_certificate /etc/letsencrypt/live/yourdomain.com/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/yourdomain.com/privkey.pem;
-
-    # Additional Nginx configuration...
-}
-```
-
-#### Apache Configuration
-
-```apache
-<VirtualHost *:443>
-    ServerName yourdomain.com
-    DocumentRoot /var/www/html
-
-    SSLEngine on
-    SSLCertificateFile /etc/letsencrypt/live/yourdomain.com/fullchain.pem
-    SSLCertificateKeyFile /etc/letsencrypt/live/yourdomain.com/privkey.pem
-
-    # Additional Apache configurations...
-</VirtualHost>
-```
-
-### Step 5: Set Up Automatic Renewal
-
-Add a cron job to automatically renew the certificate:
-
-```bash
-sudo crontab -e
-```
-
-Add the following line:
-
-```bash
-0 */12 * * * certbot renew --quiet
-```
-
----
-
-## Setting Up the Android App (Optional)
-
-- Download the `APK` file and install it on your Android device.
-- On the first launch, you must provide the server's domain or IP address (saved on your device).
-
-To edit the server's domain or IP address, clear the `App Data` (not just the cache).
-
----
-
 ## Debugging
 
-- If you encounter issues with the website or app after an update, reset all caches and clear your browser cache if you're on a computer.
-
----
-
-## Known Issues
-
-- The Android app's file upload and download functionality currently doesn't work.
-
----
-
-## Contributing
-
-If you'd like to contribute, feel free to fork the repository and submit a pull request!
+- If you encounter issues with the website or app after an update, reset all caches and clear your browser cache.
 
 ---
 

@@ -47,54 +47,99 @@ async function handleDownload() {
 
     const username = document.getElementById("username-hidden").value;
 
-    // Den Pfad aus der URL extrahieren
+    // Den Pfad aus der URL extrahieren (falls vorhanden)
     const urlParams = new URLSearchParams(window.location.search);
-    const path = urlParams.get('path') || '';  // Falls kein Pfad angegeben ist, verwenden wir einen leeren String
+    const currentPath = urlParams.get('path') || ''; // Falls kein Pfad angegeben ist, verwenden wir einen leeren String
 
-    document.getElementById('overlay').style.display = 'flex';
+    if (files.length === 1 && folders.length === 0) {
+        // Direktdownload für eine einzelne Datei über das PHP-Skript
+        const file = files[0];
+        const fileName = file.split('/').pop(); // Extrahiere den Dateinamen
+        const filePath = currentPath; // Nutze den aktuellen Pfad aus der URL
 
-    try {
-        // Dateien aus den ausgewählten Ordnern abrufen
-        for (const folder of folders) {
-            const folderContents = await fetch('assets/php/list_folder_contents.php', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: new URLSearchParams({ folderPath: folder }),
-            });
+        // Debugging
+        console.log("Dateiname:", fileName);
+        console.log("Pfad:", filePath);
 
-            if (!folderContents.ok) {
-                const errorDetails = await folderContents.json();
-                throw new Error(errorDetails.error || 'Fehler beim Abrufen des Ordnerinhalts.');
+        // Erstellen der GET-URL für den Download
+        const downloadUrl = `assets/php/download.php?file=${encodeURIComponent(fileName)}&path=${encodeURIComponent(filePath)}`;
+        console.log("Download-URL:", downloadUrl);
+
+        // Starte den Download
+        const a = document.createElement("a");
+        a.href = downloadUrl;
+        a.download = fileName;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+    } else {
+        // Fortfahren mit der ZIP-Logik für mehrere Dateien oder Ordner
+        document.getElementById('overlay').style.display = 'flex';
+
+        try {
+            // Dateien aus den ausgewählten Ordnern abrufen
+            for (const folder of folders) {
+                const folderContents = await fetch('assets/php/list_folder_contents.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: new URLSearchParams({ folderPath: folder }),
+                });
+
+                if (!folderContents.ok) {
+                    const errorDetails = await folderContents.json();
+                    throw new Error(errorDetails.error || 'Fehler beim Abrufen des Ordnerinhalts.');
+                }
+
+                const folderFiles = await folderContents.json();
+                folderFiles.forEach(file => {
+                    if (!file.is_dir) {
+                        files.push(file.path); // Dateien aus dem Ordner hinzufügen
+                    }
+                });
             }
 
-            const folderFiles = await folderContents.json();
-            folderFiles.forEach(file => {
-                if (!file.is_dir) {
-                    files.push(file.path); // Dateien aus dem Ordner hinzufügen
-                }
+            console.log("Username:", username, "Files:", files);
+
+            // Daten an den Flask-Server senden
+            const response = await fetch(config.flaskServerURL + "/zip_download", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ username, files, folders, currentPath }) // Füge Ordner hinzu
             });
-        }
 
-        console.log("Username:", username, "Files:", files);
+            if (!response.ok) {
+                const errorDetails = await response.json();
+                throw new Error(errorDetails.error || "Fehler beim Herunterladen der ZIP-Datei.");
+            }
 
-        // Einzelne Dateien herunterladen
-        for (const file of files) {
-            const fileName = file.split('/').pop(); // Extrahiere den Dateinamen
-            const downloadURL = `assets/php/download_file.php?file=${encodeURIComponent(fileName)}&path=${encodeURIComponent(path)}`;
+            const disposition = response.headers.get("Content-Disposition");
+            const matches = /filename="(.+)"/.exec(disposition);
+            const zipName = matches ? matches[1] : "download.zip";
 
+            const blob = await response.blob();
+            const downloadUrl = window.URL.createObjectURL(blob);
             const a = document.createElement("a");
-            a.href = downloadURL;
-            a.target = "_blank";
-            a.download = fileName;
+            a.href = downloadUrl;
+            a.download = zipName;
             document.body.appendChild(a);
             a.click();
             a.remove();
+            window.URL.revokeObjectURL(downloadUrl);
+        } catch (err) {
+            const zipDownloadURL = config.flaskServerURL + "/zip_download";
+
+            if (err instanceof TypeError && err.message === "Failed to fetch") {
+                document.getElementById("downloadStatus").innerHTML =
+                    '❌ Verbindung zum Download-Server fehlgeschlagen. ' +
+                    'Gehe auf <a href="' + zipDownloadURL + '" target="_blank" rel="noopener noreferrer">' +
+                    'diese Seite</a>, vertraue dem Zertifikat und lade die Seite neu.';
+            } else {
+                alert(`Fehler beim Herunterladen der ZIP-Datei: ${err.message}`);
+            }
+            console.error("Fehlerdetails:", err);
+        } finally {
+            document.getElementById('overlay').style.display = 'none';
         }
-    } catch (err) {
-        console.error("Fehlerdetails:", err);
-        alert(`Fehler beim Herunterladen der Dateien: ${err.message}`);
-    } finally {
-        document.getElementById('overlay').style.display = 'none';
     }
 }
 

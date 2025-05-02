@@ -94,26 +94,24 @@ if (!isset($_SESSION["id"])) {
 
                 <!-- Werkzeugleiste mit Formular -->
                 <form action="assets/php/delete_handler.php" method="POST" id="delete-form">
-                    <i id="search-icon" class='bx bx-search'></i>
-                    <input type="text" id="search-input" placeholder="Dateien suchen...">
+                    <a href="javascript:void(0);" style="text-decoration: none;" id="create-folder">
+                        <i class='bx bx-folder-plus'></i>
+                    </a>
+
+                    <a href="File_upload.php?path=<?php echo urlencode($_GET['path'] ?? ''); ?>" style="text-decoration: none;" id="upload-file">
+                        <i class='bx bx-upload'></i>
+                    </a>
 
                     <a class="pen-a" href="javascript:void(0);" style="text-decoration: none;" id="download-selected" title="Ausgewählte Dateien herunterladen">
-                        <i class='bx bxs-download'></i>
+                        <i class='bx bx-download'></i>
                     </a>
 
                     <a class="pen-a" href="javascript:void(0);" style="text-decoration: none;" id="delete-selected" title="Löschen">
                         <i class='bx bxs-trash'></i>
                     </a>
 
-                    <a class="pen-a" href="javascript:void(0);" style="text-decoration: none;" id="toggle-menu" title="Hinzufügen">
-                         <i class='bx bxs-plus-circle'></i>
-                    </a>
-
-                    <!-- Dropdown-Menü -->
-                    <div class="dropdown-menu">
-                        <a href="File_upload.php?path=<?php echo urlencode($_GET['path'] ?? ''); ?>" id="upload-file"><i class='bx bx-upload'></i> Dateien hochladen</a>
-                        <a href="javascript:void(0);" id="create-folder"><i class='bx bx-folder-plus'></i> Neuen Ordner erstellen</a>
-                    </div>
+                    <i id="search-icon" class='bx bx-search'></i>
+                    <input type="text" id="search-input" placeholder="Dateien suchen...">
                     
                     <strong><p id="downloadStatus" style="margin-top: 10px;"></p></strong>
 
@@ -316,18 +314,6 @@ if (!isset($_SESSION["id"])) {
             const modal = document.getElementById("folderModal");
             modal.style.display = "none";
         }
-    </script>
-    <script>
-        document.getElementById('toggle-menu').addEventListener('click', function() {
-            var dropdownMenu = document.querySelector('.dropdown-menu');
-            
-            // Überprüfen, ob das Dropdown-Menü gerade angezeigt wird oder nicht
-            if (dropdownMenu.style.display === 'block') {
-                dropdownMenu.style.display = 'none';  // Wenn es angezeigt wird, dann ausblenden
-            } else {
-                dropdownMenu.style.display = 'block';  // Wenn es nicht angezeigt wird, dann einblenden
-            }
-        });
     </script>
     <script>
         const selectAllCheckbox = document.getElementById('select-all-checkbox');

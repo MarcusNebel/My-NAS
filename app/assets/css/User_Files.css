@@ -509,7 +509,7 @@ i.bx.bxs-trash:hover {
   color: #f00;
 }
 
-i.bx.bxs-download {
+i.bx.bx-download {
   font-size: 35px;
   text-decoration: none;
   color: #000;
@@ -517,7 +517,7 @@ i.bx.bxs-download {
   transition: all 0.3s ease;
 }
 
-i.bx.bxs-download:hover {
+i.bx.bx-download:hover {
   transform: translateY(-2px);
   color: #2894f4;
 }
@@ -814,6 +814,32 @@ i.bx.bxs-plus-circle:hover {
 #search-input:hover {
   transform: translateY(-2px);
   border-color: #2894f4;
+}
+
+i.bx.bx-upload {
+  text-decoration: none;
+  color: #000;
+  font-size: 32px;
+  margin-left: 15px;
+  transition: all 0.3s ease;
+}
+
+i.bx.bx-upload:hover {
+  transform: translateY(-2px);
+  color: #2894f4;
+}
+
+i.bx.bx-folder-plus {
+  text-decoration: none;
+  color: #000;
+  font-size: 32px;
+  margin-left: 15px;
+  transition: all 0.3s ease;
+}
+
+i.bx.bx-folder-plus:hover {
+  transform: translateY(-2px);
+  color: #2894f4;
 }
 
 i.bx.bxs-home {

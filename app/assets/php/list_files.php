@@ -22,6 +22,22 @@ $currentPath = isset($_GET['path']) ? $_GET['path'] : ''; // Aktueller Pfad
 // Sicherstellen, dass $currentPath ein String ist
 $currentPath = (string) $currentPath;
 
+function formatFileSize($bytes) {
+    if ($bytes >= 1073741824) {
+        return number_format($bytes / 1073741824, 2) . ' GB';
+    } elseif ($bytes >= 1048576) {
+        return number_format($bytes / 1048576, 2) . ' MB';
+    } elseif ($bytes >= 1024) {
+        return number_format($bytes / 1024, 2) . ' KB';
+    } elseif ($bytes > 1) {
+        return $bytes . ' Bytes';
+    } elseif ($bytes == 1) {
+        return '1 Byte';
+    } else {
+        return '0 Bytes';
+    }
+}
+
 // Sicherheitsüberprüfung des Pfads
 if (isset($username)) {
     // Kombiniere den Basisordner mit dem Benutzernamen und dem aktuellen Pfad
@@ -34,12 +50,27 @@ if (isset($username)) {
 
     foreach ($filesAndDirs as $item) {
         $itemPath = $directory . "/" . $item;
+        $isDir = is_dir($itemPath);
+        $modifiedTime = filemtime($itemPath); // Letzte Änderungszeit
+        $formattedDate = date("d.m.Y H:i:s", $modifiedTime); // Formatieren von Datum und Uhrzeit
+        
+        if ($isDir) {
+            // Anzahl der Objekte im Ordner zählen
+            $itemCount = count(array_diff(scandir($itemPath), array('.', '..')));
+        } else {
+            // Dateigröße
+            $fileSize = filesize($itemPath);
+        }
+
         if ($search === '' || strpos(strtolower($item), $search) !== false) {
             // Filtere nach der Suchanfrage
             $filteredFiles[] = [
                 'name' => $item,
-                'is_dir' => is_dir($itemPath),
-                'path' => $currentPath . ($currentPath ? '/' : '') . $item
+                'is_dir' => $isDir,
+                'path' => $currentPath . ($currentPath ? '/' : '') . $item,
+                'date' => $formattedDate,
+                'size' => $isDir ? null : $fileSize,
+                'item_count' => $isDir ? $itemCount : null
             ];
         }
     }
@@ -63,18 +94,19 @@ if (isset($username)) {
                 echo "<li class='file-item directory' data-path='" . htmlspecialchars($filePath) . "'>";
                 echo "<input type='checkbox' class='file-checkbox' data-type='folder' data-full-path='" . htmlspecialchars($directory . "/" . $filePath) . "' value='" . htmlspecialchars($file['name']) . "'>";
                 echo "<i class='bx bxs-folder'></i> " . htmlspecialchars($file['name']);
+                echo " <span class='file-info'>" . $file['item_count'] . " Objekte | " . $file['date'] . "</span>";
                 echo "</li>";
             } else {
                 // Datei
-                $fileSize = filesize($directory . "/" . $file['name']);
                 echo "<li class='file-item'>";
                 echo "<input type='checkbox' name='files[]' value='" . htmlspecialchars($file['name']) . "' 
                         class='file-checkbox' 
                         data-type='file'
                         data-name='" . htmlspecialchars($file['name']) . "' 
-                        data-size='" . $fileSize . "' 
+                        data-size='" . $file['size'] . "' 
                         data-full-path='" . htmlspecialchars($directory . "/" . $file['name']) . "'>";
                 echo "<span class='file-name'> " . htmlspecialchars($file['name']) . "</span>";
+                echo "<span class='file-info'>" . formatFileSize($file['size']) . " | " . $file['date'] . "</span>";
                 echo "</li>";
             }
         }

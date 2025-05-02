@@ -522,6 +522,19 @@ i.bx.bx-download:hover {
   color: #2894f4;
 }
 
+i.bx.bx-rename {
+  font-size: 35px;
+  text-decoration: none;
+  color: #000;
+  margin-left: 15px;
+  transition: all 0.3s ease;
+}
+
+i.bx.bx-rename:hover {
+  transform: translateY(-2px);
+  color: #2894f4;
+}
+
 /* Stil für die Toolbar */
 .toolbar {
   display: flex;
@@ -625,7 +638,7 @@ i.bx.bxs-plus-circle:hover {
   border-radius: 12px;
   width: 320px;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
-  border-top: 5px solid #2894f4; /* Akzentfarbe */
+  border: 3px solid #2894f4; /* Akzentfarbe */
   animation: fadeInUp 0.3s ease-out;
 }
 
@@ -739,6 +752,48 @@ i.bx.bxs-plus-circle:hover {
   justify-content: center;
   z-index: 9999;
 }
+
+/* Schließen-Symbol */
+#closeRenameModal {
+  float: right;
+  font-size: 22px;
+  font-weight: bold;
+  color: #666;
+  cursor: pointer;
+}
+
+#closeRenameModal:hover {
+  color: #000;
+}
+
+/* Eingabefeld */
+#newNameInput {
+  width: 100%;
+  padding: 10px;
+  margin-top: 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 16px;
+}
+
+/* Button */
+#confirmRename, #cancelRename {
+  width: 100%;
+  padding: 10px;
+  margin-top: 15px;
+  background-color: #2894f4;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+#confirmRename:hover, #cancelRename:hover {
+  background-color: #1e7fd6;
+}
+
 
 .apple-loader {
   position: relative;

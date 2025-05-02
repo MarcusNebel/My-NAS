@@ -102,7 +102,11 @@ if (!isset($_SESSION["id"])) {
                         <i class='bx bx-upload'></i>
                     </a>
 
-                    <a class="pen-a" href="javascript:void(0);" style="text-decoration: none;" id="download-selected" title="Ausgewählte Dateien herunterladen">
+                    <a href="javascript:void(0);" style="text-decoration: none;" id="rename-item" title="Umbenennen">
+                        <i class='bx bx-rename'></i>
+                    </a>
+
+                    <a class="pen-a" href="javascript:void(0);" style="text-decoration: none;" id="download-selected" title="Herunterladen">
                         <i class='bx bx-download'></i>
                     </a>
 
@@ -115,13 +119,22 @@ if (!isset($_SESSION["id"])) {
                     
                     <strong><p id="downloadStatus" style="margin-top: 10px;"></p></strong>
 
-                    <!-- Modal Fenster -->
                     <div id="folderModal" class="modal" style="display: none;">
                         <div class="modal-content" style="background: #fff; padding: 20px; border-radius: 10px; width: 300px; margin: auto;">
                             <span id="closeModal" style="float:right; cursor:pointer;">&times;</span>
                             <h3>Ordner erstellen</h3>
                             <input type="text" id="folderNameInput" placeholder="Ordnername" style="width: 100%; margin-top: 10px; padding: 8px;">
                             <button id="confirmCreateFolder" type="button" style="margin-top: 10px;">Erstellen</button>
+                        </div>
+                    </div>
+
+                    <div id="renameModal" class="modal" style="display: none;">
+                        <div class="modal-content">
+                            <span id="closeRenameModal" style="float:right; cursor:pointer;">&times;</span>
+                            <h3>Datei umbenennen</h3>
+                            <input type="text" id="newNameInput" placeholder="Neuer Name" style="width: 100%; margin-top: 10px; padding: 8px;">
+                            <button id="confirmRename" type="button" style="margin-top: 10px;">Bestätigen</button>
+                            <button id="cancelRename" type="button" style="margin-top: 10px;">Abbrechen</button>
                         </div>
                     </div>
 
@@ -170,6 +183,108 @@ if (!isset($_SESSION["id"])) {
     </div>
     <input type="hidden" name="current_path" id="current_path" value="<?php echo isset($_GET['path']) ? htmlspecialchars($_GET['path']) : ''; ?>">
     <script src="assets/js/main.js"></script>
+    <script>
+        document.getElementById('rename-item').addEventListener('click', () => {
+        const checked = document.querySelectorAll('.file-checkbox:checked');
+        if (checked.length !== 1) {
+            alert('Bitte genau eine Datei oder einen Ordner auswählen.');
+            return;
+        }
+
+        const fileInput = checked[0];
+        const oldName = fileInput.value;
+        const isFolder = fileInput.dataset.type === 'folder';
+        const fullPath = fileInput.dataset.fullPath;
+
+        let baseName = oldName;
+        let extension = '';
+
+        if (!isFolder) {
+            const dotIndex = oldName.lastIndexOf('.');
+            if (dotIndex > 0) {
+                baseName = oldName.substring(0, dotIndex);
+                extension = oldName.substring(dotIndex);
+            }
+        }
+
+        // Modal anzeigen und voreingestellten Namen einfügen
+        const modal = document.getElementById('renameModal');
+        const newNameInput = document.getElementById('newNameInput');
+        newNameInput.value = baseName;
+
+        // Öffne Modal
+        modal.style.display = 'flex';
+
+        // Fokussiere das Eingabefeld und wähle den Text aus
+        newNameInput.focus(); // Fokussiert das Eingabefeld
+        newNameInput.select(); // Markiert den gesamten Text
+
+        // Wenn der Benutzer auf "Bestätigen" klickt
+        const confirmRename = document.getElementById('confirmRename');
+        confirmRename.addEventListener('click', function () {
+            const newBaseName = newNameInput.value.trim();
+            if (!newBaseName || newBaseName === baseName) {
+                modal.style.display = 'none';
+                return;
+            }
+
+            const newName = newBaseName + extension;
+
+            const formData = new FormData();
+            formData.append('old_name', oldName);
+            formData.append('new_name', newName);
+            formData.append('is_folder', isFolder ? '1' : '0');
+            formData.append('path', fullPath);
+
+            fetch('assets/php/rename.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(res => res.json())
+            .then(data => {
+                // Wenn Fehler aufgetreten sind, wird eine Fehlermeldung angezeigt
+                if (!data.success) {
+                    alert(data.message); // Nur Fehler anzeigen, kein Erfolg
+                }
+
+                // Seite neu laden, ohne Erfolgsmeldung anzuzeigen
+                location.reload();
+            })
+            .catch(err => {
+                console.error(err);
+                alert('Ein Fehler ist aufgetreten.');
+            });
+
+            modal.style.display = 'none'; // Schließe das Modal nach der Bestätigung
+        });
+
+        // Wenn der Benutzer auf "Abbrechen" klickt
+        document.getElementById('cancelRename').addEventListener('click', function () {
+            modal.style.display = 'none'; // Schließe das Modal
+        });
+
+        // Wenn der Benutzer auf das X (Schließen-Button) klickt
+        document.querySelector('#closeRenameModal').addEventListener('click', function () {
+            modal.style.display = 'none'; // Schließe das Modal
+        });
+
+        // Event Listener für Enter-Taste
+        newNameInput.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                confirmRename.click(); // Simuliere einen Klick auf den Bestätigungs-Button
+            }
+        });
+
+    });
+
+    // Wenn der Benutzer außerhalb des Modals klickt, schließt sich das Modal
+    window.onclick = function(event) {
+        const modal = document.getElementById('renameModal');
+        if (event.target === modal) {
+            modal.style.display = 'none';
+        }
+    };
+    </script>
     <script>
         // Event-Listener für das Eltern-Element (file-list)
         document.querySelector('.file-list').addEventListener('click', function (e) {

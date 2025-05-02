@@ -174,7 +174,7 @@ if ($_SERVER["REQUEST_METHOD"] === "GET" && isset($_GET["delete-account"])) {
 
 											// Füge eine Meldung mit einem dynamischen Link zur Proxy-Seite ein
 											updateButton.innerHTML = `
-												<span style="color: #fff;">Verbindung fehlgeschlagen. Bitte <a href="${proxyUrlForError}/proxy-update" target="_blank">prüfe den Proxy-Status</a>.</span>
+												<span style="color: #fff;">Verbindung fehlgeschlagen. Bitte <a href="${proxyUrlForError}" target="_blank">prüfe den Proxy-Status</a>.</span>
 											`;
 										} else {
 											console.error('Fehler beim Senden des POST-Requests:', error);

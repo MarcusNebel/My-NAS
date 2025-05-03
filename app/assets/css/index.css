@@ -378,230 +378,205 @@ header.is-scrolling .container {
   padding-bottom: 16px;
 }
 
-main section.banner {
+.logged-out {
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  padding-top: 250px;
+  padding-left: 100px;
+  padding-right: 100px;
   color: #000;
   position: relative;
-  min-height: 100vh;
-  display: -webkit-box;
-  display: -ms-flexbox;
   display: flex;
-  -webkit-box-align: center;
-  -ms-flex-align: center;
-  align-items: center;
+  min-height: 50%;
   background-position: center;
   background-size: cover;
 }
 
-main section.banner:after {
-  content: '';
+.greeting {
+  font-size: 45px;
   display: block;
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 0;
-  opacity: 0.8;
 }
 
-main section.banner .container {
-  position: relative;
-  z-index: 1;
+.sub-text {
+  margin-right: 100px;
 }
 
-main section.banner .container h1 {
-  font-size: 72px;
-  margin-bottom: 32px;
+.greeting .sub-text p {
+  font-size: 25px;
 }
 
-main section.banner .container h1 span {
+.greeting span {
   color: #2894f4;
+  font-weight: bold;
 }
 
-@media (max-width: 767px) {
-  main section.banner .container h1 {
-    font-size: 32px;
-  }
+.register {
+  text-decoration: none;
+  padding: 10px 20px;
+  margin-top: 15px;
+  background-color: #2894f4;
+  border-radius: 12px;
+  color: #fff;
 }
 
-main section.banner .container .subtitle {
-  font-size: 36px;
-  font-weight: 400;
-  margin-bottom: 32px;
+.other-content {
+  margin-top: 30px;
+  padding-left: 100px;
+  padding-right: 100px;
+  color: #000;
 }
 
-@media (max-width: 767px) {
-  main section.banner .container .subtitle {
-    font-size: 20px;
-  }
+.other-content p {
+  font-size: 20px;
 }
 
-.dashboard {
-  padding: 20px;
-  background: #FFF;
+.mobile-app {
+  display: block;
+  align-items: center;
+  margin-top: 100px;
 }
 
-.flex {
+.github-link {
+  text-decoration: none;
+  padding: 10px 20px;
+  margin-top: 15px;
+  background-image: url(../../Logo/Github-BG.png);
+  border-radius: 12px;
+  width: 230px;
+  color: #fff;
   display: flex;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 20px;
+  align-items: center;
+  font-size: 20px;
 }
 
-@media (max-width: 768px) {
-  .flex {
-      display: block;
-  }
-
-  .other-content {
-    display: block;
-}
+.github-logo {
+  width: 40px;
+  height: 40px;
+  margin-right: 15px;
 }
 
-@media (min-width: 769px) {
-  .flex {
-      display: flex;
-  }
-
-  .other-content {
-    display: flex;
-  }
+.mobile-app p {
+  margin-top: 15px;
 }
 
-.card {
-  background: white;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-  text-align: center;
-  border-top: 4px solid #2894f4;
-  position: relative;
-  margin-bottom: 20px;
+.mobile-app .release-link {
+  text-decoration: none;
+  color: #54aefd;
 }
 
-.card h3 {
-  margin-bottom: 10px;
+.mobile-app .release-link:hover {
   color: #2894f4;
+  text-decoration: underline;
 }
 
-#scroll-indicator {
+footer {
+  display: flex;
+  justify-content: space-around;
+  background-color: #f1f1f1;
+  padding: 10px;
+  margin-top: 20px;
+  text-align: center;
   position: fixed;
-  cursor: pointer;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  animation: pulse 1s infinite;  /* Pulsierende Animation */
-  opacity: 1;  /* Standardmäßig sichtbar */
-  transition: opacity 0.5s ease; /* Übergang für sanftes Ausblenden */
-}
-
-#scroll-indicator p {
-  margin-left: 11px;
-}
-
-@keyframes pulse {
-  0% {
-      opacity: 1;
-  }
-  50% {
-      opacity: 0.7;
-  }
-  100% {
-      opacity: 1;
-  }
-}
-
-#cpuChart, #ramChart, #diskChart {
-  width: 100% !important;  /* Passt die Breite des Diagramms an den Container an */
-  height: 400px !important; /* Erhöht die Höhe des Diagramms */
-}
-
-@media (max-width: 768px) {
-  #cpuChart, #ramChart, #diskChart {
-      height: 300px; /* Weniger Höhe auf kleineren Geräten */
-  }
-}
-
-@media (min-width: 769px) {
-  #cpuChart, #ramChart, #diskChart {
-      height: 500px; /* Größere Höhe auf Desktop-Geräten */
-  }
-}
-
-#update-popup {
-  position: fixed;
-  top: 0;
+  bottom: 0;
   left: 0;
   width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  background-color: #f1f1f1;
+  padding: 10px;
+  text-align: center;
   z-index: 1000;
 }
 
-#update-popup .popup-content {
-  background: white;
-  width: 300px;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-  text-align: center;
-  overflow: hidden; /* Damit die obere Leiste sauber abschließt */
+.github-link-footer {
+  text-decoration: none;
+  color: #2894f4;
 }
 
-#update-popup .popup-header {
-  background-color: #FFD700; /* Gelb */
-  height: 75px;
-  color: #000;
-  padding: 10px;
-  font-size: 25px;
-  font-weight: bold;
-  display: flex;
-  justify-content: center;
+.github-link-footer:hover {
+  color: #54aefd;
+  text-decoration: underline;
+}
+
+@media (max-width: 767px) {
+  .logged-out {
+    padding-top: 120px;
+    padding-left: 25px;
+    padding-right: 25px;
+  }
+}
+
+.logged-in {
+  padding-top: 130px;
+  padding-left: 100px;
+  padding-right: 100px;
+}
+
+.recent-files {
+  margin-top: 25px;
+}
+
+ul {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+.file-list {
+  background-color: #FFF;
+  list-style: none;
+  padding: 0;
+  margin: 0 auto;
   align-items: center;
 }
 
-#update-popup .popup-header .icon {
-  margin-right: 10px;
+.file-item {
+  padding: 15px;
+  border-radius: 8px;
+  border: 2px solid #2894f4;
+  align-items: center;
+  color: #000;
+  font-size: 18px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  margin-bottom: 10px; /* Fügt Abstand zwischen den Einträgen hinzu */
+  user-select: none; /* Verhindert Textauswahl */
+  -webkit-user-select: none; /* Für Safari */
+  transition: all 0.2s ease;
 }
 
-#update-popup .popup-body {
-  padding: 20px;
-  font-size: 16px;
-  color: #333;
-}
-
-#update-popup .popup-footer {
-  padding: 10px;
-  text-align: center;
-}
-
-#update-popup .popup-footer button {
-  background-color: #2894f4; /* Gelb */
-  color: white;
-  border: none;
-  border-radius: 5px;
-  padding: 10px 20px;
-  font-size: 14px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-#update-popup .popup-footer button:hover {
-  background-color: #54aefd; /* Etwas dunkleres Gelb für Hover */
+.file-item:hover {
+  cursor: not-allowed;
   transform: translateY(-1px);
 }
 
-#update-popup .popup-content .popup-header i .bx .bx-error {
-  color: #000;
+.file-info {
+  float: right;
+  color: #666;
 }
 
-#update-popup .popup-footer a {
-  text-decoration: none;
-  color: #2894f4;
-  border: none;
-  padding: 10px 20px;
-  font-size: 14px;
-  cursor: pointer;
-  transition: all 0.3s ease;
+.desktop-only {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .desktop-only {
+    display: block;
+  }
+
+  .file-info {
+    float: none;
+  }
+}
+
+.select-all-cb {
+  user-select: none; /* Verhindert Textauswahl */
+  -webkit-user-select: none; /* Für Safari */
+  cursor: pointer; /* Optional: zeigt an, dass man klicken kann */
+  font-weight: bold;
+}
+
+@media (max-width: 767px) {
+  .logged-in {
+    padding-top: 120px;
+    padding-left: 25px;
+    padding-right: 25px;
+  }
 }

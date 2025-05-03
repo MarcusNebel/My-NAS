@@ -469,6 +469,20 @@ ul {
   color: #666;
 }
 
+.desktop-only {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .desktop-only {
+    display: block;
+  }
+
+  .file-info {
+    float: none;
+  }
+}
+
 .select-all-cb {
   user-select: none; /* Verhindert Textauswahl */
   -webkit-user-select: none; /* Für Safari */

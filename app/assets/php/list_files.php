@@ -94,7 +94,8 @@ if (isset($username)) {
                 echo "<li class='file-item directory' data-path='" . htmlspecialchars($filePath) . "'>";
                 echo "<input type='checkbox' class='file-checkbox' data-type='folder' data-full-path='" . htmlspecialchars($directory . "/" . $filePath) . "' value='" . htmlspecialchars($file['name']) . "'>";
                 echo "<i class='bx bxs-folder'></i> " . htmlspecialchars($file['name']);
-                echo " <span class='file-info'>" . $file['item_count'] . " Objekte | " . $file['date'] . "</span>";
+                echo '<br class="desktop-only">';
+                echo "<span class='file-info'>" . $file['item_count'] . " Objekte | " . $file['date'] . "</span>";
                 echo "</li>";
             } else {
                 // Datei
@@ -106,6 +107,7 @@ if (isset($username)) {
                         data-size='" . $file['size'] . "' 
                         data-full-path='" . htmlspecialchars($directory . "/" . $file['name']) . "'>";
                 echo "<span class='file-name'> " . htmlspecialchars($file['name']) . "</span>";
+                echo '<br class="desktop-only">';
                 echo "<span class='file-info'>" . formatFileSize($file['size']) . " | " . $file['date'] . "</span>";
                 echo "</li>";
             }

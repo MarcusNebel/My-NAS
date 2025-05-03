@@ -542,6 +542,7 @@ i.bx.bx-rename:hover {
   position: relative;
   background-color: #fff;
   padding-left: 20px;
+  width: 50%;
 }
 
 i.bx.bxs-plus-circle {
@@ -799,29 +800,12 @@ i.bx.bxs-plus-circle:hover {
 .apple-loader div:nth-child(7) { transform: rotate(270deg); animation-delay: -0.125s; }
 .apple-loader div:nth-child(8) { transform: rotate(315deg); animation-delay: 0s; }
 
-#search-icon {
-  font-size: 30px;
-  vertical-align: middle;
-  position: relative;
-  bottom: 10px;
-  cursor: pointer;
-  color: #000;
-  margin-top: 20px;
-  margin-left: 15px;
-  align-items: center;
-  transition: all 0.3s ease;
-}
-
-#search-icon:hover {
-  transform: translateY(-2px);
-  color: #2894f4;
-}
-
 #search-input {
-  width: 0;
+  width: 200px;
   box-sizing: border-box;
   align-items: center;
   padding: 8px 12px;
+  margin-top: 23px;
   font-size: 1rem;
   vertical-align: middle;
   position: relative;
@@ -829,17 +813,11 @@ i.bx.bxs-plus-circle:hover {
   border: 1px solid #2894f4;
   border-radius: 12px;
   transition: all 0.3s ease;
-  opacity: 0;
-  pointer-events: none;
-}
-#search-input.show {
-  margin-left: 15px;
-  bottom: 0;
-  width: 200px;
   opacity: 1;
   pointer-events: auto;
-  border-color: #2894f4;
+  margin-left: 15px;
 }
+
 #search-input:hover {
   transform: translateY(-2px);
   border-color: #2894f4;
@@ -926,6 +904,12 @@ li.file-item.directory i {
   padding: 5px 10px;
   background-color: #2894f4;
   border-radius: 12px;
+  transition: all 0.3s ease;
+}
+
+.new-button:hover {
+  transform: translateY(-2px);
+  background-color: #54aefd;
 }
 
 .dropdown-wrapper {
@@ -958,5 +942,12 @@ li.file-item.directory i {
 
 .new-dropdown-item {
   display: flex;
+  align-items: center;
+}
+
+.search-and-sort {
+  float: right;
+  display: flex;
+  justify-content: flex-end;
   align-items: center;
 }

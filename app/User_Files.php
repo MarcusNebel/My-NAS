@@ -110,6 +110,10 @@ if (!isset($_SESSION["id"])) {
                             </div>
                         </div>
 
+                        <div class="search-and-sort">
+                            <input type="text" id="search-input" placeholder="Dateien suchen..." style="display: inline;">
+                        </div>
+
                         <div class="edit-items" id="edit-toolbar" style="display: none;">
                             <a href="javascript:void(0);" style="text-decoration: none;" id="rename-item" title="Umbenennen">
                                 <i class='bx bx-rename'></i>
@@ -121,10 +125,9 @@ if (!isset($_SESSION["id"])) {
                                 <i class='bx bxs-trash'></i>
                             </a>
                         </div>
-
-                        <i id="search-icon" class='bx bx-search'></i>
-                        <input type="text" id="search-input" placeholder="Dateien suchen...">
                     </div>
+
+                    
                     
                     
                     <strong><p id="downloadStatus" style="margin-top: 10px;"></p></strong>
@@ -176,7 +179,7 @@ if (!isset($_SESSION["id"])) {
                     <ul id="file-list" class="file-list">
                         <?php include 'assets/php/list_files.php'; ?>
                     </ul>
-                    </form>
+                </form>
 
         </div>
     </main>
@@ -498,48 +501,55 @@ if (!isset($_SESSION["id"])) {
         });
     </script>
     <script>
-        const searchIcon = document.getElementById("search-icon");
-        const searchInput = document.getElementById("search-input");
-        const fileList = document.getElementById('file-list');
-
-        // Zeigt das Suchfeld an oder blendet es aus, wenn auf das Such-Icon geklickt wird
-        searchIcon.addEventListener("click", () => {
-            searchInput.classList.toggle("show");
-
-            if (searchInput.classList.contains("show")) {
-                searchInput.focus();
-            } else {
-                searchInput.value = ""; // Eingabe löschen, wenn ausgeblendet
-                searchFiles(""); // Alle Dateien anzeigen
-            }
-        });
-
-        // Eventlistener für Eingaben im Suchfeld
-        searchInput.addEventListener('input', function () {
-            const query = this.value.trim(); // Holen der Eingabe und Entfernen von Leerzeichen
-
-            // Bei leerer Eingabe alle Dateien anzeigen
-            if (query === '') {
-                searchFiles('');
-            } else {
-                // Anfrage senden, wenn eine Eingabe gemacht wurde
-                searchFiles(query);
-            }
-        });
-
-        // Funktion für die Suchanfrage
-        function searchFiles(query) {
-            const currentPath = document.getElementById("current_path").value;
-
-            fetch(`assets/php/list_files.php?search=${encodeURIComponent(query)}&path=${encodeURIComponent(currentPath)}`)
-                .then(response => response.text())
-                .then(data => {
-                    fileList.innerHTML = data;
-                })
-                .catch(error => {
-                    console.error('Fehler bei der Anfrage:', error);
+        document.addEventListener('DOMContentLoaded', function () {
+            const searchInput = document.getElementById("search-input");
+            const fileList = document.getElementById('file-list');
+            const selectAllCheckbox = document.getElementById('select-all-checkbox');
+            
+            // Toolbar-Logik wie beschrieben
+            function setupFileListEventListeners() {
+                const toolbar = document.getElementById('edit-toolbar');
+                function updateToolbarVisibility() {
+                    const checkboxes = document.querySelectorAll('.file-checkbox');
+                    const anyChecked = Array.from(checkboxes).some(cb => cb.checked);
+                    toolbar.style.display = anyChecked ? 'flex' : 'none';
+                }
+                document.querySelectorAll('.file-checkbox').forEach(cb => {
+                    cb.addEventListener('change', updateToolbarVisibility);
                 });
-        }
+                document.querySelectorAll('.file-item').forEach(item => {
+                    item.addEventListener('click', function () {
+                        setTimeout(updateToolbarVisibility, 0);
+                    });
+                });
+                updateToolbarVisibility();
+            }
+            setupFileListEventListeners();
+
+            // Suchfeld-Listener
+            searchInput.addEventListener('input', function () {
+                const query = this.value.trim();
+                searchFiles(query);
+            });
+
+            
+            function searchFiles(query) {
+                const currentPath = document.getElementById("current_path").value;
+                fetch(`assets/php/list_files.php?search=${encodeURIComponent(query)}&path=${encodeURIComponent(currentPath)}`)
+                    .then(response => response.text())
+                    .then(data => {
+                        fileList.innerHTML = data;
+                        setupFileListEventListeners();
+
+                        // "Alle auswählen"-Checkbox beim Suchen abwählen und indeterminate entfernen
+                        selectAllCheckbox.checked = false;
+                        selectAllCheckbox.indeterminate = false;
+                    })
+                    .catch(error => {
+                        console.error('Fehler bei der Anfrage:', error);
+                    });
+            }
+        });
     </script>
 	<script src="assets/js/lang.js"></script>
 </body>

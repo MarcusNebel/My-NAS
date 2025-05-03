@@ -94,28 +94,38 @@ if (!isset($_SESSION["id"])) {
 
                 <!-- Werkzeugleiste mit Formular -->
                 <form action="assets/php/delete_handler.php" method="POST" id="delete-form">
-                    <a href="javascript:void(0);" style="text-decoration: none;" id="create-folder">
-                        <i class='bx bx-folder-plus'></i>
-                    </a>
+                    <div class="toolbar">
+                        <div class="dropdown-wrapper">
+                            <a class="new-button" href="javascript:void(0);" id="new-button">
+                                <i class='bx bx-plus'></i> Neu
+                            </a>
 
-                    <a href="File_upload.php?path=<?php echo urlencode($_GET['path'] ?? ''); ?>" style="text-decoration: none;" id="upload-file">
-                        <i class='bx bx-upload'></i>
-                    </a>
+                            <div id="new-dropdown">
+                                <a class="new-dropdown-item" href="javascript:void(0);" id="create-folder">
+                                    <i class='bx bx-folder-plus'></i> Neuer Ordner
+                                </a>
+                                <a class="new-dropdown-item" href="File_upload.php?path=<?php echo urlencode($_GET['path'] ?? ''); ?>" id="upload-file">
+                                    <i class='bx bx-upload'></i> Datei hochladen
+                                </a>
+                            </div>
+                        </div>
 
-                    <a href="javascript:void(0);" style="text-decoration: none;" id="rename-item" title="Umbenennen">
-                        <i class='bx bx-rename'></i>
-                    </a>
+                        <div class="edit-items" id="edit-toolbar" style="display: none;">
+                            <a href="javascript:void(0);" style="text-decoration: none;" id="rename-item" title="Umbenennen">
+                                <i class='bx bx-rename'></i>
+                            </a>
+                            <a class="pen-a" href="javascript:void(0);" style="text-decoration: none;" id="download-selected" title="Herunterladen">
+                                <i class='bx bx-download'></i>
+                            </a>
+                            <a class="pen-a" href="javascript:void(0);" style="text-decoration: none;" id="delete-selected" title="Löschen">
+                                <i class='bx bxs-trash'></i>
+                            </a>
+                        </div>
 
-                    <a class="pen-a" href="javascript:void(0);" style="text-decoration: none;" id="download-selected" title="Herunterladen">
-                        <i class='bx bx-download'></i>
-                    </a>
-
-                    <a class="pen-a" href="javascript:void(0);" style="text-decoration: none;" id="delete-selected" title="Löschen">
-                        <i class='bx bxs-trash'></i>
-                    </a>
-
-                    <i id="search-icon" class='bx bx-search'></i>
-                    <input type="text" id="search-input" placeholder="Dateien suchen...">
+                        <i id="search-icon" class='bx bx-search'></i>
+                        <input type="text" id="search-input" placeholder="Dateien suchen...">
+                    </div>
+                    
                     
                     <strong><p id="downloadStatus" style="margin-top: 10px;"></p></strong>
 
@@ -183,6 +193,45 @@ if (!isset($_SESSION["id"])) {
     </div>
     <input type="hidden" name="current_path" id="current_path" value="<?php echo isset($_GET['path']) ? htmlspecialchars($_GET['path']) : ''; ?>">
     <script src="assets/js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const toolbar = document.getElementById('edit-toolbar');
+
+            function updateToolbarVisibility() {
+                const checkboxes = document.querySelectorAll('.file-checkbox');
+                const anyChecked = Array.from(checkboxes).some(cb => cb.checked);
+                toolbar.style.display = anyChecked ? 'flex' : 'none';
+            }
+
+            // Bei direktem Checkbox-Klick
+            document.addEventListener('change', function (event) {
+                if (event.target.matches('.file-checkbox')) {
+                    updateToolbarVisibility();
+                }
+            });
+
+            // Bei Klick auf Zeile – Verzögerung, damit Checkbox-Status aktualisiert ist
+            document.querySelectorAll('.file-item').forEach(item => {
+                item.addEventListener('click', function () {
+                    setTimeout(updateToolbarVisibility, 0); // nach Checkbox-Änderung prüfen
+                });
+            });
+
+            // Initial
+            updateToolbarVisibility();
+        });
+    </script>
+    <script>
+        document.getElementById("new-button").addEventListener("click", function (e) {
+            e.stopPropagation();
+            const dropdown = document.getElementById("new-dropdown");
+            dropdown.style.display = (dropdown.style.display === "block") ? "none" : "block";
+        });
+
+        document.addEventListener("click", function () {
+            document.getElementById("new-dropdown").style.display = "none";
+        });
+    </script>
     <script>
         document.getElementById('rename-item').addEventListener('click', () => {
         const checked = document.querySelectorAll('.file-checkbox:checked');

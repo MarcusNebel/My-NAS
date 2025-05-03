@@ -497,7 +497,7 @@ ul {
 }
 
 i.bx.bxs-trash {
-  font-size: 35px;
+  font-size: 30px;
   text-decoration: none;
   color: #000;
   margin-left: 15px;
@@ -510,7 +510,7 @@ i.bx.bxs-trash:hover {
 }
 
 i.bx.bx-download {
-  font-size: 35px;
+  font-size: 30px;
   text-decoration: none;
   color: #000;
   margin-left: 15px;
@@ -523,7 +523,7 @@ i.bx.bx-download:hover {
 }
 
 i.bx.bx-rename {
-  font-size: 35px;
+  font-size: 30px;
   text-decoration: none;
   color: #000;
   margin-left: 15px;
@@ -539,37 +539,9 @@ i.bx.bx-rename:hover {
 .toolbar {
   display: flex;
   align-items: center;
-  position: relative;  /* Das übergeordnete Element wird als Bezugspunkt für die Positionierung des Dropdowns genutzt */
-  background-color: #f0f0f0;  /* Optional: Hintergrundfarbe für die Toolbar */
-  padding: 10px 20px;  /* Optional: Padding für die Toolbar */
-}
-
-/* Dropdown-Menü */
-.dropdown-menu {
-  margin-top: 10px;
-  width: 250px;
-  border: 2px solid #2379d4;
-  border-radius: 10px;
-  display: none;
-  position: relative; /* Über anderen Elementen schweben */
-  top: 100%; /* Direkt unter dem Plus-Icon */
-  left: 0;
-  background-color: white;
-  padding: 10px;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-  z-index: 1000; /* Damit das Dropdown über allem liegt */
-}
-
-/* Zusätzliche Stile für das Dropdown */
-.dropdown-menu a {
-  display: block;
-  padding: 8px;
-  text-decoration: none;
-  color: #000;
-}
-
-.dropdown-menu a:hover {
-  background-color: #f0f0f0;
+  position: relative;
+  background-color: #fff;
+  padding-left: 20px;
 }
 
 i.bx.bxs-plus-circle {
@@ -794,7 +766,6 @@ i.bx.bxs-plus-circle:hover {
   background-color: #1e7fd6;
 }
 
-
 .apple-loader {
   position: relative;
   width: 30px;
@@ -829,12 +800,13 @@ i.bx.bxs-plus-circle:hover {
 .apple-loader div:nth-child(8) { transform: rotate(315deg); animation-delay: 0s; }
 
 #search-icon {
-  font-size: 35px;
+  font-size: 30px;
   vertical-align: middle;
   position: relative;
   bottom: 10px;
   cursor: pointer;
   color: #000;
+  margin-top: 20px;
   margin-left: 15px;
   align-items: center;
   transition: all 0.3s ease;
@@ -861,6 +833,8 @@ i.bx.bxs-plus-circle:hover {
   pointer-events: none;
 }
 #search-input.show {
+  margin-left: 15px;
+  bottom: 0;
   width: 200px;
   opacity: 1;
   pointer-events: auto;
@@ -873,28 +847,18 @@ i.bx.bxs-plus-circle:hover {
 
 i.bx.bx-upload {
   text-decoration: none;
+  margin-right: 10px;
   color: #000;
-  font-size: 32px;
-  margin-left: 15px;
+  font-size: 30px;
   transition: all 0.3s ease;
-}
-
-i.bx.bx-upload:hover {
-  transform: translateY(-2px);
-  color: #2894f4;
 }
 
 i.bx.bx-folder-plus {
   text-decoration: none;
+  margin-right: 10px;
   color: #000;
-  font-size: 32px;
-  margin-left: 15px;
+  font-size: 30px;
   transition: all 0.3s ease;
-}
-
-i.bx.bx-folder-plus:hover {
-  transform: translateY(-2px);
-  color: #2894f4;
 }
 
 i.bx.bxs-home {
@@ -951,4 +915,48 @@ li.file-item.directory i {
   margin-left: 5px;
   color: rgb(255, 208, 0);
   text-decoration: none;
+}
+
+.new-button {
+  text-decoration: none;
+  font-size: 22px;
+  display: flex;
+  align-items: center;
+  color: #fff;
+  padding: 5px 10px;
+  background-color: #2894f4;
+  border-radius: 12px;
+}
+
+.dropdown-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+#new-dropdown {
+  display: none;
+  position: absolute;
+  margin-top: 15px; /* direkt unter dem Button */
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 10px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  z-index: 9999;
+  min-width: 210px;
+}
+
+#new-dropdown a {
+  padding: 8px 12px;
+  color: black;
+  text-decoration: none;
+}
+
+#new-dropdown a:hover {
+  background-color: #f0f0f0;
+}
+
+.new-dropdown-item {
+  display: flex;
+  align-items: center;
 }

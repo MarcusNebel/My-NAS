@@ -552,11 +552,35 @@ i.bx.bx-rename:hover {
 /* Stil für die Toolbar */
 .toolbar {
   display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  background-color: #fff;
+  width: 100%;
+}
+
+.left {
+  display: flex;
+  align-items: center;
+  position: relative;
+  background-color: #fff;
+}
+
+.right {
+  display: flex;
   align-items: center;
   position: relative;
   background-color: #fff;
   padding-left: 20px;
-  width: 50%;
+}
+
+.trash-btn {
+  text-decoration: none;
+  color: #000;
+  background-color: #fafafa;
+  padding: 10px 20px;
+  border: solid 2px #cfcfcf;
+  border-radius: 12px;
 }
 
 i.bx.bxs-plus-circle {

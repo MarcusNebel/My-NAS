@@ -20,7 +20,7 @@ if (!isset($_SESSION["id"])) {
     <link href="https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,400;0,600;0,700;0,900;1,400;1,600;1,700&display=swap" rel="stylesheet" />
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 
-    <link rel="stylesheet" href="assets/css/User_Files.css" />
+    <link rel="stylesheet" href="assets/css/trash.css" />
     <!-- Boxicons CSS -->
     <link href="https://cdn.jsdelivr.net/npm/boxicons@2.1.1/css/boxicons.min.css" rel="stylesheet">
 </head>
@@ -63,7 +63,7 @@ if (!isset($_SESSION["id"])) {
     <main>
         <section class="file-list-section">
             <div class="container_file-list">
-                <h4>Meine Dateien:</h4>
+                <h4>Gelöschte Dateien:</h4>
 
                 <?php
                 require_once 'account-system/mysql.php';
@@ -84,77 +84,31 @@ if (!isset($_SESSION["id"])) {
                 <!-- Verstecktes Input-Feld für den Benutzernamen -->
                 <input type="hidden" id="username-hidden" value="<?php echo $username; ?>">
 
-                <!-- Apple-Style Overlay und Lade-Kreis -->
-                <div id="overlay" style="display: none; justify-content: center; align-items: center; position: fixed; z-index: 9999; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6);">
-                    <div class="apple-loader">
-                        <div></div><div></div><div></div><div></div>
-                        <div></div><div></div><div></div><div></div>
-                    </div>
-                </div>
-
                 <!-- Werkzeugleiste mit Formular -->
                 <form action="assets/php/delete_handler.php" method="POST" id="delete-form">
                     <div class="toolbar">
                         <div class="left">
-                            <div class="dropdown-wrapper">
-                                <a class="new-button" href="javascript:void(0);" id="new-button">
-                                    <i class='bx bx-plus'></i> Neu
-                                </a>
-
-                                <div id="new-dropdown">
-                                    <a class="new-dropdown-item" href="javascript:void(0);" id="create-folder">
-                                        <i class='bx bx-folder-plus'></i> Neuer Ordner
-                                    </a>
-                                    <a class="new-dropdown-item" href="File_upload.php?path=<?php echo urlencode($_GET['path'] ?? ''); ?>" id="upload-file">
-                                        <i class='bx bx-upload'></i> Datei hochladen
-                                    </a>
-                                </div>
-                            </div>
+                            <a href="User_Files.php">
+                                <i class='bx bx-left-arrow-alt' ></i>
+                            </a>
 
                             <div class="search-and-sort">
                                 <input type="text" id="search-input" placeholder="Dateien suchen..." style="display: inline;">
                             </div>
 
                             <div class="edit-items" id="edit-toolbar" style="display: none;">
-                                <a href="javascript:void(0);" style="text-decoration: none;" id="rename-item" title="Umbenennen">
-                                    <i class='bx bx-rename'></i>
-                                </a>
-                                <a class="pen-a" href="javascript:void(0);" style="text-decoration: none;" id="download-selected" title="Herunterladen">
-                                    <i class='bx bx-download'></i>
-                                </a>
                                 <a class="pen-a" href="javascript:void(0);" style="text-decoration: none;" id="delete-selected" title="Löschen">
                                     <i class='bx bxs-trash'></i>
+                                </a>
+                                <a class="restore-btn" href="javascript:void(0);" style="text-decoration: none;" id="restore-files-btn" title="Wiederherstellen">
+                                    <i class='bx bx-refresh'></i>
                                 </a>
                             </div>
                         </div>
                         <div class="right">
-                            <a class="trash-btn" href="trash.php">
-                                <i class='bx bxs-trash-alt'></i> Gelöschte Dateien
+                            <a class="trash-btn" id="clear-trash-btn" href="javascript:void(0);" onclick="clearTrash(); return false;">
+                                <i class='bx bxs-trash-alt'></i> Papierkorb leeren
                             </a>
-                        </div>
-                    </div>
-
-                    
-                    
-                    
-                    <strong><p id="downloadStatus" style="margin-top: 10px;"></p></strong>
-
-                    <div id="folderModal" class="modal" style="display: none;">
-                        <div class="modal-content" style="background: #fff; padding: 20px; border-radius: 10px; width: 300px; margin: auto;">
-                            <span id="closeModal" style="float:right; cursor:pointer;">&times;</span>
-                            <h3>Ordner erstellen</h3>
-                            <input type="text" id="folderNameInput" placeholder="Ordnername" style="width: 100%; margin-top: 10px; padding: 8px;">
-                            <button id="confirmCreateFolder" type="button" style="margin-top: 10px;">Erstellen</button>
-                        </div>
-                    </div>
-
-                    <div id="renameModal" class="modal" style="display: none;">
-                        <div class="modal-content">
-                            <span id="closeRenameModal" style="float:right; cursor:pointer;">&times;</span>
-                            <h3>Datei umbenennen</h3>
-                            <input type="text" id="newNameInput" placeholder="Neuer Name" style="width: 100%; margin-top: 10px; padding: 8px;">
-                            <button id="confirmRename" type="button" style="margin-top: 10px;">Bestätigen</button>
-                            <button id="cancelRename" type="button" style="margin-top: 10px;">Abbrechen</button>
                         </div>
                     </div>
 
@@ -184,7 +138,7 @@ if (!isset($_SESSION["id"])) {
                     </div>
 
                     <ul id="file-list" class="file-list">
-                        <?php include 'assets/php/list_files.php'; ?>
+                        <?php include 'assets/php/list_trash_files.php'; ?>
                     </ul>
                 </form>
 
@@ -202,7 +156,29 @@ if (!isset($_SESSION["id"])) {
         </div>
     </div>
     <input type="hidden" name="current_path" id="current_path" value="<?php echo isset($_GET['path']) ? htmlspecialchars($_GET['path']) : ''; ?>">
-    <script src="assets/js/main.js"></script>
+    <script src="assets/js/trash.js"></script>
+    <script>
+        function clearTrash() {
+            if (!confirm("Möchten Sie wirklich alle Dateien und Ordner in diesem Papierkorb-Ordner endgültig löschen?")) {
+                return;
+            }
+
+            if (!confirm("Sind Sie sicher? Dieser Vorgang kann nicht rückgängig gemacht werden.")) {
+                return;
+            }
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const path = urlParams.get('path') || '';
+
+            var deleteForm = document.createElement("form");
+            deleteForm.method = "POST";
+            deleteForm.action = `assets/php/clear_trash.php?path=${encodeURIComponent(path)}`;
+            deleteForm.style.display = "none";
+
+            document.body.appendChild(deleteForm);
+            deleteForm.submit();
+        }
+    </script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const toolbar = document.getElementById('edit-toolbar');
@@ -229,17 +205,6 @@ if (!isset($_SESSION["id"])) {
 
             // Initial
             updateToolbarVisibility();
-        });
-    </script>
-    <script>
-        document.getElementById("new-button").addEventListener("click", function (e) {
-            e.stopPropagation();
-            const dropdown = document.getElementById("new-dropdown");
-            dropdown.style.display = (dropdown.style.display === "block") ? "none" : "block";
-        });
-
-        document.addEventListener("click", function () {
-            document.getElementById("new-dropdown").style.display = "none";
         });
     </script>
     <script>
@@ -542,7 +507,7 @@ if (!isset($_SESSION["id"])) {
             
             function searchFiles(query) {
                 const currentPath = document.getElementById("current_path").value;
-                fetch(`assets/php/list_files.php?search=${encodeURIComponent(query)}&path=${encodeURIComponent(currentPath)}`)
+                fetch(`assets/php/list_trash_files.php?search=${encodeURIComponent(query)}&path=${encodeURIComponent(currentPath)}`)
                     .then(response => response.text())
                     .then(data => {
                         fileList.innerHTML = data;

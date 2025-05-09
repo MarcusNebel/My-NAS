@@ -31,7 +31,7 @@ $oldPath = $fullPath;
 $newPath = dirname($oldPath) . "/" . $newName;
 
 // Überprüfen, ob der neue Name bereits existiert und eine Zahl in Klammern hinzufügen, falls notwendig
-$counter = 1;
+$counter = 2;
 $baseName = pathinfo($newName, PATHINFO_FILENAME); // Der Basisname ohne die Dateiendung
 $extension = pathinfo($newName, PATHINFO_EXTENSION); // Die Dateiendung
 

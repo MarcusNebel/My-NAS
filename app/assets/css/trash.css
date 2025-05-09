@@ -378,152 +378,64 @@ header.is-scrolling .container {
   padding-bottom: 16px;
 }
 
-.logged-out {
-  width: 100%;
-  max-width: 100%;
-  margin: 0;
-  padding-top: 250px;
-  padding-left: 100px;
-  padding-right: 100px;
+main section.banner {
   color: #000;
   position: relative;
+  min-height: 100vh;
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
-  min-height: 50%;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
   background-position: center;
   background-size: cover;
 }
 
-.greeting {
-  font-size: 45px;
+main section.banner:after {
+  content: '';
   display: block;
-}
-
-.sub-text {
-  margin-right: 100px;
-}
-
-.greeting .sub-text p {
-  font-size: 25px;
-}
-
-.greeting span {
-  color: #2894f4;
-  font-weight: bold;
-}
-
-.register {
-  text-decoration: none;
-  padding: 10px 20px;
-  margin-top: 15px;
-  background-color: #2894f4;
-  border-radius: 12px;
-  color: #fff;
-}
-
-.other-content {
-  margin-top: 30px;
-  padding-left: 100px;
-  padding-right: 100px;
-  color: #000;
-}
-
-.other-content p {
-  font-size: 20px;
-}
-
-.mobile-app {
-  display: block;
-  align-items: center;
-  margin-top: 100px;
-}
-
-.github-link {
-  text-decoration: none;
-  padding: 10px 20px;
-  margin-top: 15px;
-  background-image: url(../../Logo/Github-BG.png);
-  border-radius: 12px;
-  width: 230px;
-  color: #fff;
-  display: flex;
-  align-items: center;
-  font-size: 20px;
-}
-
-.github-logo {
-  width: 40px;
-  height: 40px;
-  margin-right: 15px;
-}
-
-.mobile-app p {
-  margin-top: 15px;
-}
-
-.mobile-app .release-link {
-  text-decoration: none;
-  color: #54aefd;
-}
-
-.mobile-app .release-link:hover {
-  color: #2894f4;
-  text-decoration: underline;
-}
-
-footer {
-  display: flex;
-  justify-content: space-around;
-  background-color: #f1f1f1;
-  padding: 10px;
-  margin-top: 20px;
-  text-align: center;
-  position: fixed;
-  bottom: 0;
+  position: absolute;
+  top: 0;
   left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 0;
+  opacity: 0.8;
+}
+
+main section.file-list-section {
+  background-color: #FFF;
+  min-height: 100vh;
+  display: block;
+  background-position: center;
+  background-size: cover;
+}
+
+.container_file-list {
   width: 100%;
-  background-color: #f1f1f1;
-  padding: 10px;
-  text-align: center;
-  z-index: 1000;
-}
-
-.github-link-footer {
-  text-decoration: none;
-  color: #2894f4;
-}
-
-.github-link-footer:hover {
-  color: #54aefd;
-  text-decoration: underline;
-}
-
-@media (max-width: 767px) {
-  .logged-out {
-    padding-top: 120px;
-    padding-left: 25px;
-    padding-right: 25px;
-  }
-
-  .other-content {
-    padding-left: 25px;
-    padding-right: 25px;
-  }
-}
-
-.logged-in {
+  max-width: 100%;
+  margin: 0;
   padding-top: 130px;
   padding-left: 100px;
   padding-right: 100px;
 }
 
-.recent-files {
-  margin-top: 25px;
+/* Überschrift */
+.file-list-section h4 {
+  font-size: 48px;
+  margin-bottom: 32px;
+  color: #000;
+  font-weight: bold;
+  text-align: left;
 }
 
+/* Dateiliste */
 ul {
   list-style-type: none;
   padding-left: 0;
 }
+
 
 .file-list {
   background-color: #FFF;
@@ -548,7 +460,7 @@ ul {
 }
 
 .file-item:hover {
-  cursor: not-allowed;
+  cursor: pointer;
   transform: translateY(-1px);
 }
 
@@ -578,10 +490,398 @@ ul {
   font-weight: bold;
 }
 
+/* Button-Stile für Löschen */
+.delete-button {
+  background-color: #2894f4;
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: none;
+  color: #000;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.delete-button:hover {
+  background-color: #54aefd;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+i.bx.bxs-trash {
+  font-size: 30px;
+  text-decoration: none;
+  color: #000;
+  margin-left: 15px;
+  transition: all 0.3s ease;
+}
+
+i.bx.bxs-trash:hover {
+  transform: translateY(-2px);
+  color: #f00;
+}
+
+i.bx.bx-refresh {
+  font-size: 30px;
+  text-decoration: none;
+  color: #000;
+  margin-left: 15px;
+  transition: all 0.3s ease;
+}
+
+i.bx.bx-refresh:hover {
+  transform: translateY(-2px);
+  color: #2894f4;
+}
+
+i.bx.bx-download {
+  font-size: 30px;
+  text-decoration: none;
+  color: #000;
+  margin-left: 15px;
+  transition: all 0.3s ease;
+}
+
+i.bx.bx-download:hover {
+  transform: translateY(-2px);
+  color: #2894f4;
+}
+
+i.bx.bx-rename {
+  font-size: 30px;
+  text-decoration: none;
+  color: #000;
+  margin-left: 15px;
+  transition: all 0.3s ease;
+}
+
+i.bx.bx-rename:hover {
+  transform: translateY(-2px);
+  color: #2894f4;
+}
+
+/* Stil für die Toolbar */
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  background-color: #fff;
+  width: 100%;
+}
+
+.left {
+  display: flex;
+  align-items: center;
+  position: relative;
+  background-color: #fff;
+}
+
+.right {
+  display: flex;
+  align-items: center;
+  position: relative;
+  background-color: #fff;
+  padding-left: 20px;
+}
+
+.trash-btn {
+  text-decoration: none;
+  color: #000;
+  background-color: rgb(255, 200, 200);
+  padding: 10px 20px;
+  border: solid 2px #f00;
+  border-radius: 12px;
+}
+
+i.bx.bxs-plus-circle {
+  font-size: 35px;
+  text-decoration: none;
+  color: #000;
+  margin-left: 15px;
+  transition: all 0.3s ease;
+}
+
+i.bx.bxs-plus-circle:hover {
+  transform: translateY(-2px);
+  color: #2379d4;
+}
+
 @media (max-width: 767px) {
-  .logged-in {
-    padding-top: 120px;
+  .container_file-list {
     padding-left: 25px;
     padding-right: 25px;
   }
+
+  i.bx.bxs-plus-circle:hover {
+    transform: none;
+    color: #000;
+  }
+
+  i.bx.bxs-trash:hover {
+    transform: none;
+    color: #000;
+  }
+
+  i.bx.bxs-download:hover {
+    transform: none;
+    color: #000;
+  }
+}
+
+@media (min-width: 768px) {
+  .container_file-list {
+    padding-left: 100px;
+    padding-right: 100px;
+  }
+}
+
+/* Overlay-Hintergrund */
+.modal {
+  display: none; /* Wird per JS ein-/ausgeblendet */
+  position: fixed;
+  z-index: 999;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.5); /* Dunkler Hintergrund */
+  backdrop-filter: blur(2px); /* Optionaler Weichzeichner-Effekt */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Modal-Inhalt */
+.modal-content {
+  background-color: #fff;
+  padding: 20px 25px;
+  border-radius: 12px;
+  width: 320px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+  border: 3px solid #2894f4; /* Akzentfarbe */
+  animation: fadeInUp 0.3s ease-out;
+}
+
+/* Schließen-Symbol */
+#closeModal {
+  float: right;
+  font-size: 22px;
+  font-weight: bold;
+  color: #666;
+  cursor: pointer;
+}
+
+#closeModal:hover {
+  color: #000;
+}
+
+/* Eingabefeld */
+#folderNameInput {
+  width: 100%;
+  padding: 10px;
+  margin-top: 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 16px;
+}
+
+/* Button */
+#confirmCreateFolder {
+  width: 100%;
+  padding: 10px;
+  margin-top: 15px;
+  background-color: #2894f4;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+#confirmCreateFolder:hover {
+  background-color: #1e7fd6;
+}
+
+/* Animation */
+@keyframes fadeInUp {
+  from {
+      opacity: 0;
+      transform: translateY(20px);
+  }
+  to {
+      opacity: 1;
+      transform: translateY(0);
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.2s ease forwards;
+}
+
+.fade-out {
+  animation: fadeOut 0.2s ease forwards;
+}
+
+@keyframes fadeIn {
+  from {
+      opacity: 0;
+      transform: scale(0.98);
+  }
+  to {
+      opacity: 1;
+      transform: scale(1);
+  }
+}
+
+@keyframes fadeOut {
+  from {
+      opacity: 1;
+      transform: scale(1);
+  }
+  to {
+      opacity: 0;
+      transform: scale(0.98);
+  }
+}
+
+/* Dunkler Overlay */
+#overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7); /* Halbtransparente schwarze Schicht */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999; /* Über den anderen Inhalten anzeigen */
+}
+
+/* Overlay (optional, für Zentrierung) */
+#overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+i.bx.bx-left-arrow-alt {
+  font-size: 30px;
+  text-decoration: none;
+  color: #000;
+  margin-top: 4px;
+  margin-right: 15px;
+}
+
+#search-input {
+  width: 200px;
+  box-sizing: border-box;
+  align-items: center;
+  padding: 8px 12px;
+  margin-top: 23px;
+  font-size: 1rem;
+  vertical-align: middle;
+  position: relative;
+  bottom: 10px;
+  border: 1px solid #2894f4;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+#search-input:hover {
+  transform: translateY(-2px);
+  border-color: #2894f4;
+}
+
+i.bx.bx-upload {
+  text-decoration: none;
+  margin-right: 10px;
+  color: #000;
+  font-size: 30px;
+  transition: all 0.3s ease;
+}
+
+i.bx.bx-folder-plus {
+  text-decoration: none;
+  margin-right: 10px;
+  color: #000;
+  font-size: 30px;
+  transition: all 0.3s ease;
+}
+
+i.bx.bxs-home {
+  text-decoration: none;
+  color: #000;
+  font-size: 20px;
+  transition: all 0.3s ease;
+}
+
+i.bx.bxs-home:hover {
+  color: #2894f4;
+  transform: translateY(-1px);  
+}
+
+.path-navigation {
+  text-decoration: none;
+  font-size: 16px;
+  margin: 12px 0;
+  padding-left: 10px;
+  font-weight: 500;
+  color: #333;
+}
+
+
+.path-navigation a {
+  color: #000;
+  text-decoration: none;
+  margin: 0 2px;
+  transition: all 0.2s ease;
+}
+
+.path-navigation a:hover {
+  text-decoration: underline;
+  color: #2894f4;
+}
+
+.path-separator {
+  color: #616161;
+  margin: 0 2px;
+}
+
+.path-home {
+  font-size: 18px;
+}
+
+/* Ordner-Link: schwarz & ohne Unterstrich */
+li.file-item.directory a {
+  color: black;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+li.file-item.directory i {
+  margin-left: 5px;
+  color: rgb(255, 208, 0);
+  text-decoration: none;
+}
+
+.search-and-sort {
+  float: right;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
 }

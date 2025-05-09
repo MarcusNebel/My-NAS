@@ -15,79 +15,86 @@ if (!$username) {
     die("Benutzername nicht gefunden.");
 }
 
-// Basisverzeichnis definieren
+// Basisverzeichnis und Trash-Verzeichnis definieren
 $baseDir = "/home/nas-website-files/user_files/$username";
+$trashDir = $baseDir . "/trash";
+
+// Trash-Verzeichnis erstellen, falls es nicht existiert
+if (!is_dir($trashDir)) {
+    mkdir($trashDir, 0775, true);
+}
 
 // Überprüfen, ob die Anfrage eine POST-Anfrage ist
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Empfange die übermittelten Dateien, Ordnernamen und den Pfad
     $files = $_POST['files'] ?? [];
     $folders = $_POST['folders'] ?? [];
     $path = $_GET['path'] ?? '';
 
-    // Pfad bereinigen und zusammensetzen
     $relativePath = trim($path, '/');
     $fullPath = rtrim($baseDir, '/') . '/' . $relativePath;
 
-    // Sicherheitsprüfung: Existiert der Pfad?
     if (!is_dir($fullPath)) {
         die("Pfad nicht korrekt: " . htmlspecialchars($fullPath));
     }
 
-    // Funktion zum rekursiven Löschen des Ordners
-    function deleteFolder($folderPath) {
-        if (is_dir($folderPath)) {
-            $items = array_diff(scandir($folderPath), ['.', '..']);
-            foreach ($items as $item) {
-                $itemPath = $folderPath . DIRECTORY_SEPARATOR . $item;
-                is_dir($itemPath) ? deleteFolder($itemPath) : unlink($itemPath);
-            }
-            return rmdir($folderPath);
+    function moveWithStructure($sourcePath, $baseDir, $trashDir) {
+        // Relativen Pfad berechnen (relativ zum baseDir)
+        $relative = ltrim(str_replace($baseDir, '', $sourcePath), '/');
+
+        // Zielpfad im Trash-Verzeichnis
+        $destinationPath = $trashDir . '/' . $relative;
+
+        // Übergeordnete Ordnerstruktur im Trash erstellen
+        $destinationDir = dirname($destinationPath);
+        if (!is_dir($destinationDir)) {
+            mkdir($destinationDir, 0775, true);
         }
-        return false;
+
+        // Falls Ziel schon existiert, neuen Namen finden
+        $finalPath = $destinationPath;
+        $i = 1;
+        while (file_exists($finalPath)) {
+            $finalPath = $destinationPath . "_$i";
+            $i++;
+        }
+
+        return rename($sourcePath, $finalPath);
     }
 
-    // Dateien löschen
+    // Dateien verschieben
     foreach ($files as $file) {
-        $filePath = $fullPath . '/' . $file;
+        $filePath = $fullPath . '/' . basename($file);
 
-        // Sicherheitsprüfung: Datei existiert
         if (!file_exists($filePath)) {
             echo "Datei existiert nicht: " . htmlspecialchars($file) . "<br>";
             continue;
         }
 
-        // Datei löschen
-        if (!unlink($filePath)) {
-            echo "Fehler beim Löschen der Datei: " . htmlspecialchars($file) . "<br>";
+        if (!moveWithStructure($filePath, $baseDir, $trashDir)) {
+            echo "Fehler beim Verschieben der Datei: " . htmlspecialchars($file) . "<br>";
         }
     }
 
-    // Ordner löschen
+    // Ordner verschieben
     foreach ($folders as $folder) {
-        $folder = basename($folder); // Entfernt unsichere Pfadbestandteile
-        $folderPath = $fullPath . '/' . $folder;
+        $folderPath = $fullPath . '/' . basename($folder);
 
-        // Existiert der Ordner?
         if (!file_exists($folderPath)) {
-            echo "Der Ordner existiert nicht: " . htmlspecialchars($folder) . "<br>";
+            echo "Ordner existiert nicht: " . htmlspecialchars($folder) . "<br>";
             continue;
         }
 
-        // Sicherheitsprüfung: Pfad validieren
         $realFolderPath = realpath($folderPath);
         if (!$realFolderPath || strpos($realFolderPath, $baseDir) !== 0) {
             echo "Ungültiger Pfad: " . htmlspecialchars($folder) . "<br>";
             continue;
         }
 
-        // Ordner löschen
-        if (!deleteFolder($folderPath)) {
-            echo "Fehler beim Löschen des Ordners: " . htmlspecialchars($folder) . "<br>";
+        if (!moveWithStructure($folderPath, $baseDir, $trashDir)) {
+            echo "Fehler beim Verschieben des Ordners: " . htmlspecialchars($folder) . "<br>";
         }
     }
 
-    // Nach der Verarbeitung zurückleiten
     header("Location: ../../User_Files.php?path=$relativePath");
     exit;
 } else {

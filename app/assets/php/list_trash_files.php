@@ -45,7 +45,7 @@ function formatFileSize($bytes) {
 }
 
 if (isset($username)) {
-    $directory = $baseDirectory . $username . ($currentPath ? '/' . $currentPath : '');
+    $directory = $baseDirectory . $username . "/trash" . ($currentPath ? '/' . $currentPath : '');
     $search = isset($_GET['search']) ? strtolower($_GET['search']) : '';
     $filesAndDirs = array_diff(scandir($directory), array('.', '..'));
 

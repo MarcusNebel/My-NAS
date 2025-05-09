@@ -184,7 +184,12 @@ function submitDeleteForm() {
     }
 
     // Erste Bestätigungsabfrage
-    if (!confirm("Die Dateien werden in den Papierkorb verschoben. Möchten Sie dies tun?")) {
+    if (!confirm("Möchten Sie die ausgewählten Dateien und Ordner wirklich löschen?")) {
+        return;
+    }
+
+    // Zweite Bestätigungsabfrage
+    if (!confirm("Sind Sie sicher? Dieser Vorgang kann nicht rückgängig gemacht werden.")) {
         return;
     }
 
@@ -194,7 +199,7 @@ function submitDeleteForm() {
 
     var deleteForm = document.createElement("form");
     deleteForm.method = "POST";
-    deleteForm.action = `assets/php/delete_handler_combined.php?path=${encodeURIComponent(path)}`;
+    deleteForm.action = `assets/php/delete_trash_handler.php?path=${encodeURIComponent(path)}`;
     deleteForm.style.display = "none";
 
     // Dateien hinzufügen
@@ -223,6 +228,66 @@ function submitDeleteForm() {
 document.addEventListener("DOMContentLoaded", function() {
     document.getElementById("delete-selected").addEventListener("click", submitDeleteForm);
     document.getElementById("download-selected").addEventListener("click", handleDownload);
+});
+
+function submitRestoreForm() {
+    var checkboxes = document.querySelectorAll('.file-checkbox:checked');
+    var files = [];
+    var folders = [];
+
+    // Dateien und Ordner trennen
+    checkboxes.forEach(checkbox => {
+        if (checkbox.dataset.type === "folder") {
+            folders.push(checkbox.value);
+        } else {
+            files.push(checkbox.value);
+        }
+    });
+
+    if (files.length === 0 && folders.length === 0) {
+        alert("Bitte wählen Sie mindestens eine Datei oder einen Ordner zum Wiederherstellen aus.");
+        return;
+    }
+
+    // Bestätigungsabfrage
+    if (!confirm("Möchten Sie die ausgewählten Dateien und Ordner wirklich wiederherstellen?")) {
+        return;
+    }
+
+    // Aktuellen Pfad aus URL holen
+    const urlParams = new URLSearchParams(window.location.search);
+    const path = urlParams.get('path') || '';
+
+    // Formular erstellen
+    var restoreForm = document.createElement("form");
+    restoreForm.method = "POST";
+    restoreForm.action = `assets/php/restore_files.php?path=${encodeURIComponent(path)}`;
+    restoreForm.style.display = "none";
+
+    // Dateien hinzufügen
+    files.forEach(file => {
+        var input = document.createElement("input");
+        input.type = "hidden";
+        input.name = "files[]";
+        input.value = file;
+        restoreForm.appendChild(input);
+    });
+
+    // Ordner hinzufügen
+    folders.forEach(folder => {
+        var input = document.createElement("input");
+        input.type = "hidden";
+        input.name = "folders[]";
+        input.value = folder;
+        restoreForm.appendChild(input);
+    });
+
+    document.body.appendChild(restoreForm);
+    restoreForm.submit();
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+    document.getElementById("restore-files-btn").addEventListener("click", submitRestoreForm);
 });
 
 // Copying the API-Key

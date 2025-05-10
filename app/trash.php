@@ -144,17 +144,6 @@ if (!isset($_SESSION["id"])) {
 
         </div>
     </main>
-    <div id="file-info-panel" class="hidden">
-        <div id="file-info-content">
-                <!-- Einzeldatei-Infos -->
-            <div id="single-file-info">
-            </div>
-
-            <!-- Mehrere Dateien ausgewählt -->
-            <div id="multi-file-info" style="display: none;">
-            </div>
-        </div>
-    </div>
     <input type="hidden" name="current_path" id="current_path" value="<?php echo isset($_GET['path']) ? htmlspecialchars($_GET['path']) : ''; ?>">
     <script src="assets/js/trash.js"></script>
     <script>

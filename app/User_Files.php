@@ -116,6 +116,9 @@ if (!isset($_SESSION["id"])) {
                             </div>
 
                             <div class="edit-items" id="edit-toolbar" style="display: none;">
+                                <a href="#" style="text-decoration: none;" onclick="submitCopyForm()">
+                                    <i class='bx bx-copy'></i>
+                                </a>
                                 <a href="javascript:void(0);" style="text-decoration: none;" id="rename-item" title="Umbenennen">
                                     <i class='bx bx-rename'></i>
                                 </a>
@@ -138,25 +141,6 @@ if (!isset($_SESSION["id"])) {
                     
                     
                     <strong><p id="downloadStatus" style="margin-top: 10px;"></p></strong>
-
-                    <div id="folderModal" class="modal" style="display: none;">
-                        <div class="modal-content" style="background: #fff; padding: 20px; border-radius: 10px; width: 300px; margin: auto;">
-                            <span id="closeModal" style="float:right; cursor:pointer;">&times;</span>
-                            <h3>Ordner erstellen</h3>
-                            <input type="text" id="folderNameInput" placeholder="Ordnername" style="width: 100%; margin-top: 10px; padding: 8px;">
-                            <button id="confirmCreateFolder" type="button" style="margin-top: 10px;">Erstellen</button>
-                        </div>
-                    </div>
-
-                    <div id="renameModal" class="modal" style="display: none;">
-                        <div class="modal-content">
-                            <span id="closeRenameModal" style="float:right; cursor:pointer;">&times;</span>
-                            <h3>Datei umbenennen</h3>
-                            <input type="text" id="newNameInput" placeholder="Neuer Name" style="width: 100%; margin-top: 10px; padding: 8px;">
-                            <button id="confirmRename" type="button" style="margin-top: 10px;">Bestätigen</button>
-                            <button id="cancelRename" type="button" style="margin-top: 10px;">Abbrechen</button>
-                        </div>
-                    </div>
 
                     <hr style="border: 2px solid #000; margin: 20px 0;">
 
@@ -187,7 +171,35 @@ if (!isset($_SESSION["id"])) {
                         <?php include 'assets/php/list_files.php'; ?>
                     </ul>
                 </form>
+            <div id="folderModal" class="modal" style="display: none;">
+                <div class="modal-content" style="background: #fff; padding: 20px; border-radius: 10px; width: 300px; margin: auto;">
+                    <span id="closeModal" style="float:right; cursor:pointer;">&times;</span>
+                    <h3>Ordner erstellen</h3>
+                    <input type="text" id="folderNameInput" placeholder="Ordnername" style="width: 100%; margin-top: 10px; padding: 8px;">
+                    <button id="confirmCreateFolder" type="button" style="margin-top: 10px;">Erstellen</button>
+                </div>
+            </div>
 
+            <div id="renameModal" class="modal" style="display: none;">
+                <div class="modal-content">
+                    <span id="closeRenameModal" style="float:right; cursor:pointer;">&times;</span>
+                    <h3>Datei umbenennen</h3>
+                    <input type="text" id="newNameInput" placeholder="Neuer Name" style="width: 100%; margin-top: 10px; padding: 8px;">
+                    <button id="confirmRename" type="button" style="margin-top: 10px;">Bestätigen</button>
+                    <button id="cancelRename" type="button" style="margin-top: 10px;">Abbrechen</button>
+                </div>
+            </div>
+
+            <div id="copyModal" style="display:none;">
+                <div class="copy-modal-content">
+                    <h2>Zielordner auswählen</h2>
+                    <div id="folder-list">
+                        <!-- Hier werden die Ordner geladen -->
+                    </div>
+                    <button id="confirmCopy">Kopieren</button>
+                    <button id="cancelCopy">Abbrechen</button>
+                </div>
+            </div>
         </div>
     </main>
     <div id="file-info-panel" class="hidden">
@@ -203,6 +215,109 @@ if (!isset($_SESSION["id"])) {
     </div>
     <input type="hidden" name="current_path" id="current_path" value="<?php echo isset($_GET['path']) ? htmlspecialchars($_GET['path']) : ''; ?>">
     <script src="assets/js/main.js"></script>
+    <script>
+        function submitCopyForm() {
+            var checkboxes = document.querySelectorAll('.file-checkbox:checked');
+            var files = [];
+            var folders = [];
+
+            // Dateien und Ordner trennen
+            checkboxes.forEach(checkbox => {
+                if (checkbox.dataset.type === "folder") {
+                    folders.push(checkbox.value);
+                } else {
+                    files.push(checkbox.value);
+                }
+            });
+
+            if (files.length === 0 && folders.length === 0) {
+                alert("Bitte wähle mindestens eine Datei oder einen Ordner zum Kopieren aus.");
+                return;
+            }
+
+            // URL-Parameter für den aktuellen Pfad
+            const urlParams = new URLSearchParams(window.location.search);
+            const path = urlParams.get('path') || '';
+
+            // Modal öffnen
+            var modal = document.getElementById("copyModal");
+            modal.style.display = "block";
+
+            // Ordner laden und in das Modal einfügen
+            var folderList = document.getElementById("folder-list");
+            folderList.innerHTML = ''; // Vorherige Liste löschen
+
+            fetch(`assets/php/get_folder_structure.php?path=${encodeURIComponent(path)}`)
+                .then(response => response.text())
+                .then(data => {
+                    folderList.innerHTML = data;  // Füge Ordnerliste in das Modal ein
+                });
+
+            // Bestätigungsbutton im Modal
+            var confirmBtn = document.getElementById("confirmCopy");
+            confirmBtn.onclick = function () {
+                var selected = document.querySelector(".folder-option.selected");
+                if (!selected) {
+                    alert("Bitte wähle einen Zielordner aus.");
+                    return;
+                }
+
+                var target = selected.dataset.path;
+
+                // Formular erstellen
+                var copyForm = document.createElement("form");
+                copyForm.method = "POST";
+                copyForm.action = `assets/php/copy_handler.php?path=${encodeURIComponent(path)}`;
+                copyForm.style.display = "none";
+
+                // Dateien hinzufügen
+                files.forEach(file => {
+                    var input = document.createElement("input");
+                    input.type = "hidden";
+                    input.name = "files[]";
+                    input.value = file;
+                    copyForm.appendChild(input);
+                });
+
+                // Ordner hinzufügen
+                folders.forEach(folder => {
+                    var input = document.createElement("input");
+                    input.type = "hidden";
+                    input.name = "folders[]";
+                    input.value = folder;
+                    copyForm.appendChild(input);
+                });
+
+                // Zielordner
+                var targetInput = document.createElement("input");
+                targetInput.type = "hidden";
+                targetInput.name = "target";
+                targetInput.value = target;
+                copyForm.appendChild(targetInput);
+
+                // Formular abschicken
+                document.body.appendChild(copyForm);
+                copyForm.submit();
+
+                // Modal schließen
+                modal.style.display = "none";
+            };
+
+            // Abbrechen-Button
+            var cancelBtn = document.getElementById("cancelCopy");
+            cancelBtn.onclick = function () {
+                modal.style.display = "none";  // Modal schließen
+            };
+        }
+
+        // Ordnerauswahl aktivieren
+        document.addEventListener("click", function (e) {
+            if (e.target.classList.contains("folder-option")) {
+                document.querySelectorAll(".folder-option").forEach(el => el.classList.remove("selected"));
+                e.target.classList.add("selected");
+            }
+        });
+    </script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const toolbar = document.getElementById('edit-toolbar');

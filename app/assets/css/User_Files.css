@@ -549,6 +549,21 @@ i.bx.bx-rename:hover {
   color: #2894f4;
 }
 
+i.bx.bx-copy {
+  margin-left: 15px;
+  text-decoration: none;
+  color: #000;
+  font-size: 30px; /* Gleiche Größe wie der Copy-Button */
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+/* Hover-Effekt für den Copy-Button */
+i.bx.bx-copy:hover {
+  transform: translateY(-2px);
+  color: #2894f4;
+}
+
 /* Stil für die Toolbar */
 .toolbar {
   display: flex;
@@ -988,4 +1003,51 @@ li.file-item.directory i {
   display: flex;
   justify-content: flex-end;
   align-items: center;
+}
+
+/* Der Hintergrund des Modals */
+#copyModal {
+    display: none; /* Standardmäßig versteckt */
+    position: fixed; /* Fixiert das Modal im Fenster */
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5); /* Hintergrund in halbtransparentem Schwarz */
+    z-index: 1000; /* Modal oben auf der Seite */
+    overflow: hidden; /* Verhindert, dass Inhalte hinter dem Modal angezeigt werden */
+    align-items: center;
+    justify-content: center;
+}
+
+/* Der Container des Modals */
+#copyModal .copy-modal-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 600px; /* Maximale Breite des Modals */
+    width: 100%;
+    max-height: 80vh;
+    overflow-y: auto; /* Ermöglicht Scrollen, falls der Inhalt zu hoch ist */
+    margin: auto;
+}
+
+/* Styling für den Ordnerauswahlbereich */
+#folder-list {
+    margin: 20px 0;
+    max-height: 300px;
+    overflow-y: auto;
+    border: 1px solid #ddd;
+    padding: 10px;
+}
+
+/* Styling für die Ordneroptionen */
+.folder-option {
+    padding: 8px;
+    cursor: pointer;
+}
+
+.folder-option.selected {
+    background-color: #2894f4;
+    color: white;
 }

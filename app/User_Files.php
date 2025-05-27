@@ -119,6 +119,9 @@ if (!isset($_SESSION["id"])) {
                                 <a href="#" style="text-decoration: none;" onclick="submitCopyForm()">
                                     <i class='bx bx-copy'></i>
                                 </a>
+                                <a href="#" style="text-decoration: none;" onclick="submitMoveForm()">
+                                    <i class='bx bx-right-arrow-alt' ></i>
+                                </a>
                                 <a href="javascript:void(0);" style="text-decoration: none;" id="rename-item" title="Umbenennen">
                                     <i class='bx bx-rename'></i>
                                 </a>
@@ -193,11 +196,22 @@ if (!isset($_SESSION["id"])) {
             <div id="copyModal" style="display:none;">
                 <div class="copy-modal-content">
                     <h2>Zielordner auswählen</h2>
-                    <div id="folder-list">
+                    <div id="copy-folder-list">
                         <!-- Hier werden die Ordner geladen -->
                     </div>
                     <button id="confirmCopy">Kopieren</button>
                     <button id="cancelCopy">Abbrechen</button>
+                </div>
+            </div>
+
+            <div id="moveModal" style="display:none;">
+                <div class="move-modal-content">
+                    <h2>Zielordner auswählen</h2>
+                    <div id="move-folder-list">
+                        <!-- Hier werden die Ordner geladen -->
+                    </div>
+                    <button id="confirmMove">Verschieben</button>
+                    <button id="cancelMove">Abbrechen</button>
                 </div>
             </div>
         </div>
@@ -244,7 +258,7 @@ if (!isset($_SESSION["id"])) {
             modal.style.display = "block";
 
             // Ordner laden und in das Modal einfügen
-            var folderList = document.getElementById("folder-list");
+            var folderList = document.getElementById("copy-folder-list");
             folderList.innerHTML = ''; // Vorherige Liste löschen
 
             fetch(`assets/php/get_folder_structure.php?path=${encodeURIComponent(path)}`)
@@ -305,6 +319,109 @@ if (!isset($_SESSION["id"])) {
 
             // Abbrechen-Button
             var cancelBtn = document.getElementById("cancelCopy");
+            cancelBtn.onclick = function () {
+                modal.style.display = "none";  // Modal schließen
+            };
+        }
+
+        // Ordnerauswahl aktivieren
+        document.addEventListener("click", function (e) {
+            if (e.target.classList.contains("folder-option")) {
+                document.querySelectorAll(".folder-option").forEach(el => el.classList.remove("selected"));
+                e.target.classList.add("selected");
+            }
+        });
+    </script>
+    <script>
+        function submitMoveForm() {
+            var checkboxes = document.querySelectorAll('.file-checkbox:checked');
+            var files = [];
+            var folders = [];
+
+            // Dateien und Ordner trennen
+            checkboxes.forEach(checkbox => {
+                if (checkbox.dataset.type === "folder") {
+                    folders.push(checkbox.value);
+                } else {
+                    files.push(checkbox.value);
+                }
+            });
+
+            if (files.length === 0 && folders.length === 0) {
+                alert("Bitte wähle mindestens eine Datei oder einen Ordner zum Verschieben aus.");
+                return;
+            }
+
+            // URL-Parameter für den aktuellen Pfad
+            const urlParams = new URLSearchParams(window.location.search);
+            const path = urlParams.get('path') || '';
+
+            // Modal öffnen
+            var modal = document.getElementById("moveModal");
+            modal.style.display = "block";
+
+            // Ordner laden und in das Modal einfügen
+            var folderList = document.getElementById("move-folder-list");
+            folderList.innerHTML = ''; // Vorherige Liste löschen
+
+            fetch(`assets/php/get_folder_structure.php?path=${encodeURIComponent(path)}`)
+                .then(response => response.text())
+                .then(data => {
+                    folderList.innerHTML = data;  // Füge Ordnerliste in das Modal ein
+                });
+
+            // Bestätigungsbutton im Modal
+            var confirmBtn = document.getElementById("confirmMove");
+            confirmBtn.onclick = function () {
+                var selected = document.querySelector(".folder-option.selected");
+                if (!selected) {
+                    alert("Bitte wähle einen Zielordner aus.");
+                    return;
+                }
+
+                var target = selected.dataset.path;
+
+                // Formular erstellen
+                var copyForm = document.createElement("form");
+                copyForm.method = "POST";
+                copyForm.action = `assets/php/move_handler.php?path=${encodeURIComponent(path)}`;
+                copyForm.style.display = "none";
+
+                // Dateien hinzufügen
+                files.forEach(file => {
+                    var input = document.createElement("input");
+                    input.type = "hidden";
+                    input.name = "files[]";
+                    input.value = file;
+                    copyForm.appendChild(input);
+                });
+
+                // Ordner hinzufügen
+                folders.forEach(folder => {
+                    var input = document.createElement("input");
+                    input.type = "hidden";
+                    input.name = "folders[]";
+                    input.value = folder;
+                    copyForm.appendChild(input);
+                });
+
+                // Zielordner
+                var targetInput = document.createElement("input");
+                targetInput.type = "hidden";
+                targetInput.name = "target";
+                targetInput.value = target;
+                copyForm.appendChild(targetInput);
+
+                // Formular abschicken
+                document.body.appendChild(copyForm);
+                copyForm.submit();
+
+                // Modal schließen
+                modal.style.display = "none";
+            };
+
+            // Abbrechen-Button
+            var cancelBtn = document.getElementById("cancelMove");
             cancelBtn.onclick = function () {
                 modal.style.display = "none";  // Modal schließen
             };

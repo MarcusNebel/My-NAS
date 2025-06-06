@@ -105,7 +105,7 @@ if (!isset($_SESSION["id"])) {
                                     <a class="new-dropdown-item" href="javascript:void(0);" id="create-folder">
                                         <i class='bx bx-folder-plus'></i> Neuer Ordner
                                     </a>
-                                    <a class="new-dropdown-item" href="File_upload.php?path=<?php echo urlencode($_GET['path'] ?? ''); ?>" id="upload-file">
+                                    <a href="#" class="new-dropdown-item" id="openUploadModal">
                                         <i class='bx bx-upload'></i> Datei hochladen
                                     </a>
                                 </div>
@@ -193,6 +193,38 @@ if (!isset($_SESSION["id"])) {
                 </div>
             </div>
 
+            <div id="uploadModal" class="modal" style="display:none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 9999;">
+                <div style="background: white; padding: 30px; border-radius: 12px; width: 400px; max-width: 90%; position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
+                    <button id="closeModal" style="position: absolute; top: 10px; right: 10px; font-size: 18px; background: none; border: none; cursor: pointer;">&times;</button>
+                    <h2 style="margin-bottom: 20px;">Datei hochladen</h2>
+
+                    <?php
+                    $username = '';
+                    if (isset($_SESSION['id'])) {
+                        require("assets/php/mysql.php");
+
+                        $stmt = $mysql->prepare("SELECT USERNAME FROM accounts WHERE ID = :id");
+                        $stmt->execute([':id' => $_SESSION['id']]);
+                        $username = $stmt->fetchColumn();
+                    }
+                    ?>
+                    <input type="text" id="usernameModal" hidden value="<?php echo htmlspecialchars($username, ENT_QUOTES, 'UTF-8'); ?>">
+                    <input type="text" id="pathModal" hidden>
+
+                    <div id="dropArea" class="drop-area" style="text-align: center; padding: 20px; border: 2px dashed #2894f4; border-radius: 10px;">
+                        <p>Dateien hierher ziehen oder</p>
+                        <button id="fileSelectBtn" style="margin-top: 10px;">Dateien auswählen</button>
+                        <input type="file" id="fileInputModal" multiple style="display: none;">
+                    </div>
+
+                    <p id="uploadStatusModal" style="margin-top: 15px;"></p>
+                    <div id="progress-container-modal" class="progress-container" style="background: #e3f3ff; height: 25px; border-radius: 10px; overflow: hidden;">
+                        <div id="progress-bar-modal" class="progress-bar" style="width: 0%; background: #2894f4; height: 100%; margin-top: 1px; text-align: center; line-height: 20px;">0%</div>
+                    </div>
+                    <p id="upload-speed-modal" class="upload-speed" style="margin-top: 10px;">Upload-Geschwindigkeit: 0 MB/s</p>
+                </div>
+            </div>
+
             <div id="copyModal" style="display:none;">
                 <div class="copy-modal-content">
                     <h2>Zielordner auswählen</h2>
@@ -229,6 +261,141 @@ if (!isset($_SESSION["id"])) {
     </div>
     <input type="hidden" name="current_path" id="current_path" value="<?php echo isset($_GET['path']) ? htmlspecialchars($_GET['path']) : ''; ?>">
     <script src="assets/js/main.js"></script>
+    <script>
+        // Modal-Elemente
+        const uploadModal = document.getElementById('uploadModal');
+        const openModalBtn = document.getElementById('openUploadModal');
+        const closeModalBtn = document.getElementById('closeModal');
+
+        // Neue Upload-Elemente
+        const fileSelectBtn = document.getElementById('fileSelectBtn');
+        const fileInputModal = document.getElementById('fileInputModal');
+        const dropArea = document.getElementById('dropArea');
+
+        const uploadStatusModal = document.getElementById('uploadStatusModal');
+        const progressBarModal = document.getElementById('progress-bar-modal');
+        const uploadSpeedModal = document.getElementById('upload-speed-modal');
+        const usernameModal = document.getElementById('usernameModal');
+        const pathModal = document.getElementById('pathModal');
+
+        let flaskServerURL = '';
+
+        // Konfiguration laden
+        async function loadConfig() {
+            const response = await fetch('../../config.json');
+            const config = await response.json();
+            flaskServerURL = config.flaskServerURL + '/upload';
+
+            // Pfad aus URL in Modal-Input setzen
+            const params = new URLSearchParams(window.location.search);
+            const pathFromUrl = params.get('path') || '';
+            pathModal.value = pathFromUrl;
+        }
+
+        loadConfig();
+
+        // Modal öffnen
+        openModalBtn.addEventListener('click', e => {
+            e.preventDefault();
+            uploadStatusModal.textContent = '';
+            progressBarModal.style.width = '0%';
+            progressBarModal.textContent = '0%';
+            uploadSpeedModal.textContent = 'Upload-Geschwindigkeit: 0 MB/s';
+            fileInputModal.value = '';
+            uploadModal.style.display = 'flex';
+        });
+
+        // Modal schließen
+        closeModalBtn.addEventListener('click', () => {
+            uploadModal.style.display = 'none';
+        });
+
+        // Klick außerhalb Modal schließt es
+        window.addEventListener('click', e => {
+            if (e.target === uploadModal) {
+                uploadModal.style.display = 'none';
+            }
+        });
+
+        // 📁 Datei-Auswahl über Button
+        fileSelectBtn.addEventListener('click', () => {
+            fileInputModal.click();
+        });
+
+        // Auswahl im versteckten File-Input
+        fileInputModal.addEventListener('change', () => {
+            if (fileInputModal.files.length > 0) {
+                handleFileUpload(fileInputModal.files);
+            }
+        });
+
+        // 📤 Drag-and-Drop
+        dropArea.addEventListener('dragover', e => {
+            e.preventDefault();
+            dropArea.classList.add('dragover');
+        });
+
+        dropArea.addEventListener('dragleave', e => {
+            e.preventDefault();
+            dropArea.classList.remove('dragover');
+        });
+
+        dropArea.addEventListener('drop', e => {
+            e.preventDefault();
+            dropArea.classList.remove('dragover');
+            if (e.dataTransfer.files.length > 0) {
+                handleFileUpload(e.dataTransfer.files);
+            }
+        });
+
+        // 🔁 Upload-Funktion
+        function handleFileUpload(files) {
+            uploadStatusModal.textContent = `${files.length} Datei(en) werden vorbereitet...`;
+
+            setTimeout(() => {
+                const formData = new FormData();
+                for (let i = 0; i < files.length; i++) {
+                    formData.append('file[]', files[i]);
+                }
+
+                formData.append('username', usernameModal.value);
+                formData.append('path', pathModal.value);
+
+                const xhr = new XMLHttpRequest();
+                const startTime = Date.now();
+
+                xhr.upload.addEventListener('progress', e => {
+                    if (e.lengthComputable) {
+                        const percent = Math.round((e.loaded / e.total) * 100);
+                        progressBarModal.style.width = percent + '%';
+                        progressBarModal.textContent = percent + '%';
+
+                        const seconds = (Date.now() - startTime) / 1000;
+                        const speed = (e.loaded / 1024 / 1024) / seconds;
+                        uploadSpeedModal.textContent = `Upload-Geschwindigkeit: ${speed.toFixed(2)} MB/s`;
+                    }
+                });
+
+                xhr.onload = function() {
+                    if (xhr.status === 200) {
+                        uploadStatusModal.textContent = '✅ Upload erfolgreich!';
+                        const pathValue = pathModal.value;
+                        const redirectUrl = pathValue ? `User_Files.php?path=${encodeURIComponent(pathValue)}` : 'User_Files.php';
+                        window.location.href = redirectUrl;
+                    } else {
+                        uploadStatusModal.textContent = '❌ Fehler beim Upload: ' + xhr.responseText;
+                    }
+                };
+
+                xhr.onerror = () => {
+                    uploadStatusModal.innerHTML = 'Fehler beim Upload. Bitte <a href="' + flaskServerURL + '" target="_blank" rel="noopener noreferrer">den Upload-Server</a> manuell überprüfen.';
+                };
+
+                xhr.open('POST', flaskServerURL, true);
+                xhr.send(formData);
+            }, 1000); // 1 Sekunde Verzögerung zum Anzeigen der Dateianzahl
+        }
+    </script>
     <script>
         function submitCopyForm() {
             var checkboxes = document.querySelectorAll('.file-checkbox:checked');

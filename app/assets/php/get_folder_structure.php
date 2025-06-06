@@ -1,4 +1,4 @@
-<?php 
+<?php
 session_start();
 if (!isset($_SESSION["id"])) {
     die("Nicht autorisiert.");
@@ -15,28 +15,21 @@ if (!$username) {
     die("Benutzername nicht gefunden.");
 }
 
-// Root-Verzeichnis des Benutzers
+// Trash-Verzeichnis definieren
 $root = "/home/nas-website-files/user_files/$username";
 
 function listFolders($dir) {
-    if (basename($dir) === 'trash') return;
-
-    $relative = str_replace($GLOBALS['root'], '', $dir);
-    
-    // Wenn das relative Verzeichnis leer ist, ist es das Root – setze "/"
-    $relativePath = $relative !== '' ? $relative : '/';
-    $displayPath = $relativePath;
-
-    echo "<div class='folder-option' data-path='" . htmlspecialchars($relativePath, ENT_QUOTES) . "'>" . htmlspecialchars($displayPath) . "</div>";
-
     $folders = array_filter(glob($dir . '/*'), function ($folder) {
         return is_dir($folder) && basename($folder) !== 'trash';
     });
 
     foreach ($folders as $folder) {
+        $relative = str_replace($GLOBALS['root'], '', $folder);
+        $displayPath = $relative ?: '/';
+
+        echo "<div class='folder-option' data-path='$relative'>" . htmlspecialchars($displayPath) . "</div>";
         listFolders($folder); // rekursiv
     }
 }
-
 listFolders($root);
 ?>

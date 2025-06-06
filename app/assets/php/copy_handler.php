@@ -20,17 +20,22 @@ $root = "/home/nas-website-files/user_files/$username";
 // Parameter auslesen
 $currentPath = $_GET["path"] ?? '';
 $target = $_POST["target"] ?? '';
+$targetPath = rtrim($root . '/' . ltrim($target, '/'), '/');
 $files = $_POST["files"] ?? [];
 $folders = $_POST["folders"] ?? [];
 
 // Absoluter Quell- und Zielpfad
 $sourceBase = $root . "/" . $currentPath;
-$targetPath = $root . $target ?: $root . $target;
+
+// File to root-driverctory if targetPath is empty
+if (empty($target)) {
+    $targetPath = $root;  // Fallback: Standardverzeichnis
+}
 
 if (!$sourceBase || strpos($sourceBase, $root) !== 0) {
     die("Ungültiger Quellpfad.");
 }
-if (strpos(realpath(dirname($targetPath)), $root) !== 0) {
+if (strpos(realpath(realpath($targetPath)), $root) !== 0) {
     die("Ungültiger Zielpfad.");
 }
 

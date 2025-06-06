@@ -590,10 +590,16 @@ i.bx.bx-rename:hover {
 .trash-btn {
   text-decoration: none;
   color: #000;
-  background-color: rgb(255, 200, 200);
+  background-color: #ffc8c8;
   padding: 10px 20px;
   border: solid 2px #f00;
   border-radius: 12px;
+  transition: all 0.3s ease;
+}
+
+.trash-btn:hover {
+  background-color: #ffd7d7;
+  transform: translateY(-2px);
 }
 
 i.bx.bxs-plus-circle {

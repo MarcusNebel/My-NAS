@@ -80,10 +80,34 @@ if (isset($username)) {
         }
     }
 
-    usort($filteredFiles, function ($a, $b) {
-        if ($a['is_dir'] && !$b['is_dir']) return -1;
-        if (!$a['is_dir'] && $b['is_dir']) return 1;
-        return strcasecmp($a['name'], $b['name']);
+    $sort_by = $_GET['sort'] ?? 'type';  // Standard: nach Typ sortieren
+    $sort_order = $_GET['order'] ?? 'asc'; // Standard: aufsteigend
+
+    usort($filteredFiles, function ($a, $b) use ($sort_by, $sort_order) {
+        // Wenn nach "type" sortiert wird: Ordner zuerst
+        if ($sort_by === 'type') {
+            if ($a['is_dir'] && !$b['is_dir']) return $sort_order === 'asc' ? -1 : 1;
+            if (!$a['is_dir'] && $b['is_dir']) return $sort_order === 'asc' ? 1 : -1;
+        }
+
+        // Vergleichswert extrahieren
+        $valueA = $a[$sort_by] ?? '';
+        $valueB = $b[$sort_by] ?? '';
+
+        // Typabhängige Konvertierung
+        if ($sort_by === 'size' || $sort_by === 'item_count') {
+            $valueA = (int) $valueA;
+            $valueB = (int) $valueB;
+        } elseif ($sort_by === 'date') {
+            $valueA = strtotime($a['date'] ?? '1970-01-01');
+            $valueB = strtotime($b['date'] ?? '1970-01-01');
+        } else {
+            $valueA = strtolower((string)$valueA);
+            $valueB = strtolower((string)$valueB);
+        }
+
+        $result = $valueA <=> $valueB;
+        return $sort_order === 'desc' ? -$result : $result;
     });
 
     if (count($filteredFiles) > 0) {

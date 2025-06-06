@@ -18,7 +18,7 @@ if (!isset($_SESSION["id"])) {
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,400;0,600;0,700;0,900;1,400;1,600;1,700&display=swap" rel="stylesheet" />
-    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link href='https://cdn.boxicons.com/fonts/basic/boxicons.min.css' rel='stylesheet'>
 
     <link rel="stylesheet" href="assets/css/User_Files.css" />
     <!-- Boxicons CSS -->
@@ -93,7 +93,7 @@ if (!isset($_SESSION["id"])) {
                 </div>
 
                 <!-- Werkzeugleiste mit Formular -->
-                <form action="assets/php/delete_handler.php" method="POST" id="delete-form">
+                <form method="POST" id="delete-form">
                     <div class="toolbar">
                         <div class="left">
                             <div class="dropdown-wrapper">
@@ -108,6 +108,21 @@ if (!isset($_SESSION["id"])) {
                                     <a href="#" class="new-dropdown-item" id="openUploadModal">
                                         <i class='bx bx-upload'></i> Datei hochladen
                                     </a>
+                                </div>
+                            </div>
+
+                            <div class="sort-container">
+                                <a id="sortButton" href="#">Sortieren nach<i class='bxr bx-filter'></i></a>
+
+                                <div id="sortMenu" class="sort-overlay hidden">
+                                    <div class="sort-options">
+                                        <ul id="sortList">
+                                            <li data-sort="type"></li>
+                                            <li data-sort="name"></li>
+                                            <li data-sort="size"></li>
+                                            <li data-sort="date"></li>
+                                        </ul>
+                                    </div>
                                 </div>
                             </div>
 
@@ -195,7 +210,7 @@ if (!isset($_SESSION["id"])) {
 
             <div id="uploadModal" class="modal" style="display:none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 9999;">
                 <div style="background: white; padding: 30px; border-radius: 12px; width: 400px; max-width: 90%; position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
-                    <button id="closeModal" style="position: absolute; top: 10px; right: 10px; font-size: 18px; background: none; border: none; cursor: pointer;">&times;</button>
+                    <button id="closeUploadModal" style="position: absolute; top: 10px; right: 10px; font-size: 25px; background: none; border: none; cursor: pointer; margin-top: 20px; margin-right: 10px;">&times;</button>
                     <h2 style="margin-bottom: 20px;">Datei hochladen</h2>
 
                     <?php
@@ -262,10 +277,76 @@ if (!isset($_SESSION["id"])) {
     <input type="hidden" name="current_path" id="current_path" value="<?php echo isset($_GET['path']) ? htmlspecialchars($_GET['path']) : ''; ?>">
     <script src="assets/js/main.js"></script>
     <script>
+        const sortButton = document.getElementById('sortButton');
+        const sortMenu = document.getElementById('sortMenu');
+        const sortItems = document.querySelectorAll('#sortMenu li');
+
+        const sortLabels = {
+            name: "Nach Name sortieren",
+            size: "Nach Größe sortieren",
+            date: "Nach Datum sortieren",
+            type: "Nach Typ sortieren"
+        };
+
+        // Menü ein-/ausblenden
+        sortButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            sortMenu.classList.toggle('hidden');
+        });
+
+        // Aktuelle Sortierung beim Laden anzeigen
+        window.addEventListener('DOMContentLoaded', () => {
+            const url = new URL(window.location.href);
+            const sort = url.searchParams.get('sort') || 'type';
+            const order = url.searchParams.get('order') || 'asc';
+            const arrow = order === 'asc' ? '↓' : '↑';
+
+            // Markiere das aktive Element
+            sortItems.forEach(item => {
+                const liSort = item.dataset.sort;
+                item.innerHTML = `
+                    <label style="display: flex; align-items: center; width: 100%;">
+                    <input type="radio" name="sort" ${liSort === sort ? 'checked' : ''}>
+                    <span style="flex:1;">${sortLabels[liSort]}</span>
+                    ${liSort === sort ? `<span class="arrow">${arrow}</span>` : ''}
+                    </label>
+                `;
+            });
+        });
+
+        // Beim Klick auf Sortieroption
+        sortItems.forEach(item => {
+            item.addEventListener('click', () => {
+                const selectedSort = item.dataset.sort;
+                const url = new URL(window.location.href);
+                const currentSort = url.searchParams.get('sort') || 'type';
+                let currentOrder = url.searchParams.get('order') || 'asc';
+
+                // Wenn erneut auf die gleiche Sortierung geklickt: Richtung umdrehen
+                if (currentSort === selectedSort) {
+                    currentOrder = currentOrder === 'asc' ? 'desc' : 'asc';
+                } else {
+                    currentOrder = 'asc';
+                }
+
+                url.searchParams.set('sort', selectedSort);
+                url.searchParams.set('order', currentOrder);
+                window.location.href = url.toString();
+            });
+        });
+
+        document.addEventListener('click', function(event) {
+            // Wenn der Klick NICHT auf dem Button oder im Menü war, Menü schließen
+            if (!sortButton.contains(event.target) && !sortMenu.contains(event.target)) {
+                sortMenu.classList.add('hidden');
+            }
+        });
+    </script>
+    <script>
         // Modal-Elemente
         const uploadModal = document.getElementById('uploadModal');
         const openModalBtn = document.getElementById('openUploadModal');
-        const closeModalBtn = document.getElementById('closeModal');
+        const closeModalBtn = document.getElementById('closeUploadModal');
 
         // Neue Upload-Elemente
         const fileSelectBtn = document.getElementById('fileSelectBtn');
@@ -634,10 +715,35 @@ if (!isset($_SESSION["id"])) {
         document.getElementById("new-button").addEventListener("click", function (e) {
             e.stopPropagation();
             const dropdown = document.getElementById("new-dropdown");
+
+            // Sortiermenü schließen
+            document.getElementById("sortMenu").classList.add("hidden");
+
+            // Toggle das Neu-Menü
             dropdown.style.display = (dropdown.style.display === "block") ? "none" : "block";
         });
 
-        document.addEventListener("click", function () {
+        document.addEventListener("click", function (e) {
+            const newDropdown = document.getElementById("new-dropdown");
+
+            // Wenn der Klick nicht auf dem Dropdown war, dann schließen
+            if (!newDropdown.contains(e.target) && e.target.id !== "new-button") {
+                newDropdown.style.display = "none";
+            }
+
+            // Optional: auch Sort-Menü schließen
+            const sortMenu = document.getElementById("sortMenu");
+            if (!sortMenu.contains(e.target) && e.target.id !== "sortButton") {
+                sortMenu.classList.add("hidden");
+            }
+        });
+
+        // Zusätzliche Buttons, die das Dropdown schließen sollen
+        document.getElementById("create-folder").addEventListener("click", function () {
+            document.getElementById("new-dropdown").style.display = "none";
+        });
+
+        document.getElementById("openUploadModal").addEventListener("click", function () {
             document.getElementById("new-dropdown").style.display = "none";
         });
     </script>

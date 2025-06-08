@@ -6,20 +6,24 @@ error_reporting(E_ALL);
 
 require_once __DIR__ . '/../mysql.php';
 
-// Funktion um den API-Key aus den Headern sicher zu holen
 function getApiKeyFromHeaders() {
     $headers = getallheaders();
 
-    // Normalfall: Flutter schickt den API-Key im Authorization-Header
+    // 1. Header normal
     if (isset($headers['Authorization'])) {
         return $headers['Authorization'];
     }
 
-    // Fallback: manchmal heißen die Keys anders (z. B. lowercase, nginx-Fallbacks)
+    // 2. Header Fallback (z. B. lowercase)
     foreach ($headers as $key => $value) {
         if (strtolower($key) === 'authorization') {
             return $value;
         }
+    }
+
+    // ✅ 3. URL-Parameter als letzter Fallback
+    if (isset($_GET['api_key'])) {
+        return $_GET['api_key'];
     }
 
     return null;

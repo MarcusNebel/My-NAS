@@ -16,16 +16,14 @@ window.onload = function () {
 	});
 }
 
-let config = {};
-
-async function loadConfig() {
-    const response = await fetch("../../config.json");
-    config = await response.json();
-    console.log(config);  // Überprüfen, ob die Konfiguration richtig geladen wurde
-}
-
 async function handleDownload() {
-    await loadConfig(); // Warten, bis die Konfiguration geladen ist
+    const configResponse = await fetch('../../config.json'); // Passe den Pfad an die tatsächliche Position der config.json an
+	if (!configResponse.ok) {
+		throw new Error('Fehler beim Laden der config.json');
+	}
+
+	config = await configResponse.json();
+    const flaskServerURL = config.flaskServerURL;
     const checkboxes = document.querySelectorAll('.file-checkbox:checked');
     const files = [];
     const folders = []; // Speichert die ausgewählten Ordner
@@ -101,7 +99,8 @@ async function handleDownload() {
             console.log("Username:", username, "Files:", files);
 
             // Daten an den Flask-Server senden
-            const response = await fetch(config.flaskServerURL + "/zip_download", {
+            console.log("Flask Server URL:", flaskServerURL);
+            const response = await fetch(flaskServerURL + "/zip_download", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ username, files, folders, currentPath }) // Füge Ordner hinzu
@@ -126,7 +125,7 @@ async function handleDownload() {
             a.remove();
             window.URL.revokeObjectURL(downloadUrl);
         } catch (err) {
-            const zipDownloadURL = config.flaskServerURL + "/zip_download";
+            const zipDownloadURL = flaskServerURL + "/zip_download";
 
             if (err instanceof TypeError && err.message === "Failed to fetch") {
                 document.getElementById("downloadStatus").innerHTML =

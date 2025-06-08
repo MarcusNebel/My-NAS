@@ -289,13 +289,6 @@ if ($_SERVER["REQUEST_METHOD"] === "GET" && isset($_GET["delete-account"])) {
 						echo "Dein Server Rang ist: ", $server_rank;
 					}
 					?> </p>
-					
-					<h4>Sprache:</h4>
-					<select id="lang-switcher">
-						<option value="en">English</option>
-						<option value="de">Deutsch</option>
-						<!-- Weitere Sprachen hier -->
-					</select>
 
 					<h5>Account löschen</h5>
 					<form class="delete-account-form" method="get">

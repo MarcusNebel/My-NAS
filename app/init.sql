@@ -8,6 +8,7 @@ CREATE TABLE IF NOT EXISTS `accounts` (
   `PASSWORD` VARCHAR(255) DEFAULT NULL,
   `EMAIL` VARCHAR(255) DEFAULT NULL,
   `reset_code` VARCHAR(6) DEFAULT NULL,
+  `chat_user_id` VARCHAR(6) DEFAULT NULL,
   `rememberTOKEN` VARCHAR(64) DEFAULT NULL,
   `api_key` VARCHAR(64) DEFAULT NULL,
   `server_rank` ENUM('Admin', 'User', 'Moderator') NOT NULL DEFAULT 'User'
@@ -15,8 +16,8 @@ CREATE TABLE IF NOT EXISTS `accounts` (
 
 CREATE TABLE messages (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    sender VARCHAR(255) NOT NULL,
-    receiver VARCHAR(255),
+    sender VARCHAR(6) NOT NULL,
+    receiver VARCHAR(6),
     group_id INT,
     message TEXT,
     attachment_path VARCHAR(255),
@@ -34,6 +35,12 @@ CREATE TABLE group_members (
     username VARCHAR(255),
     PRIMARY KEY (group_id, username),
     FOREIGN KEY (group_id) REFERENCES chat_groups(id) ON DELETE CASCADE
+);
+
+CREATE TABLE contacts (
+    owner_id VARCHAR(6) NOT NULL,
+    contact_id VARCHAR(6) NOT NULL,
+    PRIMARY KEY (owner_id, contact_id)
 );
 
 -- Setze das Root-Passwort auf mysql_native_password, falls erforderlich

@@ -35,3 +35,4 @@ $stmt->execute(['currentUser' => $currentUserId, 'chatUser' => $chatUserId]);
 $messages = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 echo json_encode($messages);
+?>

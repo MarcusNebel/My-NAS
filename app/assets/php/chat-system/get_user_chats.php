@@ -6,16 +6,38 @@ if (session_status() === PHP_SESSION_NONE) {
 require_once 'mysql.php';
 
 if (isset($_SESSION['id'])) {
-    $sessionID = $_SESSION['id'];
 
     // Aktuelle chat_user_id holen
     $stmt = $mysql->prepare("SELECT chat_user_id FROM accounts WHERE ID = :id");
-    $stmt->bindParam(":id", $sessionID);
+    $stmt->bindParam(":id", $_SESSION['id']);
     $stmt->execute();
     $userRow = $stmt->fetch(PDO::FETCH_ASSOC);
     $currentChatUserID = $userRow['chat_user_id'] ?? null;
 
-    if (!$currentChatUserID) exit;
+    // Falls keine chat_user_id existiert, generiere eine neue & speichere sie
+    if (!$currentChatUserID) {
+        // Funktion zum Generieren einer eindeutigen 6-stelligen ID
+        function generateUniqueChatUserId($mysql) {
+            do {
+                $randomId = substr(bin2hex(random_bytes(3)), 0, 6);
+                $checkStmt = $mysql->prepare("SELECT COUNT(*) FROM accounts WHERE chat_user_id = :id");
+                $checkStmt->bindParam(":id", $randomId);
+                $checkStmt->execute();
+                $exists = $checkStmt->fetchColumn();
+            } while ($exists > 0);
+            return $randomId;
+        }
+
+        $generatedChatUserID = generateUniqueChatUserId($mysql);
+
+        // In DB speichern
+        $stmt = $mysql->prepare("UPDATE accounts SET chat_user_id = :random_id WHERE ID = :id");
+        $stmt->bindParam(":random_id", $generatedChatUserID);
+        $stmt->bindParam(":id", $_SESSION['id']);
+        $stmt->execute();
+
+        $currentChatUserID = $generatedChatUserID;
+    }
 
     // Kontakte abrufen
     $stmt = $mysql->prepare("SELECT owner_id, contact_id FROM contacts WHERE owner_id = :id OR contact_id = :id");

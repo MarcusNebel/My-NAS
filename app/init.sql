@@ -44,5 +44,5 @@ CREATE TABLE contacts (
 );
 
 -- Setze das Root-Passwort auf mysql_native_password, falls erforderlich
-ALTER USER 'root'@'%' IDENTIFIED WITH mysql_native_password BY '59LWrt!mDo6GC4';
+ALTER USER 'root'@'%' IDENTIFIED BY '59LWrt!mDo6GC4';
 FLUSH PRIVILEGES;

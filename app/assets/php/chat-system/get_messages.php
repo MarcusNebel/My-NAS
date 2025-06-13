@@ -2,7 +2,7 @@
 session_start();
 require_once 'mysql.php';
 
-if(isset($_SESSION['id'])) {
+if (isset($_SESSION['id'])) {
     $stmt = $mysql->prepare("SELECT chat_user_id FROM accounts WHERE ID = :id");
     $stmt->bindParam(":id", $_SESSION['id']);
     $stmt->execute();
@@ -12,11 +12,7 @@ if(isset($_SESSION['id'])) {
     $currentUserId = null;
 }
 
-if(isset($_GET['chatUserID'])) {
-    $chatUserId = $_GET['chatUserID'];
-} else {
-    $chatUserId = null;
-}
+$chatUserId = $_GET['chatUserID'] ?? null;
 
 if (!$currentUserId || !$chatUserId) {
     echo json_encode([]);
@@ -24,10 +20,14 @@ if (!$currentUserId || !$chatUserId) {
 }
 
 $stmt = $mysql->prepare("
-    SELECT sender, receiver, message, attachment_path, status, timestamp 
+    SELECT id, sender, receiver, message, attachment_path, status, timestamp 
     FROM messages 
-    WHERE (sender = :currentUser AND receiver = :chatUser) 
-       OR (sender = :chatUser AND receiver = :currentUser)
+    WHERE (
+            sender = :currentUser AND receiver = :chatUser AND deleted_for_sender = 0
+          ) 
+       OR (
+            sender = :chatUser AND receiver = :currentUser AND deleted_for_receiver = 0
+          )
     ORDER BY timestamp ASC
 ");
 

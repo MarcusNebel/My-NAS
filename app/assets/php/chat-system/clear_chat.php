@@ -21,14 +21,37 @@ if (!$senderId || !$receiverId) {
     exit("Ungültige Daten");
 }
 
-// Nachrichten löschen, die zwischen sender und receiver sind
+// Nachrichten, die vom Benutzer gesendet wurden – setze deleted_for_sender = 1
 $stmt = $mysql->prepare("
-    DELETE FROM messages 
-    WHERE (sender = :sender AND receiver = :receiver)
-       OR (sender = :receiver AND receiver = :sender)
-       AND group_id IS NULL
+    UPDATE messages 
+    SET deleted_for_sender = 1
+    WHERE sender = :sender AND receiver = :receiver AND group_id IS NULL
 ");
+$stmt->execute([
+    'sender' => $senderId,
+    'receiver' => $receiverId
+]);
 
+// Nachrichten, die an den Benutzer gesendet wurden – setze deleted_for_receiver = 1
+$stmt = $mysql->prepare("
+    UPDATE messages 
+    SET deleted_for_receiver = 1
+    WHERE sender = :receiver AND receiver = :sender AND group_id IS NULL
+");
+$stmt->execute([
+    'sender' => $senderId,
+    'receiver' => $receiverId
+]);
+
+// Optional: Endgültig löschen, wenn beide gelöscht haben
+$stmt = $mysql->prepare("
+    DELETE FROM messages
+    WHERE ((sender = :sender AND receiver = :receiver)
+        OR (sender = :receiver AND receiver = :sender))
+      AND deleted_for_sender = 1
+      AND deleted_for_receiver = 1
+      AND group_id IS NULL
+");
 $stmt->execute([
     'sender' => $senderId,
     'receiver' => $receiverId

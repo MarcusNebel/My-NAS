@@ -435,6 +435,7 @@ main section.banner:after {
 .conversation-list {
   overflow-y: auto;
   flex-grow: 1;
+  z-index: 10;
 }
 
 .conversation {
@@ -490,6 +491,7 @@ main section.banner:after {
   flex-direction: column;
   background: #fafafa;
   height: 100%;
+  z-index: 20;
 }
 
 .chat-header {
@@ -571,6 +573,13 @@ main section.banner:after {
 
 .message.sent .message-time {
     color: white;
+}
+
+.message-menu-btn {
+  position: relative;
+  right: 30px;
+  color: #000;
+  cursor: pointer;
 }
 
 .input-area {
@@ -795,4 +804,122 @@ main section.banner:after {
 
 .black {
   color: #000;
+}
+
+.message {
+  margin-bottom: 14px;
+}
+
+/* Nachrichten-Zeile: Bubble + 3 Punkte rechts daneben */
+.message-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  margin-bottom: 14px;
+  /* Damit Dropdown überlappt */
+  position: relative;
+}
+
+.message-row.sent {
+  justify-content: flex-end;
+}
+
+.message-row.received {
+  justify-content: flex-start;
+}
+
+/* Nachrichten-Bubble wie bisher */
+.message-bubble {
+  background: #e5e5ea;
+  color: #222;
+  border-radius: 18px;
+  padding: 10px 16px;
+  max-width: 70%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.message-row.sent .message-bubble {
+  background: #2894f4;
+  color: #fff;
+  align-items: flex-end;
+}
+
+.message-time {
+  font-size: 11px;
+  color: #bbb;
+  margin-top: 4px;
+  align-self: flex-end;
+}
+
+.message-actions {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+/* 3-Punkte-Button: Anfangs unsichtbar, nur beim Hover sichtbar */
+.message-menu-toggle {
+  background: none;
+  border: none;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.15s;
+  padding: 4px;
+  font-size: 18px;
+  color: #888;
+}
+
+.message-row:hover .message-menu-toggle,
+.message-row:focus-within .message-menu-toggle {
+  opacity: 1;
+}
+
+/* Dropdown-Positionierung */
+.message-dropdown {
+  display: none;
+  position: absolute;
+  top: 28px;
+  left: 0;
+  z-index: 200;
+  min-width: 140px;
+  background: white;
+  border: 1px solid #ccc;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  border-radius: 12px;
+  font-size: 15px;
+}
+
+.message-dropdown ul {
+  margin: 0;
+  padding: 8px 0;
+  list-style: none;
+}
+
+.message-dropdown a {
+  display: block;
+  padding: 8px 16px;
+  color: #222;
+  text-decoration: none;
+  transition: background 0.15s;
+}
+
+.message-dropdown a:hover {
+  background: #f2f2f2;
+}
+
+/* Für empfangene Nachrichten ggf. überschreiben, falls nötig */
+.message-row.received .message-actions .message-dropdown {
+  left: 0;
+  right: auto;
+  /* Kein transform mehr nötig! */
+}
+
+/* Für gesendete Nachrichten ggf. überschreiben, falls nötig */
+.message-row.sent .message-actions .message-dropdown {
+  left: auto;
+  right: 0;
+  /* Kein transform mehr nötig! */
 }

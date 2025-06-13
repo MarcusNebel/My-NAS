@@ -112,7 +112,10 @@ if (!isset($_SESSION["id"])) {
                             </div>
 
                             <div class="sort-container">
-                                <a id="sortButton" href="#">Sortieren nach<i class='bxr bx-filter'></i></a>
+                                <a id="sortButton" href="#">
+                                    Sortieren nach
+                                    <i class='bxr bx-filter'></i>
+                                </a>
 
                                 <div id="sortMenu" class="sort-overlay hidden">
                                     <div class="sort-options">

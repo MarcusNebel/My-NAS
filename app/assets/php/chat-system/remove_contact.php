@@ -22,7 +22,7 @@ $ownerId = $user['chat_user_id'];
 $contactId = trim($_POST['contact_id']);
 
 // Kontakt löschen
-$stmt = $mysql->prepare("DELETE FROM contacts WHERE owner_id = :owner AND contact_id = :contact");
+$stmt = $mysql->prepare("DELETE FROM contacts WHERE owner_id = :owner AND contact_id = :contact OR owner_id = :contact AND contact_id = :owner");
 $stmt->execute([
     'owner' => $ownerId,
     'contact' => $contactId

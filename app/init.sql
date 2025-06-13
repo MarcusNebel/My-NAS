@@ -14,6 +14,7 @@ CREATE TABLE IF NOT EXISTS `accounts` (
   `server_rank` ENUM('Admin', 'User', 'Moderator') NOT NULL DEFAULT 'User'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
+-- Erstelle die messages-Tabelle mit den zusätzlichen Spalten
 CREATE TABLE messages (
     id INT AUTO_INCREMENT PRIMARY KEY,
     sender VARCHAR(6) NOT NULL,
@@ -22,7 +23,9 @@ CREATE TABLE messages (
     message TEXT,
     attachment_path VARCHAR(255),
     status ENUM('sent', 'delivered', 'read') DEFAULT 'sent',
-    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
+    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+    deleted_for_sender TINYINT(1) DEFAULT 0,
+    deleted_for_receiver TINYINT(1) DEFAULT 0
 );
 
 CREATE TABLE chat_groups (

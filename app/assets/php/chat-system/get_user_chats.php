@@ -65,7 +65,11 @@ if (isset($_SESSION['id'])) {
         $stmtLastMsg = $mysql->prepare("
             SELECT sender, message, timestamp 
             FROM messages 
-            WHERE (sender = :u1 AND receiver = :u2) OR (sender = :u2 AND receiver = :u1)
+            WHERE (
+                    sender = :u1 AND receiver = :u2 AND deleted_for_sender = 0
+                ) OR (
+                    sender = :u2 AND receiver = :u1 AND deleted_for_receiver = 0
+                )
             ORDER BY timestamp DESC LIMIT 1
         ");
         $stmtLastMsg->execute(['u1' => $currentChatUserID, 'u2' => $otherUserId]);

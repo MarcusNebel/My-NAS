@@ -247,6 +247,8 @@ if (!isset($_SESSION["id"])) {
                     .then(data => {
                         // Chatbereich leeren
                         const messagesContainer = document.querySelector('.chat-area .messages');
+                        clearChatUI();
+                        loadMessages(currentReceiverId); // oder receiverUsername, je nach deiner Logik
 
                         // Dropdown-Menü ausblenden
                         const toggle = document.getElementById('dropdown-toggle');
@@ -343,7 +345,7 @@ if (!isset($_SESSION["id"])) {
         });
     </script>
     <script>
-        function loadMessages(receiverUsername) {
+        function loadMessages(receiverUsername, options = {forceScroll: false}) {
             const messagesContainer = document.querySelector('.chat-area .messages');
             const currentUserId = document.getElementById('current-user-id').dataset.id;
             const scrollDownBtn = document.querySelector('.scroll-down-btn');
@@ -353,7 +355,12 @@ if (!isset($_SESSION["id"])) {
                 return;
             }
 
-            // Schritt 1: Hole die chat_user_id anhand des Benutzernamens
+            // Prüfe vor dem Rendern, ob wir aktuell am unteren Ende sind
+            const wasAtBottom = messagesContainer.scrollTop + messagesContainer.clientHeight >= messagesContainer.scrollHeight - 10;
+
+            if (!window._displayedMessageIds) window._displayedMessageIds = [];
+            const displayedMessageIds = window._displayedMessageIds;
+
             fetch(`assets/php/chat-system/get_chat_user_id_by_username.php?chatUserUSERNAME=${encodeURIComponent(receiverUsername)}`)
                 .then(response => response.json())
                 .then(data => {
@@ -364,47 +371,84 @@ if (!isset($_SESSION["id"])) {
                         return;
                     }
 
-                    // Schritt 2: Hole die Nachrichten
                     fetch(`assets/php/chat-system/get_messages.php?chatUserID=${encodeURIComponent(chatUserId)}`)
                         .then(response => response.json())
                         .then(messages => {
-                            const isAtBottom = messagesContainer.scrollTop + messagesContainer.clientHeight >= messagesContainer.scrollHeight - 10;
-
-                            messagesContainer.innerHTML = '';
-
+                            let appended = false;
                             messages.forEach(msg => {
-                                const messageDiv = document.createElement('div');
-                                messageDiv.classList.add('message');
-                                messageDiv.classList.add(msg.sender === currentUserId ? 'sent' : 'received');
+                                if (!msg.id) return;
+                                if (!displayedMessageIds.includes(msg.id)) {
+                                    // Wrapper für Nachricht + Menü
+                                    const rowDiv = document.createElement('div');
+                                    rowDiv.classList.add('message-row', msg.sender === currentUserId ? 'sent' : 'received');
+                                    rowDiv.dataset.msgId = msg.id;
 
-                                if (msg.attachment_path) {
-                                    const attachmentLink = document.createElement('a');
-                                    attachmentLink.href = msg.attachment_path;
-                                    attachmentLink.textContent = '[Datei]';
-                                    attachmentLink.target = '_blank';
-                                    messageDiv.appendChild(attachmentLink);
+                                    // Nachrichten-Bubble
+                                    const bubbleDiv = document.createElement('div');
+                                    bubbleDiv.classList.add('message-bubble');
+
+                                    // Nachrichtentext
+                                    const textSpan = document.createElement('span');
+                                    textSpan.classList.add('message-text');
+                                    textSpan.textContent = msg.message || '';
+                                    bubbleDiv.appendChild(textSpan);
+
+                                    // Zeit
+                                    if (msg.timestamp) {
+                                        const time = new Date(msg.timestamp);
+                                        const timeDiv = document.createElement('div');
+                                        timeDiv.classList.add('message-time');
+                                        timeDiv.textContent = time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                                        bubbleDiv.appendChild(timeDiv);
+                                    }
+
+                                    // Menü
+                                    const actionsDiv = document.createElement('div');
+                                    actionsDiv.classList.add('message-actions');
+
+                                    let menuHTML = '';
+                                    if (msg.sender === currentUserId) {
+                                        menuHTML = `
+                                        <button class="message-menu-toggle" title="Optionen">
+                                            <i class="bx bx-dots-vertical-rounded"></i>
+                                        </button>
+                                        <div class="message-dropdown">
+                                            <ul>
+                                            <li><a href="#" class="edit-message">Bearbeiten</a></li>
+                                            <li><a href="#" class="delete-message">Löschen</a></li>
+                                            <li><a href="#" class="copy-message">Text kopieren</a></li>
+                                            </ul>
+                                        </div>
+                                        `;
+                                    } else {
+                                        menuHTML = `
+                                        <button class="message-menu-toggle" title="Optionen">
+                                            <i class="bx bx-dots-vertical-rounded"></i>
+                                        </button>
+                                        <div class="message-dropdown">
+                                            <ul>
+                                            <li><a href="#" class="copy-message">Text kopieren</a></li>
+                                            </ul>
+                                        </div>
+                                        `;
+                                    }
+                                    actionsDiv.innerHTML = menuHTML;
+
+                                    // Zusammensetzen
+                                    rowDiv.appendChild(bubbleDiv);
+                                    rowDiv.appendChild(actionsDiv);
+
+                                    messagesContainer.appendChild(rowDiv);
+                                    displayedMessageIds.push(msg.id);
+                                    appended = true;
                                 }
-
-                                if (msg.message) {
-                                    const textNode = document.createTextNode(msg.message);
-                                    messageDiv.appendChild(textNode);
-                                }
-
-                                if (msg.timestamp) {
-                                    const time = new Date(msg.timestamp);
-                                    const timeDiv = document.createElement('div');
-                                    timeDiv.classList.add('message-time');
-                                    timeDiv.textContent = time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-                                    messageDiv.appendChild(timeDiv);
-                                }
-
-                                messagesContainer.appendChild(messageDiv);
                             });
 
-                            if (isAtBottom) {
+                            // Nach dem Rendern ggf. scrollen:
+                            if (options.forceScroll || (appended && wasAtBottom)) {
                                 messagesContainer.scrollTop = messagesContainer.scrollHeight;
                                 scrollDownBtn.classList.remove('active');
-                            } else {
+                            } else if (appended) {
                                 scrollDownBtn.classList.add('active');
                             }
                         })
@@ -415,6 +459,19 @@ if (!isset($_SESSION["id"])) {
                 .catch(() => {
                     messagesContainer.innerHTML = '<p>Fehler beim Abrufen der Benutzer-ID.</p>';
                 });
+        }
+
+        // Wenn du einen neuen Chat auswählst, solltest du das zurücksetzen:
+        function resetMessagesContainer() {
+            const messagesContainer = document.querySelector('.chat-area .messages');
+            messagesContainer.innerHTML = '';
+            window._displayedMessageIds = [];
+        }
+
+        function clearChatUI() {
+            const messagesContainer = document.querySelector('.chat-area .messages');
+            messagesContainer.innerHTML = '';
+            window._displayedMessageIds = [];
         }
 
         // Event-Listener, damit der Button beim Klick nach unten scrollt
@@ -457,6 +514,56 @@ if (!isset($_SESSION["id"])) {
                 });
             });
         });
+
+        function scrollToBottom(container) {
+            container.scrollTop = container.scrollHeight;
+        }
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Menü öffnen/schließen
+            document.querySelector('.chat-area .messages').addEventListener('click', function (e) {
+                if (e.target.closest('.message-menu-toggle')) {
+                e.stopPropagation();
+                document.querySelectorAll('.message-dropdown').forEach(dd => dd.style.display = 'none');
+                const btn = e.target.closest('.message-menu-toggle');
+                const dropdown = btn.nextElementSibling;
+                if (dropdown) dropdown.style.display = 'block';
+                }
+                // Kopieren
+                if (e.target.matches('.message-dropdown a.copy-message')) {
+                e.preventDefault();
+                // Den Nachrichtentext finden
+                const row = e.target.closest('.message-row');
+                const text = row.querySelector('.message-text').textContent;
+                if (navigator.clipboard) {
+                    navigator.clipboard.writeText(text)
+                    .then(() => alert('Text kopiert!'))
+                    .catch(() => alert('Kopieren fehlgeschlagen!'));
+                } else {
+                    alert('Ihr Browser unterstützt das Kopieren nicht.');
+                }
+                document.querySelectorAll('.message-dropdown').forEach(dd => dd.style.display = 'none');
+                }
+                // Bearbeiten
+                if (e.target.matches('.message-dropdown a.edit-message')) {
+                e.preventDefault();
+                alert('Nachricht bearbeiten');
+                document.querySelectorAll('.message-dropdown').forEach(dd => dd.style.display = 'none');
+                }
+                // Löschen
+                if (e.target.matches('.message-dropdown a.delete-message')) {
+                e.preventDefault();
+                alert('Nachricht löschen');
+                document.querySelectorAll('.message-dropdown').forEach(dd => dd.style.display = 'none');
+                }
+            });
+
+            // Klick außerhalb schließt Dropdown
+            document.addEventListener('click', () => {
+                document.querySelectorAll('.message-dropdown').forEach(dd => dd.style.display = 'none');
+            });
+        });
     </script>
     <script>
         document.getElementById('sendMessageBtn').addEventListener('click', () => {
@@ -496,30 +603,51 @@ if (!isset($_SESSION["id"])) {
         });
     </script>
     <script>
-        let pollingInterval;
+        let pollingInterval = null;
         let currentReceiverId = null;
+
+        // Hilfsfunktion, um alles zurückzusetzen (Nachrichtenfeld und IDs)
+        function resetMessagesContainer() {
+            const messagesContainer = document.querySelector('.chat-area .messages');
+            messagesContainer.innerHTML = '';
+            window._displayedMessageIds = [];
+        }
 
         document.querySelectorAll('.conversation-list .conversation').forEach(contact => {
             contact.addEventListener('click', () => {
+                // Markiere aktive Konversation
                 document.querySelectorAll('.conversation-list .conversation').forEach(c => c.classList.remove('active'));
                 contact.classList.add('active');
 
+                // Chatbereich einblenden
                 const chatArea = document.querySelector('.chat-area');
                 chatArea.classList.remove('hidden');
 
+                // Chatheader aktualisieren
                 const chatHeader = document.querySelector('.chat-header');
-                chatHeader.querySelector('.chat-header-left').textContent = contact.textContent.trim();
+                if (chatHeader && chatHeader.querySelector('.chat-header-left')) {
+                    chatHeader.querySelector('.chat-header-left').textContent = contact.querySelector('.username').textContent.trim();
+                }
 
-                currentReceiverId = contact.dataset.userid;
+                // Aktuelle Receiver-Id (hier: Username oder UserId, je nach Bedarf für loadMessages)
+                const receiverUsername = contact.querySelector('.username').textContent.trim();
+                currentReceiverId = receiverUsername;
+
+                // Beim Wechsel alles zurücksetzen
+                resetMessagesContainer();
+
+                // Initial laden
                 loadMessages(currentReceiverId);
 
+                // Vorheriges Polling stoppen
                 if (pollingInterval) clearInterval(pollingInterval);
+
+                // Polling-Intervall setzen (nur für den aktiven Chat)
                 pollingInterval = setInterval(() => {
                     if (currentReceiverId) {
-                        document.querySelector('.chat-area').classList.remove('hidden');
                         loadMessages(currentReceiverId);
                     }
-                }, 500);
+                }, 1000); // 1 Sekunde ist oft ausreichend, 500ms ist recht viel
             });
         });
     </script>

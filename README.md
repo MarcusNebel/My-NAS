@@ -34,10 +34,16 @@ This is the repository for the **My NAS** project, a simple web application for 
 
 **Linux**
 
+- Clone Repository
 ```bash
 cd ~
 git clone https://github.com/MarcusNebel/My-NAS.git nas-website
-cd nas-website
+cd ~/nas-website
+```
+
+- Set needed root permissions to files folder
+```bash
+sudo chmod -R 777 nas-website-files/user_files/
 ```
 
 **MacOS**
@@ -100,16 +106,53 @@ Start My NAS using Docker Compose:
 
 **Windows**
 
-Run the `start-windows.cmd` file.
+- Build docker-image
+```powershell
+docker-compose build --no-cache
+```
+
+- Start docker-container
+```powershell
+docker-compose up -d
+```
+
+- Start update-server
+```powershell
+start run-update-flask-server.cmd
+```
 
 > To be shure that the update server is running every time you have to put a shortcut of the `run-update-flask-server.cmd` into the Startup folder that you can acces over `Windows + R` and then `shell:startup`. 
 
 **MacOS and Linux**
 
-```sh
-chmod +x start-linux-macOS.sh
-bash start-linux-macOS.sh
+- Build docker-image
+```bash
+docker compose build --no-cache
 ```
+
+- Start docker-container
+```bash
+docker compose up -d
+```
+
+- Start update-server
+```bash
+chmod +x run-update-flask-server.sh
+sh run-update-flask-server.sh
+```
+
+> To be shure that the update server is running every time you can create an cron-tab entry that starts the `run-update-flask-server.sh` script.
+> 
+> **Crontab entry**
+> - Open crontab
+> ```bash
+> crontab -e
+> ```
+> 
+> - Paste the following line in the end of the crontab
+> ```bash
+> @reboot /bin/bash ~/nas-website/run-update-flask-server.sh
+> ```
 
 This will start the necessary containers and automatically set up everything, including:
 - **Apache + PHP**

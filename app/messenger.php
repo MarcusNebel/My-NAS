@@ -19,6 +19,7 @@ if (!isset($_SESSION["id"])) {
     <link rel="stylesheet" href="assets/css/messenger.css" />
     <!-- Stelle sicher, dass das in deinem <head> steht -->
     <link href='https://cdn.boxicons.com/fonts/basic/boxicons.min.css' rel='stylesheet'>
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
 </head>
 <body>
     <header>
@@ -103,10 +104,11 @@ if (!isset($_SESSION["id"])) {
                 </a>
 
                 <div class="input-area">
-                    <a class="emoji"><i class="bxr bx-smile"></i></a>
-                    <a class="attach"><i class="bxr bx-paperclip"></i></a>
+                    <a class="emoji"><i class="bx bx-smile"></i></a>
+                    <a class="attach" id="attachBtn"><i class="bx bx-paperclip"></i></a>
+                    <input type="file" id="fileInput" style="display:none;" multiple>
                     <input type="text" id="messageInput" placeholder="Nachricht" />
-                    <a class="sendMessageBtn" id="sendMessageBtn"><i class="bxr bx-send-alt"></i></a>
+                    <a class="sendMessageBtn" id="sendMessageBtn"><i class="bx bx-send-alt"></i></a>
                 </div>
             </div>
         </div>
@@ -127,6 +129,166 @@ if (!isset($_SESSION["id"])) {
     </main>
 
     <script src="assets/js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const inputArea = document.querySelector('.input-area');
+            const fileInput = document.getElementById('fileInput');
+            const attachBtn = document.getElementById('attachBtn');
+            const sendBtn = document.getElementById('sendMessageBtn');
+            const messageInput = document.getElementById('messageInput');
+            let currentFile = null;
+
+            // Hilfsfunktion für Vertrauensfehler/SSL
+            function showTrustError(flaskUrl) {
+                if (document.getElementById("trust-error-modal-overlay")) return; // Nur einmal anzeigen
+
+                const overlay = document.createElement('div');
+                overlay.id = "trust-error-modal-overlay";
+
+                const modal = document.createElement('div');
+                modal.id = "trust-error-modal";
+                modal.innerHTML = `
+                    <strong>Verbindungsfehler!</strong><br>
+                    Möglicherweise vertraut dein Browser dem Zertifikat des Servers nicht.<br><br>
+                    <a href="${flaskUrl}/upload_messenger" target="_blank" rel="noopener">Hier klicken</a>, um die Seite zu öffnen und das Zertifikat zu akzeptieren.
+                    <br>
+                    <button onclick="document.getElementById('trust-error-modal-overlay').remove()">Meldung schließen</button>
+                `;
+                overlay.appendChild(modal);
+                document.body.appendChild(overlay);
+            }
+
+            attachBtn.addEventListener('click', () => fileInput.click());
+
+            fileInput.addEventListener('change', function() {
+                if (this.files.length === 0) return;
+                currentFile = this.files[0];
+                showFileBubble(currentFile);
+                this.value = '';
+            });
+
+            function showFileBubble(file) {
+                removeFileBubble();
+                const bubble = document.createElement('div');
+                bubble.className = 'file-preview-bubble';
+                bubble.innerHTML = `
+                    <span class="fileicon"><i class="bx bx-file"></i></span>
+                    <span class="filename">${file.name}</span>
+                    <button class="remove-btn" title="Entfernen">&times;</button>
+                    <div class="progress-container" style="display:none;"><div class="progressbar"></div></div>
+                `;
+                bubble.querySelector('.remove-btn').onclick = function() {
+                    currentFile = null;
+                    removeFileBubble();
+                };
+                inputArea.appendChild(bubble);
+            }
+
+            function removeFileBubble() {
+                const prev = inputArea.querySelector('.file-preview-bubble');
+                if (prev) prev.remove();
+            }
+
+            function updateProgress(percent) {
+                const bar = inputArea.querySelector('.file-preview-bubble .progressbar');
+                if (bar) bar.style.width = percent + "%";
+            }
+
+            async function sendMessage() {
+                const message = messageInput.value.trim();
+
+                // IDs holen
+                const myChatUserId = document.getElementById('current-user-id').dataset.id;
+                const contact = document.querySelector('.conversation.active');
+                if (!contact) {
+                    alert('Kein Chat ausgewählt!');
+                    return;
+                }
+                const receiverUsername = contact.querySelector('.username').textContent.trim();
+                const receiverId = await fetch('assets/php/chat-system/get_chat_user_id_by_username.php?chatUserUSERNAME=' + encodeURIComponent(receiverUsername))
+                    .then(res => res.json())
+                    .then(data => data.chat_user_id || null);
+                if (!receiverId) {
+                    alert('Empfänger-ID konnte nicht gefunden werden!');
+                    return;
+                }
+                if (!window._config) {
+                    window._config = await fetch('config.json').then(r => r.json());
+                }
+                const flaskUrl = window._config.flaskServerURL;
+
+                // Prüfe, ob wenigstens Text oder Datei vorhanden ist
+                if (!currentFile && message === "") return;
+
+                let formData = new FormData();
+                formData.append('owner_id', myChatUserId);
+                formData.append('contact_id', receiverId);
+                formData.append('message', message);
+                if (currentFile) formData.append('file', currentFile);
+
+                try {
+                    // Mit Progressbar, falls Datei
+                    if (currentFile) {
+                        const progressContainer = inputArea.querySelector('.file-preview-bubble .progress-container');
+                        if (progressContainer) progressContainer.style.display = "block";
+                        updateProgress(0);
+
+                        const progressbar = inputArea.querySelector('.progressbar');
+                        await new Promise((resolve, reject) => {
+                            const xhr = new XMLHttpRequest();
+                            xhr.open('POST', flaskUrl + '/upload_messenger');
+                            xhr.upload.onprogress = function(e) {
+                                if (e.lengthComputable && progressbar) {
+                                    const percent = Math.round((e.loaded / e.total) * 100);
+                                    updateProgress(percent);
+                                }
+                            };
+                            xhr.onload = function() {
+                                if (xhr.status >= 200 && xhr.status < 300) {
+                                    resolve();
+                                } else {
+                                    reject(new Error("Serverantwort: " + xhr.status));
+                                }
+                            };
+                            xhr.onerror = function() {
+                                reject(new Error("Verbindungsfehler"));
+                            };
+                            xhr.send(formData);
+                        });
+                    } else {
+                        // Nur Text: fetch ohne Progressbar
+                        const response = await fetch(flaskUrl + '/upload_messenger', {
+                            method: 'POST',
+                            body: formData
+                        });
+                        if (!response.ok) {
+                            throw new Error("Serverantwort: " + response.status);
+                        }
+                    }
+
+                    // Nach dem Senden alles zurücksetzen
+                    removeFileBubble();
+                    currentFile = null;
+                    messageInput.value = "";
+                    fileInput.value = "";
+                    // Optional: Nachrichten neu laden, z.B.
+                    // loadMessages(receiverId, {forceScroll: true});
+                } catch (err) {
+                    showTrustError(flaskUrl);
+                }
+            }
+
+            sendBtn.addEventListener('click', sendMessage);
+
+            // Enter-Handler für Textnachricht
+            messageInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    sendMessage();
+                }
+            });
+        });
+    </script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             function getCurrentReceiverId() {
@@ -383,15 +545,74 @@ if (!isset($_SESSION["id"])) {
                                     rowDiv.classList.add('message-row', msg.sender === currentUserId ? 'sent' : 'received');
                                     rowDiv.dataset.msgId = msg.id;
 
-                                    // Nachrichten-Bubble
                                     const bubbleDiv = document.createElement('div');
                                     bubbleDiv.classList.add('message-bubble');
 
-                                    // Nachrichtentext
-                                    const textSpan = document.createElement('span');
-                                    textSpan.classList.add('message-text');
-                                    textSpan.textContent = msg.message || '';
-                                    bubbleDiv.appendChild(textSpan);
+                                    // Datei-Bubble, falls Anhang vorhanden
+                                    if (msg.attachment_path) {
+                                        const fileBubble = document.createElement('div');
+                                        fileBubble.className = 'file-bubble';
+
+                                        // Fileicon
+                                        const fileIcon = document.createElement('span');
+                                        fileIcon.className = 'fileicon';
+                                        fileIcon.innerHTML = '<i class="bx bx-file"></i>';
+                                        fileBubble.appendChild(fileIcon);
+
+                                        // Info-Container
+                                        const fileInfo = document.createElement('div');
+                                        fileInfo.className = 'file-info';
+
+                                        // Dateiname
+                                        const fileNameSpan = document.createElement('span');
+                                        fileNameSpan.className = 'file-name';
+                                        const filename = msg.attachment_path.split('/').pop();
+                                        fileNameSpan.textContent = filename;
+                                        fileInfo.appendChild(fileNameSpan);
+
+                                        // Platzhalter für Dateigröße
+                                        const fileSizeSpan = document.createElement('span');
+                                        fileSizeSpan.className = 'file-size';
+                                        fileSizeSpan.textContent = '...'; // Ladeanzeige
+                                        fileInfo.appendChild(fileSizeSpan);
+
+                                        fileBubble.appendChild(fileInfo);
+
+                                        // Download-Button
+                                        const downloadBtn = document.createElement('a');
+                                        downloadBtn.className = 'download-btn';
+                                        downloadBtn.href = 'assets/php/chat-system/download.php?path=' + encodeURIComponent(msg.attachment_path);
+                                        downloadBtn.setAttribute('download', filename);
+                                        downloadBtn.title = 'Herunterladen';
+                                        downloadBtn.innerHTML = '<i class="bx bx-download"></i>';
+                                        downloadBtn.style.textDecoration = 'none'
+                                        fileBubble.appendChild(downloadBtn);
+
+                                        // Bubble einfügen
+                                        bubbleDiv.appendChild(fileBubble);
+
+                                        // === Dateigröße asynchron laden ===
+                                        fetch('assets/php/chat-system/get_file_size.php?path=' + encodeURIComponent(msg.attachment_path))
+                                        .then(response => response.json())
+                                        .then(data => {
+                                            if (data.size_formatted) {
+                                                fileSizeSpan.textContent = data.size_formatted;
+                                            } else {
+                                                fileSizeSpan.textContent = '';
+                                            }
+                                        })
+                                        .catch(() => {
+                                            fileSizeSpan.textContent = '';
+                                        });
+                                    }
+
+                                    // Nachrichtentext (falls vorhanden)
+                                    if (msg.message) {
+                                        const textSpan = document.createElement('span');
+                                        textSpan.classList.add('message-text');
+                                        textSpan.textContent = msg.message;
+                                        bubbleDiv.appendChild(textSpan);
+                                    }
 
                                     // Zeit
                                     if (msg.timestamp) {
@@ -518,6 +739,15 @@ if (!isset($_SESSION["id"])) {
         function scrollToBottom(container) {
             container.scrollTop = container.scrollHeight;
         }
+
+        function formatFileSize(bytes) {
+            if (!bytes) return '';
+            if (bytes >= 1048576)
+                return (bytes/1048576).toFixed(1) + " MB";
+            if (bytes >= 1024)
+                return (bytes/1024).toFixed(1) + " KB";
+            return bytes + " B";
+        }
     </script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
@@ -563,43 +793,6 @@ if (!isset($_SESSION["id"])) {
             document.addEventListener('click', () => {
                 document.querySelectorAll('.message-dropdown').forEach(dd => dd.style.display = 'none');
             });
-        });
-    </script>
-    <script>
-        document.getElementById('sendMessageBtn').addEventListener('click', () => {
-            const messageInput = document.getElementById('messageInput');
-            const message = messageInput.value.trim();
-            const activeChat = document.querySelector('.conversation.active');
-            const receiverId = activeChat?.dataset.userid;
-
-            if (message && receiverId) {
-                fetch('assets/php/chat-system/send_message.php', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                    body: new URLSearchParams({
-                        message: message,
-                        receiver: receiverId
-                    })
-                })
-                .then(res => res.text())
-                .then(response => {
-                    console.log('Send message response:', response);
-                    messageInput.value = '';
-
-                    // Nach dem Senden neu laden!
-                    
-                })
-                .catch(err => console.error('Fehler beim Senden der Nachricht:', err));
-            }
-        });
-    </script>
-    <script>
-        document.getElementById('messageInput').addEventListener('keypress', function (e) {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                document.getElementById('sendMessageBtn').click();
-                loadMessages(currentReceiverId);
-            }
         });
     </script>
     <script>

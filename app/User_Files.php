@@ -472,7 +472,7 @@ if (!isset($_SESSION["id"])) {
                 };
 
                 xhr.onerror = () => {
-                    uploadStatusModal.innerHTML = 'Fehler beim Upload. Bitte <a href="' + flaskServerURL + '" target="_blank" rel="noopener noreferrer">den Upload-Server</a> manuell überprüfen.';
+                    showTrustErrorModal(flaskServerURL);
                 };
 
                 xhr.open('POST', flaskServerURL, true);
@@ -1065,6 +1065,28 @@ if (!isset($_SESSION["id"])) {
                     });
             }
         });
+    </script>
+    <script>
+        function showTrustErrorModal(serverUrl) {
+            if (document.getElementById("trust-error-modal-overlay")) return; // Nur einmal anzeigen
+
+            const overlay = document.createElement('div');
+            overlay.id = "trust-error-modal-overlay";
+
+            const modal = document.createElement('div');
+            modal.id = "trust-error-modal";
+            modal.innerHTML = `
+                <strong>Verbindungsfehler!</strong><br>
+                Möglicherweise vertraut dein Browser dem Zertifikat des Servers nicht.<br><br>
+                <a href="${serverUrl}" target="_blank" rel="noopener">Hier klicken</a>, um die Seite zu öffnen und das Zertifikat zu akzeptieren.
+                <br>
+                <br>
+                <p>Du kannst den geöffneten Tab nach dem akzeptieren wieder schließen und musst die Aktion nocheinmal durchführen.</p>
+                <button onclick="document.getElementById('trust-error-modal-overlay').remove()">Meldung schließen</button>
+            `;
+            overlay.appendChild(modal);
+            document.body.appendChild(overlay);
+        }
     </script>
 	<script src="assets/js/lang.js"></script>
 </body>

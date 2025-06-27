@@ -4,6 +4,7 @@ import os
 import zipfile
 import io
 from datetime import datetime
+import pytz
 from zoneinfo import ZoneInfo
 import pymysql
 from werkzeug.utils import secure_filename
@@ -13,6 +14,7 @@ CORS(app)  # CORS aktivieren
 
 # --- Konfiguration ---
 UPLOAD_FOLDER = '/home/nas-website-files/user_files'  # Im Container
+MESSENGER_UPLOAD_FOLDER = '/home/nas-website-files/messenger'  # Im Container
 BASE_DIR = UPLOAD_FOLDER
 
 DB_CONFIG = {
@@ -119,6 +121,59 @@ def upload_file():
             return jsonify({'error': str(e)}), 500
 
     return jsonify({'message': 'Dateien erfolgreich hochgeladen', 'files': saved_files}), 200
+
+# --- Messenger-Upload Route ---
+def get_db():
+    return pymysql.connect(
+        host="db",
+        user="root",
+        password="59LWrt!mDo6GC4",
+        database="nas-website"
+    )
+
+@app.route('/upload_messenger', methods=['POST'])
+def upload_messenger_file():
+    sender = request.form.get('owner_id')
+    receiver = request.form.get('contact_id')
+    message = request.form.get('message', '')  # Optional: Textnachricht
+
+    if not sender or not receiver:
+        return jsonify({'error': 'owner_id oder contact_id fehlt'}), 400
+
+    # Ordnername immer alphabetisch sortiert, damit pro Chat-Paar nur ein Ordner entsteht
+    id1, id2 = sorted([str(sender), str(receiver)])
+    folder_name = f"{id1}-{id2}"
+
+    # Datei-Handling
+    attachment_path = None
+    if 'file' in request.files:
+        file = request.files['file']
+        if file.filename != '':
+            filename = secure_filename(file.filename)
+            target_dir = os.path.join(MESSENGER_UPLOAD_FOLDER, folder_name)
+            os.makedirs(target_dir, exist_ok=True)
+            file_path = os.path.join(target_dir, filename)
+            file.save(file_path)
+            # relativer Web-Pfad (für Link-Generierung im Frontend)
+            attachment_path = f"/messenger/{folder_name}/{filename}"
+
+    # Zeitstempel Europe/Berlin
+    tz = pytz.timezone('Europe/Berlin')
+    now_berlin = datetime.now(tz)
+    timestamp = now_berlin.strftime('%Y-%m-%d %H:%M:%S')
+
+    # In DB speichern
+    db = get_db()
+    cur = db.cursor()
+    sql = """
+        INSERT INTO messages (sender, receiver, group_id, message, attachment_path, timestamp)
+        VALUES (%s, %s, %s, %s, %s, %s)
+    """
+    cur.execute(sql, (sender, receiver, None, message if message != '' else None, attachment_path, timestamp))
+    db.commit()
+    db.close()
+
+    return jsonify({'message': 'Nachricht gespeichert', 'filename': attachment_path, 'text': message, 'timestamp': timestamp}), 200
 
 # --- ZIP-Download Route ---
 @app.route('/zip_download', methods=['POST'])

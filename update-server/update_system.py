@@ -140,7 +140,7 @@ def rebuild_and_start_containers(compose_file):
     try:
         # Build containers
         build_result = subprocess.run(
-            f"docker compose -f {compose_file} build --no-cache",
+            f"docker compose {compose_file} build --no-cache",
             shell=True,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
@@ -157,7 +157,7 @@ def rebuild_and_start_containers(compose_file):
 
         # Start containers
         start_result = subprocess.run(
-            f"docker compose -f {compose_file} up -d",
+            f"docker compose {compose_file} up -d",
             shell=True,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
@@ -253,7 +253,7 @@ def main():
     repo_name = "My-NAS"
     containers = ["nas-website", "mysql", "flask-server"]
     images = ["nas-website-nas-website:latest", "nas-website-flask-server:latest"]
-    compose_file = "./docker-compose.main.yml"
+    compose_file = "./docker-compose.yml"
     download_dir = "./tmp/nas-update"
     target_folders = ["app", "flask-upload"]
     additional_files = ["init.sql", "LICENSE", "README.md"]

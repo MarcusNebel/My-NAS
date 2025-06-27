@@ -128,10 +128,7 @@ async function handleDownload() {
             const zipDownloadURL = flaskServerURL + "/zip_download";
 
             if (err instanceof TypeError && err.message === "Failed to fetch") {
-                document.getElementById("downloadStatus").innerHTML =
-                    '❌ Verbindung zum Download-Server fehlgeschlagen. ' +
-                    'Gehe auf <a href="' + zipDownloadURL + '" target="_blank" rel="noopener noreferrer">' +
-                    'diese Seite</a>, vertraue dem Zertifikat und lade die Seite neu.';
+                showTrustErrorModal(flaskServerURL);
             } else {
                 alert(`Fehler beim Herunterladen der ZIP-Datei: ${err.message}`);
             }

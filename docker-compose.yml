@@ -10,7 +10,6 @@ services:
       - ./app/:/var/www/html/
       - ./nas-website-files/user_files/:/home/nas-website-files/user_files # Datenverzeichnis Website
       - ./nas-website-files/tmp_zips/:/home/nas-website-files/tmp_zips # Temporäre Zips
-      - ./nas-website-files/messenger/:/home/nas-website-files/messenger # Messenger Files
     ports:
       - "80:80"
       - "8443:443"
@@ -51,28 +50,11 @@ services:
     volumes:
       - ./nas-website-files/user_files/:/home/nas-website-files/user_files # Datenverzeichnis Website
       - ./nas-website-files/tmp_zips/:/home/nas-website-files/tmp_zips # Temporäre Zips
-      - ./nas-website-files/messenger/:/home/nas-website-files/messenger # Messenger Files
     environment:
       - FLASK_APP=app.py
     networks:
       - nas-network
-      - update-network
-  
-  update-server:
-    container_name: update-server-proxy
-    build: 
-      context: ./update-server
-      dockerfile: Dockerfile
-    ports: 
-      - "8081:5002"
-    restart: unless-stopped
-    volumes:
-      - ./app:/config
-    environment: 
-      - FLASK_APP=app.py
-    networks:
-      - nas-network
-      - update-network    
+      - update-network  
 
 volumes:
   mysql_data:

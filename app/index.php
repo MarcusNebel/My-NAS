@@ -98,7 +98,6 @@ session_start();
 			<?php endif; ?>
 	</main>
 	<script src="assets/js/main.js"></script>
-	<script src="../assets/js/update.js"></script>
 	<script src="assets/js/lang.js"></script>
 </body>
 </html>
